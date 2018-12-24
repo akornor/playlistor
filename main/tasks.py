@@ -8,6 +8,9 @@ from celery_progress.backend import ProgressRecorder
 def get_access_token():
     return oauth.get_cached_token()['access_token']
 
+def get_spotify_client(token):
+    return Spotify(auth=token)
+
 def grouper(n, iterable):
     return [iterable[i:i + n] for i in range(0, len(iterable), n)]
 
@@ -15,7 +18,7 @@ def grouper(n, iterable):
 def generate_playlist(self, playlist_url):
     progress_recorder = ProgressRecorder(self)
     token = get_access_token()
-    sp = Spotify(auth=token)
+    sp = get_spotify_client(token)
     uid = sp.current_user()['id']
     page = fetch_url(playlist_url)
     soup = create_soup_obj(page)
