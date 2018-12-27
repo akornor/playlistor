@@ -119,10 +119,10 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-REDIS_URL = os.environ['REDIS_URL']
+REDIS_URL = os.environ.get('REDIS_URL')
 
-REDIRECT_URI = 'http://localhost:8000/callback'
-CLIENT_ID = '57b84fb6a1214062892fa39351d2c013'
-CLIENT_SECRET = 'f921b3a47f9f4dbca1955190a108e115'
+REDIRECT_URI = os.environ.get('REDIRECT_URI')
+CLIENT_ID = os.environ.get('CLIENT_ID')
+CLIENT_SECRET = os.environ.get('CLIENT_SECRET')
 
 django_heroku.settings(locals())
