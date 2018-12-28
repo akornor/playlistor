@@ -9,7 +9,7 @@ def get_tracks(soup):
     tracklist = soup.find_all(class_='tracklist-item--song')
     for track in tracklist:
         title = track.find(class_='tracklist-item__text__headline').get_text().strip()
-        artist = track.find(class_='table__row__link table__row__link--secondary').get_text()
+        artist = track.find(class_='table__row__link table__row__link--secondary').get_text().strip()
         rv.append(Track(title=title, artist=artist))
     return rv
 
