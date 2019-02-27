@@ -1,7 +1,7 @@
 from audible.celery import app
 from celery import shared_task
 from spotipy import Spotify, SpotifyException
-from .utils import fetch_url, AppleMusicParser
+from .parsers import fetch_url, AppleMusicParser
 from main import oauth
 from celery_progress.backend import ProgressRecorder
 

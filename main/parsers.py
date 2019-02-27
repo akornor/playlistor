@@ -27,8 +27,7 @@ class AppleMusicParser(BaseParser):
         }
 
     def _get_playlist_title(self):
-        soup = self._soup
-        title = soup.find(class_='product-header__title').get_text().strip()
+        title = self._soup.find(class_='product-header__title').get_text().strip()
         return title
 
     def _get_playlist_tracks(self):
@@ -48,6 +47,5 @@ class AppleMusicParser(BaseParser):
         return tracks
 
     def _get_playlist_creator(self):
-        soup = self._soup
-        creator = soup.find(class_='product-header__identity album-header__identity').get_text().strip()
+        creator = self._soup.find(class_='product-header__identity album-header__identity').get_text().strip()
         return creator
