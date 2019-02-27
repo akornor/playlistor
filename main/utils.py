@@ -2,7 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 from collections import namedtuple
 
-Track = namedtuple('Track', ['title', 'artist'])
+Track = namedtuple('Track', ['title', 'artist', 'featuring'])
 
 def get_tracks(soup):
     rv = []
@@ -10,7 +10,12 @@ def get_tracks(soup):
     for track in tracklist:
         title = track.find(class_='tracklist-item__text__headline').get_text().strip()
         artist = track.find(class_='table__row__link table__row__link--secondary').get_text().strip()
-        rv.append(Track(title=title, artist=artist))
+        featuring = ''
+        if 'feat.' in title:
+            t = title.replace('feat. ', '')
+            i = t.index('(')
+            featuring = t[i+1:-1]
+        rv.append(Track(title=title, artist=artist, featuring=featuring))
     return rv
 
 def fetch_url(url):
