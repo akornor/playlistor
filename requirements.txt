@@ -11,7 +11,7 @@ kombu==4.2.1
 pytz==2018.7
 redis==2.10.6
 requests==2.20.1
-spotipy==2.4.4
+git+https://github.com/plamere/spotipy
 urllib3==1.24.1
 vine==1.1.4
 gunicorn==19.9.0
