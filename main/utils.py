@@ -21,7 +21,8 @@ class AppleMusicParser(BaseParser):
     def extract_data(self):
         return {
             "playlist_title": self._get_playlist_title(),
-            "tracks": self._get_playlist_tracks()
+            "tracks": self._get_playlist_tracks(),
+            "playlist_creator": self._get_playlist_creator()
         }
 
     def _get_playlist_title(self):
@@ -43,3 +44,8 @@ class AppleMusicParser(BaseParser):
                 featuring = t[i+1:-1]
             tracks.append(Track(title=title, artist=artist, featuring=featuring))
         return tracks
+
+    def _get_playlist_creator(self):
+        soup = self._soup
+        creator = soup.find(class_='product-header__identity album-header__identity').get_text().strip()
+        return creator
