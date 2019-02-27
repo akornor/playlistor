@@ -1,7 +1,7 @@
 from audible.celery import app
 from celery import shared_task
 from spotipy import Spotify, SpotifyException
-from .utils import fetch_url, get_playlist_title, get_tracks, create_soup_obj
+from .utils import fetch_url, AppleMusicParser
 from main import oauth
 from celery_progress.backend import ProgressRecorder
 
@@ -20,10 +20,11 @@ def generate_playlist(self, playlist_url):
     token = get_access_token()
     sp = get_spotify_client(token)
     uid = sp.current_user()['id']
-    page = fetch_url(playlist_url)
-    soup = create_soup_obj(page)
-    playlist_title = get_playlist_title(soup)
-    tracks = get_tracks(soup)
+    html = fetch_url(playlist_url)
+    parser = AppleMusicParser(html)
+    data = parser.extract_data()
+    playlist_title = data['playlist_title']
+    tracks = data['tracks']
     n = len(tracks)
     playlist = sp.user_playlist_create(uid, playlist_title)
     playlist_id = playlist['id']

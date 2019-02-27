@@ -1,32 +1,45 @@
 import requests
-from bs4 import BeautifulSoup
 from collections import namedtuple
 
 Track = namedtuple('Track', ['title', 'artist', 'featuring'])
-
-def get_tracks(soup):
-    rv = []
-    tracklist = soup.find_all(class_='tracklist-item--song')
-    for track in tracklist:
-        title = track.find(class_='tracklist-item__text__headline').get_text().strip()
-        artist = track.find(class_='table__row__link table__row__link--secondary').get_text().strip()
-        featuring = ''
-        if 'feat.' in title:
-            t = title.replace('feat. ', '')
-            i = t.index('(')
-            featuring = t[i+1:-1]
-        rv.append(Track(title=title, artist=artist, featuring=featuring))
-    return rv
 
 def fetch_url(url):
     response = requests.get(url)
     response.raise_for_status()
     return response.text
 
-def create_soup_obj(html):
-    soup = BeautifulSoup(html, 'html.parser')
-    return soup
+class BaseParser:
+    def __init__(self, html_source: str) -> None:
+        from bs4 import BeautifulSoup
+        self._soup = BeautifulSoup(html_source, "html.parser")
 
-def get_playlist_title(soup):
-    title = soup.find(class_='product-header__title').get_text().strip()
-    return title
+    def extract_data(self):
+        raise NotImplementedError()
+
+
+class AppleMusicParser(BaseParser):
+    def extract_data(self):
+        return {
+            "playlist_title": self._get_playlist_title(),
+            "tracks": self._get_playlist_tracks()
+        }
+
+    def _get_playlist_title(self):
+        soup = self._soup
+        title = soup.find(class_='product-header__title').get_text().strip()
+        return title
+
+    def _get_playlist_tracks(self):
+        soup = self._soup
+        tracks = []
+        tracklist = soup.find_all(class_='tracklist-item--song')
+        for track in tracklist:
+            title = track.find(class_='tracklist-item__text__headline').get_text().strip()
+            artist = track.find(class_='table__row__link table__row__link--secondary').get_text().strip()
+            featuring = ''
+            if 'feat.' in title:
+                t = title.replace('feat. ', '')
+                i = t.index('(')
+                featuring = t[i+1:-1]
+            tracks.append(Track(title=title, artist=artist, featuring=featuring))
+        return tracks
