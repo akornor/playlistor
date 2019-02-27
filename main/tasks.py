@@ -21,8 +21,7 @@ def generate_playlist(self, playlist_url):
     sp = get_spotify_client(token)
     uid = sp.current_user()['id']
     html = fetch_url(playlist_url)
-    parser = AppleMusicParser(html)
-    data = parser.extract_data()
+    data = AppleMusicParser(html).extract_data()
     playlist_title = data['playlist_title']
     tracks = data['tracks']
     creator = data['playlist_creator']

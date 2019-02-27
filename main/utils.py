@@ -1,5 +1,6 @@
 import requests
 from collections import namedtuple
+import re
 
 Track = namedtuple('Track', ['title', 'artist', 'featuring'])
 
@@ -39,9 +40,10 @@ class AppleMusicParser(BaseParser):
             artist = track.find(class_='table__row__link table__row__link--secondary').get_text().strip()
             featuring = ''
             if 'feat.' in title:
-                t = title.replace('feat. ', '')
-                i = t.index('(')
-                featuring = t[i+1:-1]
+                title = title.replace('feat. ', '')
+                featuring = re.search(r'\((.*?)\)',title).group(1)
+                i = title.find('(')
+                title = title[:i]
             tracks.append(Track(title=title, artist=artist, featuring=featuring))
         return tracks
 
