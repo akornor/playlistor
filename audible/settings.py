@@ -16,6 +16,9 @@ import django_heroku
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+def get_secret(name, default=None):
+    return os.environ.get(name, default)
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
@@ -24,7 +27,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '-h7x5-7v-f*=v9+8swk8)cwu^%b(h2btl0nb&@g$es-28ls5pt'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = not get_secret('PRODUCTION', True)
 
 ALLOWED_HOSTS = ['*']
 
@@ -119,10 +122,10 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-REDIS_URL = os.environ.get('REDIS_URL')
+REDIS_URL = get_secret('REDIS_URL')
 
-REDIRECT_URI = os.environ.get('REDIRECT_URI')
-CLIENT_ID = os.environ.get('CLIENT_ID')
-CLIENT_SECRET = os.environ.get('CLIENT_SECRET')
+REDIRECT_URI = get_secret('REDIRECT_URI')
+CLIENT_ID = get_secret('CLIENT_ID')
+CLIENT_SECRET = get_secret('CLIENT_SECRET')
 
 django_heroku.settings(locals())

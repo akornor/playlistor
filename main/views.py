@@ -21,10 +21,10 @@ def callback(request):
 def playlist(request):
     data = json.loads(request.body.decode('utf-8'))
     playlist = data.get('playlist')
-    if playlist is not None:
-        result = generate_playlist.delay(playlist)
-        return JsonResponse({'task_id': result.task_id})
-    return JsonResponse({'message': "playlist required in payload"})
+    if playlist is None:
+        return JsonResponse({'message': "playlist required in payload"})
+    result = generate_playlist.delay(playlist)
+    return JsonResponse({'task_id': result.task_id})
 
 @login_required(login_url='/login')
 def index(request):
