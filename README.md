@@ -2,7 +2,6 @@
 self-hosted apple music to spotify playlist convertor
 
 ## Demo
-
 ![Demo](docs/demo.png)
 
 ## Installing
@@ -12,12 +11,12 @@ Clone repository or download zip and extract. Open terminal and navigate to `pla
 * `python3 -m"venv" env && . env/bin/activate`
 * `pip3 install -r requirements.txt`
 
-Before starting the app, copy `env.sample` to `.env`, set all the required environmental variables in the `.env` file and have redis running in another terminal.
+Before starting the app, copy `env.sample` to `.env`, set all the required environmental variables in the `.env` file. Make sure redis running in another terminal on port `6379`.
 You can now run the app with `nf start --port 8000`.
 
 
 ## Usage
-To use app, you'll first have to login `localhost:8000/login` with your spotify account credentials. After successful authentication, you'll be redirected to main page. On the main page, enter an apple music playlist and click submit.
+To use app, navigate to `localhost:8000`. You'll required to login with Spotify credentials on first attempt.
 
 ## TODO
 - [ ] Add feature to convert apple music playlist to spotify
