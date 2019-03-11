@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 import os
-import django_heroku
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -27,7 +26,7 @@ def get_secret(name, default=None):
 SECRET_KEY = '-h7x5-7v-f*=v9+8swk8)cwu^%b(h2btl0nb&@g$es-28ls5pt'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = not get_secret('PRODUCTION', True)
+DEBUG = not get_secret('PRODUCTION') == 'True'
 
 ALLOWED_HOSTS = ['*']
 
@@ -127,5 +126,3 @@ REDIS_URL = get_secret('REDIS_URL')
 REDIRECT_URI = get_secret('REDIRECT_URI')
 CLIENT_ID = get_secret('CLIENT_ID')
 CLIENT_SECRET = get_secret('CLIENT_SECRET')
-
-django_heroku.settings(locals())
