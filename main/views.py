@@ -16,6 +16,8 @@ def callback(request):
     if code is not None:
         oauth.get_access_token(code)
         return redirect('/')
+    else:
+        return redirect('/login')
 
 @require_POST
 def playlist(request):
