@@ -16,7 +16,7 @@ You can now run the app with `nf start --port 8000`.
 
 
 ## Usage
-To use app, navigate to `localhost:8000`. You'll required to login with Spotify credentials on first attempt.
+To use app, navigate to `localhost:8000`. You'll be required to login with your Spotify credentials on first attempt.
 
 ## TODO
 - [ ] Add feature to convert apple music playlist to spotify
