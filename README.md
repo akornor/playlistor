@@ -1,6 +1,8 @@
 ## Playlistor
 self-hosted apple music to spotify playlist convertor
 
+[![CircleCI](https://circleci.com/gh/akornor/playlistor/tree/master.svg?style=svg)](https://circleci.com/gh/akornor/playlistor/tree/master)
+
 ## Demo
 ![Demo](docs/demo.png)
 
