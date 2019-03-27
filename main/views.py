@@ -21,6 +21,9 @@ def callback(request):
 
 @require_POST
 def playlist(request):
+    """
+    API endpoint to schedule generate_playlist tasks
+    """
     data = json.loads(request.body.decode('utf-8'))
     playlist = data.get('playlist')
     if playlist is None:
