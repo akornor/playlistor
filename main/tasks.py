@@ -29,19 +29,24 @@ def generate_playlist(self, playlist_url):
     playlist = sp.user_playlist_create(uid, playlist_title, description=f'Originally created by {creator} on Apple Music.')
     playlist_id = playlist['id']
     tracks_uris = []
-    for i, track in enumerate(tracks):
-        try:
-            results = sp.search(f'{track.title} {track.artist} {track.featuring}', limit=1)
-            track_uri = results['tracks']['items'][0]["uri"]
-            tracks_uris.append(track_uri)
-            progress_recorder.set_progress(i+1, n)
-        except IndexError:
-            continue
-    #You can add a maximum of 100 tracks per request.
-    if len(tracks_uris) > 100:
-        for chunk in grouper(100, tracks_uris):
-            sp.user_playlist_add_tracks(uid, playlist_id, chunk)
-    else:
-        sp.user_playlist_add_tracks(uid, playlist_id, tracks_uris)
+    try:
+        for i, track in enumerate(tracks):
+            try:
+                results = sp.search(f'{track.title} {track.artist} {track.featuring}', limit=1)
+                track_uri = results['tracks']['items'][0]["uri"]
+                tracks_uris.append(track_uri)
+                progress_recorder.set_progress(i+1, n)
+            except IndexError:
+                continue
+        #You can add a maximum of 100 tracks per request.
+        if len(tracks_uris) > 100:
+            for chunk in grouper(100, tracks_uris):
+                sp.user_playlist_add_tracks(uid, playlist_id, chunk)
+        else:
+            sp.user_playlist_add_tracks(uid, playlist_id, tracks_uris)
+    except SpotifyException as e:
+        # Delete playlist if error occurs while adding songs
+        sp.user_playlist_unfollow(uid, playlist_id)
+        raise e
     url = playlist['external_urls']['spotify']
     return url
