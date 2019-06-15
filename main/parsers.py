@@ -49,3 +49,25 @@ class AppleMusicParser(BaseParser):
     def _get_playlist_creator(self):
         creator = self._soup.find(class_='product-header__identity album-header__identity').get_text().strip()
         return creator
+
+class SpotifyParser(BaseParser):
+    def extract_data(self):
+        return {
+            # "playlist_title": self._get_playlist_title(),
+            "playlist_title": "Testing",
+            "tracks": self._get_playlist_tracks(),
+            # "playlist_creator": self._get_playlist_creator(),
+            "_get_playlist_creator": "Testing"
+        }
+
+    def _get_playlist_tracks(self):
+        tracks = []
+        tracklist = self._soup.find_all(class_="tracklist-row")
+        for track in tracklist:
+            title = track.find(class_="track-name").get_text().strip()
+            artist = track.find(class_="artists-albums").get_text().split('•')[0].strip()
+            # Remove featuring artist. I need to further investigate if adding featuring artist increases accuracy of search
+            if ',' in artist:
+                artist = artist.split(',')[0]
+            tracks.append(Track(title=title, artist=artist, featuring=''))
+        return tracks

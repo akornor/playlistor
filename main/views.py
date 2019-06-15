@@ -2,7 +2,7 @@ import json
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
-from .tasks import generate_playlist
+from .tasks import generate_spotify_playlist, generate_applemusic_playlist
 from .decorators import login_required
 from main import oauth
 
@@ -28,7 +28,7 @@ def playlist(request):
     playlist = data.get('playlist')
     if playlist is None:
         return JsonResponse({'message': "playlist required in payload"})
-    result = generate_playlist.delay(playlist)
+    result = generate_applemusic_playlist.delay(playlist)
     return JsonResponse({'task_id': result.task_id})
 
 @login_required(login_url='/login')
