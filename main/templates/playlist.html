@@ -1,56 +1,62 @@
 {% load static %}
 <!DOCTYPE html>
 <html>
-<head>
-	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-141685337-1"></script>
-        <script>
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
 
-          gtag('config', 'UA-141685337-1');
-    	</script>
-	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	<title>Spotify</title>
-	<link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
-	<link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}">
-	<style type="text/css">
-		#container {
-		    background: #fff;
-		    border: 1px solid #eaeaea;
-		    border-radius: 4px;
-		    overflow: hidden;
-		    width: 28em;
-		    min-width: 80%;
-		    margin: 15% auto;
-		    position: relative;
-		    padding: 60px;
-		}
-	</style>
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-141685337-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+
+        gtag('config', 'UA-141685337-1');
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Spotify</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}">
+    <style type="text/css">
+        #container {
+            background: #fff;
+            border: 1px solid #eaeaea;
+            border-radius: 4px;
+            overflow: hidden;
+            width: 28em;
+            min-width: 80%;
+            margin: 15% auto;
+            position: relative;
+            padding: 60px;
+        }
+    </style>
 </head>
+
 <body>
-	<div class="container-fluid">
-		<div id="container">
-			<h4 class="text-center">🔈Convert your Apple Music playlists to Spotify🔈</h4>
-			<form id="form">
-			<div class="form-group">
-				<input class="form-control" type="name" id="playlist" placeholder="enter apple music playlist url" required>
-			</div>
-			<div class="text-center">
-				<div class="form-group">
-					<button id="btn" class="btn btn-primary" data-loading-text="<i class='fa fa-spinner fa-spin '></i>" type="submit">Submit 👍🏽</button>
-				</div>
-			</div>
-		</form>
-		<div class='progress-wrapper'>
-			<div id='progress-bar' class='progress-bar' style="background-color: #68a9ef; width: 0%;">&nbsp;</div>
-		</div>
-		<div style="word-wrap: break-word;" id="progress-bar-message" class="text-center"></div>
-		</div>
-	</div>
-<script src="{% static 'js/vendor/sweetalert.min.js' %}"></script>
-<script src="{% static 'js/vendor/celery_progress.js' %}"></script>
-<script src="{% static 'js/main.js' %}">
-</script>
+    <div class="container-fluid">
+        <div id="container">
+            <h4 class="text-center">🔈Convert your Apple Music playlists to Spotify🔈</h4>
+            <form id="form">
+                <div class="form-group">
+                    <input class="form-control" type="name" id="playlist" placeholder="enter apple music playlist url" required>
+                </div>
+                <div class="text-center">
+                    <div class="form-group">
+                        <button id="btn" class="btn btn-primary" data-loading-text="<i class='fa fa-spinner fa-spin '></i>" type="submit">Submit 👍🏽</button>
+                    </div>
+                </div>
+            </form>
+            <div class='progress-wrapper'>
+                <div id='progress-bar' class='progress-bar' style="background-color: #68a9ef; width: 0%;">&nbsp;</div>
+            </div>
+            <div style="word-wrap: break-word;" id="progress-bar-message" class="text-center"></div>
+        </div>
+    </div>
+    <script src="{% static 'js/vendor/sweetalert.min.js' %}"></script>
+    <script src="{% static 'js/vendor/celery_progress.js' %}"></script>
+    <script src="{% static 'js/main.js' %}">
+    </script>
 </body>
+
 </html>
