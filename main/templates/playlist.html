@@ -30,6 +30,28 @@
             position: relative;
             padding: 60px;
         }
+        
+        a {
+            color: white;
+            text-decoration: none;
+        }
+        
+        a:hover {
+            color: white;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        
+        .footer {
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            padding-top: 10px;
+            background-color: #007bff;
+            color: white;
+            text-align: center;
+        }
     </style>
 </head>
 
@@ -51,6 +73,9 @@
                 <div id='progress-bar' class='progress-bar' style="background-color: #68a9ef; width: 0%;">&nbsp;</div>
             </div>
             <div style="word-wrap: break-word;" id="progress-bar-message" class="text-center"></div>
+        </div>
+        <div class="footer">
+            <p style="font-style: bold">Built by <a href="https://twitter.com/raymxnde">Raymond Akornor</a> • Source: <a href="https://github.com/akornor/playlistor">[https://github.com/akornor/playlistor]</a></p>
         </div>
     </div>
     <script src="{% static 'js/vendor/sweetalert.min.js' %}"></script>
