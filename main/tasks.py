@@ -26,7 +26,7 @@ def generate_playlist(self, playlist_url):
     tracks = data['tracks']
     creator = data['playlist_creator']
     n = len(tracks)
-    playlist = sp.user_playlist_create(uid, playlist_title, description=f'Originally created by {creator} on Apple Music.')
+    playlist = sp.user_playlist_create(uid, playlist_title, description=f'Originally created by {creator} on Apple Music[{playlist_url}].')
     playlist_id = playlist['id']
     tracks_uris = []
     try:
