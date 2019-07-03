@@ -33,7 +33,7 @@ def get_secret(name, default=None):
 SECRET_KEY = '-h7x5-7v-f*=v9+8swk8)cwu^%b(h2btl0nb&@g$es-28ls5pt'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = not get_secret('PRODUCTION') == 'True'
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
