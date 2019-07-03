@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 import os
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
+import django_heroku
 
 sentry_sdk.init(
     dsn="https://64ae31e5d23d451a8ebdf9762ac89b4b@sentry.io/1265770",
@@ -133,3 +134,4 @@ REDIS_URL = get_secret('REDIS_URL')
 REDIRECT_URI = get_secret('REDIRECT_URI')
 CLIENT_ID = get_secret('CLIENT_ID')
 CLIENT_SECRET = get_secret('CLIENT_SECRET')
+django_heroku.settings(locals())
