@@ -53,8 +53,7 @@ class AppleMusicParser(BaseParser):
 class SpotifyParser(BaseParser):
     def extract_data(self):
         return {
-            # "playlist_title": self._get_playlist_title(),
-            "playlist_title": "Testing",
+            "playlist_title": self._get_playlist_title(),
             "tracks": self._get_playlist_tracks(),
             # "playlist_creator": self._get_playlist_creator(),
             "_get_playlist_creator": "Testing"
@@ -71,3 +70,6 @@ class SpotifyParser(BaseParser):
                 artist = artist.split(',')[0]
             tracks.append(Track(title=title, artist=artist, featuring=''))
         return tracks
+
+    def _get_playlist_title(self):
+        return self._soup.title.get_text()

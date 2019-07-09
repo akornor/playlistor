@@ -38,7 +38,7 @@ def generate_spotify_playlist(self, playlist_url):
                 track_uri = results['tracks']['items'][0]["uri"]
                 tracks_uris.append(track_uri)
                 progress_recorder.set_progress(i+1, n)
-            except IndexError:
+            except (IndexError, KeyError):
                 continue
         #You can add a maximum of 100 tracks per request.
         if len(tracks_uris) > 100:
@@ -50,8 +50,7 @@ def generate_spotify_playlist(self, playlist_url):
         # Delete playlist if error occurs while adding songs
         sp.user_playlist_unfollow(uid, playlist_id)
         raise e
-    url = playlist['external_urls']['spotify']
-    return url
+    return playlist['external_urls']['spotify']
 
 @shared_task(bind=True)
 def generate_applemusic_playlist(self, playlist_url):
@@ -59,11 +58,12 @@ def generate_applemusic_playlist(self, playlist_url):
     html = fetch_url(playlist_url)
     data = SpotifyParser(html).extract_data()
     tracks = data['tracks']
+    playlist_title = data['playlist_title']
     playlist_data = []
     print(tracks)
     n = len(tracks)
     headers = {
-        'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiIsImtpZCI6IlEzNzlBOUtBUVYifQ.eyJpc3MiOiIyM05CNDlSRDM0IiwiZXhwIjoxNTYwODEzNDI4LCJpYXQiOjE1NjA3NzAyMjh9.0s1EBJkwuHcKBtIAR32ZS2bCjDWG0sw7ooH-_df8fJnQUSWCUwaAytl35J22Br3anlbvqpr5RgJlMwNKJ_lb7w',
+        'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiIsImtpZCI6IlEzNzlBOUtBUVYifQ.eyJpc3MiOiIyM05CNDlSRDM0IiwiZXhwIjoxNTYyNjY0Njc0LCJpYXQiOjE1NjI2MjE0NzR9.d07xcHZDrEjbaOwcH7KMWb_ctZdqEexl50vrr0L2xhYTfIVle5_dF5yVkDpcFMNLcjjgdRMhRj715nQiW9BJBg',
         'Music-User-Token': 'AptLfToaSMg2Nfcal+VFwxnTQ3CQkcerw66NSQhGzfiMJTPmINrgkysUTns6HQn044cGExqJfF1iBeW9s8PGhWh8jVXuOKIGl/VeLg1QCzB+iYRioD4ZhHtf4baRk2MmBXBgrrwFxBS88/9OGDuiqetZ99LG1lBB5tW+TKiwGXoFeAU808ya/FBFypjHmooAWoGN/xVsGDqMRHy9ob2KdM1Dn80Ia7aunS4EYiIi5e8wfvFkxg=='
     }
     for i, track in enumerate(tracks):
@@ -74,13 +74,17 @@ def generate_applemusic_playlist(self, playlist_url):
         response = requests.get('https://api.music.apple.com/v1/catalog/us/search', params=params, headers=headers)
         response.raise_for_status()
         results = response.json()
-        song = results['results']['songs']['data'][0]
-        playlist_data.append({"id": song['id'], "type": song["type"]})
-        progress_recorder.set_progress(i+1, n)
+        try:
+            song = results['results']['songs']['data'][0]
+            playlist_data.append({"id": song['id'], "type": song["type"]})
+        except KeyError:
+            continue
+        finally:
+            progress_recorder.set_progress(i+1, n)
     payload = {
        "attributes":{
-          "name":"Some Playlist",
-          "description":"My description"
+          "name": playlist_title,
+          "description":"Hell yeah"
        },
        "relationships":{
           "tracks":{
