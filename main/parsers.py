@@ -40,7 +40,9 @@ class AppleMusicParser(BaseParser):
             featuring = ''
             if 'feat.' in title:
                 title = title.replace('feat. ', '')
-                featuring = re.search(r'\((.*?)\)',title).group(1)
+                mo = re.search(r'\((.*?)\)', title)
+                if mo:
+                    featuring = mo.group(1)
                 i = title.find('(')
                 title = title[:i]
             tracks.append(Track(title=title, artist=artist, featuring=featuring))
