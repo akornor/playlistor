@@ -15,5 +15,5 @@ git+https://github.com/plamere/spotipy
 urllib3==1.24.1
 vine==1.1.4
 gunicorn==19.9.0
-sentry-sdk==0.9.0
+sentry-sdk==0.10.2
 django-heroku==0.3.1
