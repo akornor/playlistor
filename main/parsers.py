@@ -36,11 +36,13 @@ class AppleMusicParser(BaseParser):
         tracklist = soup.find_all(class_='tracklist-item--song')
         for track in tracklist:
             title = track.find(class_='tracklist-item__text__headline').get_text().strip()
-            artist = track.find(class_='table__row__link table__row__link--secondary').get_text().strip()
+            artist = track.find(class_='table__row__link table__row__link--secondary').get_text().strip().replace('&', ',')
             featuring = ''
             if 'feat.' in title:
                 title = title.replace('feat. ', '')
-                featuring = re.search(r'\((.*?)\)',title).group(1)
+                mo = re.search(r'\((.*?)\)', title)
+                if mo:
+                    featuring = mo.group(1).replace('&', ',')
                 i = title.find('(')
                 title = title[:i]
             tracks.append(Track(title=title, artist=artist, featuring=featuring))
