@@ -1,7 +1,8 @@
 from audible.celery import app
 from celery import shared_task
 from spotipy import Spotify, SpotifyException
-from .parsers import fetch_url, AppleMusicParser
+from .parsers import AppleMusicParser
+from .utils import fetch_url, grouper
 from main import oauth
 from celery_progress.backend import ProgressRecorder
 
@@ -10,9 +11,6 @@ def get_access_token():
 
 def get_spotify_client(token):
     return Spotify(auth=token)
-
-def grouper(n, iterable):
-    return [iterable[i:i + n] for i in range(0, len(iterable), n)]
 
 @shared_task(bind=True)
 def generate_playlist(self, playlist_url):

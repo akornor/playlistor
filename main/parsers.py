@@ -1,13 +1,7 @@
-import requests
 from collections import namedtuple
 import re
 
 Track = namedtuple('Track', ['title', 'artist', 'featuring'])
-
-def fetch_url(url):
-    response = requests.get(url)
-    response.raise_for_status()
-    return response.text
 
 class BaseParser:
     def __init__(self, html_source: str) -> None:
