@@ -61,7 +61,7 @@ def generate_applemusic_playlist(self, playlist_url):
     print(tracks)
     n = len(tracks)
     headers = {
-        'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiIsImtpZCI6IlEzNzlBOUtBUVYifQ.eyJpc3MiOiIyM05CNDlSRDM0IiwiZXhwIjoxNTYyNjY0Njc0LCJpYXQiOjE1NjI2MjE0NzR9.d07xcHZDrEjbaOwcH7KMWb_ctZdqEexl50vrr0L2xhYTfIVle5_dF5yVkDpcFMNLcjjgdRMhRj715nQiW9BJBg',
+        'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiIsImtpZCI6IlEzNzlBOUtBUVYifQ.eyJpc3MiOiIyM05CNDlSRDM0IiwiZXhwIjoxNTYyNzE2MjEyLCJpYXQiOjE1NjI2NzMwMTJ9.DpAaSv9PIfGvkQMon1nmoWESmkVenyEQJnaMZPMD0FJsb8hCyTpeZ223itiFmyXcchNbkcldBhVyMo9hCYRjVA',
         'Music-User-Token': 'AptLfToaSMg2Nfcal+VFwxnTQ3CQkcerw66NSQhGzfiMJTPmINrgkysUTns6HQn044cGExqJfF1iBeW9s8PGhWh8jVXuOKIGl/VeLg1QCzB+iYRioD4ZhHtf4baRk2MmBXBgrrwFxBS88/9OGDuiqetZ99LG1lBB5tW+TKiwGXoFeAU808ya/FBFypjHmooAWoGN/xVsGDqMRHy9ob2KdM1Dn80Ia7aunS4EYiIi5e8wfvFkxg=='
     }
     for i, track in enumerate(tracks):

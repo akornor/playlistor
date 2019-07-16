@@ -22,3 +22,6 @@ To use app, navigate to `localhost:8000`. You'll be required to login with your 
 
 ## TODO
 - [ ] Add feature to convert apple music playlist to spotify
+
+## Thanks and Acknowledgments
+- Thanks to Maame and Samuel for providing me with bunch of playlists and ideas and putting up with 
