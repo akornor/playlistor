@@ -27,7 +27,7 @@ def playlist(request):
     data = json.loads(request.body.decode('utf-8'))
     playlist = data.get('playlist')
     if playlist is None:
-        return JsonResponse({'message': "playlist required in payload"})
+        return JsonResponse({'message': "playlist required in payload"}, status=400)
     result = generate_playlist.delay(playlist)
     return JsonResponse({'task_id': result.task_id})
 
