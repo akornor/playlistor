@@ -13,18 +13,18 @@ def get_spotify_client(token):
     return Spotify(auth=token)
 
 @shared_task(bind=True)
-def generate_playlist(self, playlist_url):
+def generate_playlist(self, url):
     progress_recorder = ProgressRecorder(self)
     token = get_access_token()
     sp = get_spotify_client(token)
     uid = sp.current_user()['id']
-    html = fetch_url(playlist_url)
+    html = fetch_url(url)
     data = AppleMusicParser(html).extract_data()
     playlist_title = data['playlist_title']
     tracks = data['tracks']
     creator = data['playlist_creator']
     n = len(tracks)
-    playlist = sp.user_playlist_create(uid, playlist_title, description=f'Originally created by {creator} on Apple Music[{playlist_url}].')
+    playlist = sp.user_playlist_create(uid, playlist_title, description=f'Originally created by {creator} on Apple Music[{url}].')
     playlist_id = playlist['id']
     tracks_uris = []
     try:
@@ -47,5 +47,4 @@ def generate_playlist(self, playlist_url):
         # Delete playlist if error occurs while adding songs
         sp.user_playlist_unfollow(uid, playlist_id)
         raise e
-    url = playlist['external_urls']['spotify']
-    return url
+    return playlist['external_urls']['spotify']
