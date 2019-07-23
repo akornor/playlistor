@@ -33,9 +33,10 @@ def generate_playlist(self, playlist_url):
                 results = sp.search(f'{track.title} {track.artist} {track.featuring}', limit=1)
                 track_uri = results['tracks']['items'][0]["uri"]
                 tracks_uris.append(track_uri)
-                progress_recorder.set_progress(i+1, n)
-            except IndexError:
+            except (IndexError, KeyError):
                 continue
+            finally:
+                progress_recorder.set_progress(i+1, n)
         #You can add a maximum of 100 tracks per request.
         if len(tracks_uris) > 100:
             for chunk in grouper(100, tracks_uris):
