@@ -1,8 +1,9 @@
+import json
 from audible.celery import app
 from celery import shared_task
 from spotipy import Spotify, SpotifyException
 from .parsers import AppleMusicParser
-from .utils import fetch_url, grouper
+from .utils import fetch_url, grouper, redis_client
 from main import oauth
 from celery_progress.backend import ProgressRecorder
 
@@ -47,4 +48,5 @@ def generate_playlist(self, url):
         # Delete playlist if error occurs while adding songs
         sp.user_playlist_unfollow(uid, playlist_id)
         raise e
+    redis_client.lpush("playlists", json.dumps({"spotify_url": playlist['external_urls']['spotify'], "applemusic_url": url, "name": playlist_title}))
     return playlist['external_urls']['spotify']
