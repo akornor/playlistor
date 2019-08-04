@@ -47,6 +47,7 @@
         </div>
         <h1 class="home__title">Playlistor</h1>
         <p class="home__description">Create Spotify equivalents of Apple Music playlists.</p>
+        <h3 class="home__description"><span id="counter">0</span> playlists converted.</h3>
         <div class="card">
             <input id="playlist" class="search" type="text" placeholder="Enter apple music playlist url e.g https://itunes.apple.com/us/playlist/ep-3-paak-house-radio-playlist/pl.be45d23328f642cc91cf7086c7126daf">
             <div class='progress-wrapper'>
@@ -61,15 +62,15 @@
         </div>
         <h2 class="home__subtitle">Recent playlists</h2>
         <ul class="list-group list-group-horizontal">
-            <li class="list-group-item" style="width: 10%;"></li>
-            <li class="list-group-item" style="width: 45%"><img class="app__image" style="height: 40px;" src="{% static 'svg/spotify.svg' %}" alt="Digital detox app icon for Facebook"></li>
-            <li class="list-group-item" style="width: 45%"><img class="app__image" style="height: 40px;" src="{% static 'svg/apple-music.svg' %}" alt="Digital detox app icon for Facebook"></li>
+            <li class="list-group-item" style="width: 20%;"></li>
+            <li class="list-group-item" style="width: 40%"><img class="app__image" style="height: 40px;" src="{% static 'svg/spotify.svg' %}" alt="Spotify logo"></li>
+            <li class="list-group-item" style="width: 40%"><img class="app__image" style="height: 40px;" src="{% static 'svg/apple-music.svg' %}" alt="Apple Music logo"></li>
         </ul>
         {% for playlist in playlists %}
         <ul class="list-group list-group-horizontal">
             <li class="list-group-item" style="width: 20%;">{{ playlist.name }}</li>
-            <li class="list-group-item" style="width: 40%;word-wrap: break-word;"><a href="{{ playlist.spotify_url }}">{{ playlist.spotify_url }}</a></li>
-            <li class="list-group-item" style="width: 40%;word-wrap: break-word;"><a href="{{ playlist.applemusic_url }}">{{ playlist.applemusic_url }}</a></li>
+            <li class="list-group-item" style="width: 40%;word-wrap: break-word;"><a target="_blank" href="{{ playlist.spotify_url }}">{{ playlist.spotify_url }}</a></li>
+            <li class="list-group-item" style="width: 40%;word-wrap: break-word;"><a target="_blank" href="{{ playlist.applemusic_url }}">{{ playlist.applemusic_url }}</a></li>
         </ul>
         {% endfor %}
     </main>
@@ -81,7 +82,11 @@
     </footer>
     <script src="{% static 'js/vendor/sweetalert.min.js' %}"></script>
     <script src="{% static 'js/vendor/celery_progress.js' %}"></script>
+    <script src="{% static 'js/vendor/countUp.min.js' %}"></script>
     <script src="{% static 'js/main.js' %}"></script>
+    <script type="text/javascript">
+        const counter = new CountUp("counter", 0, {{ count }} ).start();
+    </script>
 </body>
 
 </html>

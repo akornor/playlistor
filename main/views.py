@@ -33,6 +33,7 @@ def playlist(request):
 
 @login_required(login_url='/login')
 def index(request):
+    count = redis_client.llen('playlists')
     playlists = redis_client.lrange('playlists', 0, 3)
     playlists = [ json.loads(playlist) for playlist in playlists ]
-    return render(request, 'index.html', { "playlists": playlists })
+    return render(request, 'index.html', { "playlists": playlists, "count": count })
