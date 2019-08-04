@@ -1,0 +1,87 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Playlistor</title>
+    <meta charset="utf-8">
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+
+    <link href="{% static 'css/style.css' %}" rel='stylesheet' />
+    <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}">
+    <style type="text/css">
+        .progress-bar {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            color: rgb(255, 255, 255);
+            text-align: center;
+            white-space: nowrap;
+            border-radius: .25rem;
+            background-color: rgb(118, 206, 96);
+            transition: width 0.6s ease 0s;
+            background-image: linear-gradient(45deg, rgba(255, 255, 255, .15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .15) 50%, rgba(255, 255, 255, .15) 75%, transparent 75%, transparent);
+            background-size: 1rem 1rem;
+        }
+        
+        .progress-wrapper {
+            margin-top: 10px;
+        }
+        
+        #progress-bar-message {
+            text-align: center;
+        }
+        
+        #progress-bar-message a {
+            text-decoration: none;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+    <main class="home container">
+        <div class="home__icon">
+            <!-- <img src="/images/icon.png" class="icon" alt="icon"/> -->
+        </div>
+        <h1 class="home__title">Playlistor</h1>
+        <p class="home__description">Create Spotify equivalents of Apple Music playlists.</p>
+        <div class="card">
+            <input id="playlist" class="search" type="text" placeholder="Enter apple music playlist url e.g https://itunes.apple.com/us/playlist/ep-3-paak-house-radio-playlist/pl.be45d23328f642cc91cf7086c7126daf">
+            <div class='progress-wrapper'>
+                <div id='progress-bar' class='progress-bar' style="background-color: #68a9ef; width: 0%;">&nbsp;</div>
+            </div>
+            <div style="word-wrap: break-word;" id="progress-bar-message" class="text-center"></div>
+            <div style="text-align: center;">
+                <button id="btn" class="button" data-loading-text="<i class='fa fa-spinner fa-spin '></i>" style="
+    width: 80px;
+">Convert</button>
+            </div>
+        </div>
+        <h2 class="home__subtitle">Recent playlists</h2>
+        <ul class="list-group list-group-horizontal">
+            <li class="list-group-item" style="width: 10%;"></li>
+            <li class="list-group-item" style="width: 45%"><img class="app__image" style="height: 40px;" src="{% static 'svg/spotify.svg' %}" alt="Digital detox app icon for Facebook"></li>
+            <li class="list-group-item" style="width: 45%"><img class="app__image" style="height: 40px;" src="{% static 'svg/apple-music.svg' %}" alt="Digital detox app icon for Facebook"></li>
+        </ul>
+        {% for playlist in playlists %}
+        <ul class="list-group list-group-horizontal">
+            <li class="list-group-item" style="width: 20%;">{{ playlist.name }}</li>
+            <li class="list-group-item" style="width: 40%;word-wrap: break-word;"><a href="{{ playlist.spotify_url }}">{{ playlist.spotify_url }}</a></li>
+            <li class="list-group-item" style="width: 40%;word-wrap: break-word;"><a href="{{ playlist.applemusic_url }}">{{ playlist.applemusic_url }}</a></li>
+        </ul>
+        {% endfor %}
+    </main>
+    <footer class="container footer">
+        <p>Made with ❤️ in Ghana 🇬🇭 by <a href="https://twitter.com/raymxnde" target="_blank">Raymond</a>
+            <p>
+                <a href="https://github.com/akornor/playlistor" target="_blank">Github</a>
+            </p>
+    </footer>
+    <script src="{% static 'js/vendor/sweetalert.min.js' %}"></script>
+    <script src="{% static 'js/vendor/celery_progress.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+</body>
+
+</html>
