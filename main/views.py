@@ -5,7 +5,7 @@ from django.views.decorators.http import require_POST
 from .tasks import generate_playlist
 from .decorators import login_required
 from main import oauth
-
+from .utils import redis_client
 
 def login(request):
     authorize_url = oauth.get_authorize_url()
@@ -33,4 +33,6 @@ def playlist(request):
 
 @login_required(login_url='/login')
 def index(request):
-    return render(request, 'playlist.html')
+    playlists = redis_client.lrange('playlists', 0, 3)
+    playlists = [ json.loads(playlist) for playlist in playlists ]
+    return render(request, 'index.html', { "playlists": playlists })
