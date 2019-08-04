@@ -1,11 +1,17 @@
 const CeleryProgressBar = (function() {
+  const progressBarId = "progress-bar";
+  const progressBarMessage = "progress-bar-message";
+  const progressBarElement = document.getElementById(progressBarId);
+  const progressBarMessageElement = document.getElementById(progressBarMessage);
   function onSuccessDefault(
     progressBarElement,
     progressBarMessageElement,
     data
   ) {
     progressBarElement.style.backgroundColor = "#76ce60";
-    progressBarMessageElement.innerHTML = `<a target="_blank" href="${data.result}">${data.result}</a>`;
+    progressBarMessageElement.innerHTML = `<a target="_blank" href="${
+      data.result
+    }">${data.result}</a>`;
     resetButton();
   }
 
@@ -28,14 +34,6 @@ const CeleryProgressBar = (function() {
 
   function updateProgress(progressUrl, options) {
     options = options || {};
-    const progressBarId = options.progressBarId || "progress-bar";
-    const progressBarMessage =
-      options.progressBarMessageId || "progress-bar-message";
-    const progressBarElement =
-      options.progressBarElement || document.getElementById(progressBarId);
-    const progressBarMessageElement =
-      options.progressBarMessageElement ||
-      document.getElementById(progressBarMessage);
     const onProgress = options.onProgress || onProgressDefault;
     const onSuccess = options.onSuccess || onSuccessDefault;
     const onError = options.onError || onErrorDefault;
