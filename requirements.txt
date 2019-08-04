@@ -5,7 +5,7 @@ celery==4.2.1
 git+https://github.com/akornor/celery-progress
 certifi==2018.11.29
 chardet==3.0.4
-Django==2.2.3
+Django==2.2.4
 idna==2.7
 kombu==4.2.1
 pytz==2018.7
