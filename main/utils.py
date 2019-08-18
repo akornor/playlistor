@@ -1,7 +1,16 @@
 import requests
 from django.conf import settings
 import redis
+from spotipy import Spotify
+from main import oauth
 
+
+def get_access_token():
+    return oauth.get_cached_token()["access_token"]
+
+
+def get_spotify_client(token):
+    return Spotify(auth=token)
 
 def fetch_url(url):
     response = requests.get(url)

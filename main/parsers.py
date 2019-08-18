@@ -1,5 +1,6 @@
 from collections import namedtuple
 import re
+from .utils import get_access_token, get_spotify_client
 
 Track = namedtuple("Track", ["title", "artist", "featuring"])
 
@@ -64,14 +65,15 @@ class SpotifyParser(BaseParser):
         }
 
     def _get_playlist_tracks(self):
+        token = get_access_token()
+        sp = get_spotify_client(token)
+        # plid = urlparse(playlist_url).path.split('/')[-1]
+        plid = '5aFz6ut5AhDfwmZ33J0ZVN'
+        results = sp.playlist_tracks(playlist_id=plid)
         tracks = []
-        tracklist = self._soup.find_all(class_="tracklist-row")
-        for track in tracklist:
-            title = track.find(class_="track-name").get_text().strip()
-            artist = track.find(class_="artists-albums").get_text().split('•')[0].strip()
-            # Remove featuring artist. I need to further investigate if adding featuring artist increases accuracy of search
-            if ',' in artist:
-                artist = artist.split(',')[0]
+        for track in results['items']:
+            title = track['track']['name']
+            artist = track['track']['artists'][0]['name']
             tracks.append(Track(title=title, artist=artist, featuring=''))
         return tracks
 
