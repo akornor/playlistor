@@ -78,11 +78,9 @@ def generate_applemusic_playlist(self, playlist_url):
     tracks = data['tracks']
     playlist_title = data['playlist_title']
     playlist_data = []
-    print(tracks)
-    return playlist["external_urls"]["spotify"]
     n = len(tracks)
     headers = {
-        'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiIsImtpZCI6IlEzNzlBOUtBUVYifQ.eyJpc3MiOiIyM05CNDlSRDM0IiwiZXhwIjoxNTYyNzE2MjEyLCJpYXQiOjE1NjI2NzMwMTJ9.DpAaSv9PIfGvkQMon1nmoWESmkVenyEQJnaMZPMD0FJsb8hCyTpeZ223itiFmyXcchNbkcldBhVyMo9hCYRjVA',
+        'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiIsImtpZCI6IlEzNzlBOUtBUVYifQ.eyJpc3MiOiIyM05CNDlSRDM0IiwiZXhwIjoxNTY2MTc5MjA0LCJpYXQiOjE1NjYxMzYwMDR9.zyr0N457AAIjXQQtQ1WUPzY2rzIUUYLnXdzhCynL2rB4U5GkpN4Oc0nxux05F0Ogq-8kAseMR6udmccVrsQrTg',
         'Music-User-Token': 'AptLfToaSMg2Nfcal+VFwxnTQ3CQkcerw66NSQhGzfiMJTPmINrgkysUTns6HQn044cGExqJfF1iBeW9s8PGhWh8jVXuOKIGl/VeLg1QCzB+iYRioD4ZhHtf4baRk2MmBXBgrrwFxBS88/9OGDuiqetZ99LG1lBB5tW+TKiwGXoFeAU808ya/FBFypjHmooAWoGN/xVsGDqMRHy9ob2KdM1Dn80Ia7aunS4EYiIi5e8wfvFkxg=='
     }
     for i, track in enumerate(tracks):
@@ -103,7 +101,7 @@ def generate_applemusic_playlist(self, playlist_url):
     payload = {
        "attributes":{
           "name": playlist_title,
-          "description":"Hell yeah"
+          "description": f"Originally created on Spotify[{playlist_url}]"
        },
        "relationships":{
           "tracks":{

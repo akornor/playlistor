@@ -28,7 +28,7 @@ def playlist(request):
     playlist = data.get('playlist')
     if playlist is None:
         return JsonResponse({'message': "playlist required in payload"}, status=400)
-    result = generate_playlist.delay(playlist)
+    result = generate_applemusic_playlist.delay(playlist)
     return JsonResponse({'task_id': result.task_id})
 
 @login_required(login_url='/login')
