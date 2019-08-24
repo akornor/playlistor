@@ -14,11 +14,12 @@ import os
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
 from sentry_sdk.integrations.celery import CeleryIntegration
+from sentry_sdk.integrations.redis import RedisIntegration
 import django_heroku
 
 sentry_sdk.init(
     dsn="https://64ae31e5d23d451a8ebdf9762ac89b4b@sentry.io/1265770",
-    integrations=[DjangoIntegration(), CeleryIntegration()]
+    integrations=[DjangoIntegration(), CeleryIntegration(), RedisIntegration()]
 )
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -133,7 +134,6 @@ SECURE_SSL_REDIRECT = True
 STATIC_URL = '/static/'
 
 REDIS_URL = get_secret('REDIS_URL')
-
 REDIRECT_URI = get_secret('REDIRECT_URI')
 CLIENT_ID = get_secret('CLIENT_ID')
 CLIENT_SECRET = get_secret('CLIENT_SECRET')
