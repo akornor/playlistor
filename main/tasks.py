@@ -57,14 +57,16 @@ def generate_playlist(self, url):
         # Delete playlist if error occurs while adding songs
         sp.user_playlist_unfollow(uid, playlist_id)
         raise e
+    playlist_url = playlist["external_urls"]["spotify"]
+    # Store playlist info
     redis_client.lpush(
         "playlists",
         json.dumps(
             {
-                "spotify_url": playlist["external_urls"]["spotify"],
+                "spotify_url": playlist_url,
                 "applemusic_url": url,
                 "name": playlist_title,
             }
         ),
     )
-    return playlist["external_urls"]["spotify"]
+    return playlist_url
