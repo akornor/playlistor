@@ -2,11 +2,17 @@ from audible.celery import app
 from celery import shared_task
 from spotipy import SpotifyException
 from .parsers import AppleMusicParser, SpotifyParser
-from .utils import fetch_url, grouper, redis_client, get_spotify_client, get_access_token
+from .utils import (
+    fetch_url,
+    grouper,
+    redis_client,
+    get_spotify_client,
+    get_access_token,
+    requests_retry_session,
+)
 from celery_progress.backend import ProgressRecorder
-import requests
 import json
-from urllib.parse import urlparse
+
 
 @shared_task(bind=True)
 def generate_spotify_playlist(self, playlist_url):
@@ -61,47 +67,48 @@ def generate_spotify_playlist(self, playlist_url):
     )
     return playlist["external_urls"]["spotify"]
 
+
 @shared_task(bind=True)
 def generate_applemusic_playlist(self, playlist_url):
     progress_recorder = ProgressRecorder(self)
-    html = fetch_url(playlist_url)
-    data = SpotifyParser(html).extract_data()
-    tracks = data['tracks']
-    playlist_title = data['playlist_title']
+    data = SpotifyParser(playlist_url).extract_data()
+    tracks = data["tracks"]
+    playlist_title = data["playlist_title"]
     playlist_data = []
     n = len(tracks)
     headers = {
-        'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiIsImtpZCI6IlEzNzlBOUtBUVYifQ.eyJpc3MiOiIyM05CNDlSRDM0IiwiZXhwIjoxNTY2MTc5MjA0LCJpYXQiOjE1NjYxMzYwMDR9.zyr0N457AAIjXQQtQ1WUPzY2rzIUUYLnXdzhCynL2rB4U5GkpN4Oc0nxux05F0Ogq-8kAseMR6udmccVrsQrTg',
-        'Music-User-Token': 'AptLfToaSMg2Nfcal+VFwxnTQ3CQkcerw66NSQhGzfiMJTPmINrgkysUTns6HQn044cGExqJfF1iBeW9s8PGhWh8jVXuOKIGl/VeLg1QCzB+iYRioD4ZhHtf4baRk2MmBXBgrrwFxBS88/9OGDuiqetZ99LG1lBB5tW+TKiwGXoFeAU808ya/FBFypjHmooAWoGN/xVsGDqMRHy9ob2KdM1Dn80Ia7aunS4EYiIi5e8wfvFkxg=='
+        "Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiIsImtpZCI6IlEzNzlBOUtBUVYifQ.eyJpc3MiOiIyM05CNDlSRDM0IiwiZXhwIjoxNTcwMzMwNjQzLCJpYXQiOjE1NzAyODc0NDN9.dJ8-L74qFJEgQPRLA2T7RvvDO1LERdYuZhlgH6Tjduio5ZvniR5q-B1tMnOWMcp79tTVHcPbNx7VRrdjIWfBmQ",
+        "Music-User-Token": "AptLfToaSMg2Nfcal+VFwxnTQ3CQkcerw66NSQhGzfiMJTPmINrgkysUTns6HQn044cGExqJfF1iBeW9s8PGhWh8jVXuOKIGl/VeLg1QCzB+iYRioD4ZhHtf4baRk2MmBXBgrrwFxBS88/9OGDuiqetZ99LG1lBB5tW+TKiwGXoFeAU808ya/FBFypjHmooAWoGN/xVsGDqMRHy9ob2KdM1Dn80Ia7aunS4EYiIi5e8wfvFkxg==",
     }
-    _session = requests.Session()
+    _session = requests_retry_session()
     for i, track in enumerate(tracks):
-        params = {
-            'term': f'{track.title} {track.artist}',
-            'limit': 1
-        }
-        response = _session.get('https://api.music.apple.com/v1/catalog/us/search', params=params, headers=headers)
+        params = {"term": f"{track.title} {track.artist}", "limit": 1}
+        response = _session.get(
+            "https://api.music.apple.com/v1/catalog/us/search",
+            params=params,
+            headers=headers,
+        )
         response.raise_for_status()
         results = response.json()
         try:
-            song = results['results']['songs']['data'][0]
-            playlist_data.append({"id": song['id'], "type": song["type"]})
+            song = results["results"]["songs"]["data"][0]
+            playlist_data.append({"id": song["id"], "type": song["type"]})
         except KeyError:
             continue
         finally:
-            progress_recorder.set_progress(i+1, n)
+            progress_recorder.set_progress(i + 1, n)
     payload = {
-       "attributes":{
-          "name": playlist_title,
-          "description": f"Originally created on Spotify[{playlist_url}]"
-       },
-       "relationships":{
-          "tracks":{
-             "data": playlist_data
-          }
-       }
+        "attributes": {
+            "name": playlist_title,
+            "description": f"Originally created on Spotify[{playlist_url}]",
+        },
+        "relationships": {"tracks": {"data": playlist_data}},
     }
-    # create playlist here 
-    response = _session.post('https://api.music.apple.com/v1/me/library/playlists', data=json.dumps(payload), headers=headers)
+    # create playlist here
+    response = _session.post(
+        "https://api.music.apple.com/v1/me/library/playlists",
+        data=json.dumps(payload),
+        headers=headers,
+    )
     response.raise_for_status()
-    return f'Check your recently created playlists on Apple Music.'
+    return f"Check your recently created playlists on Apple Music."

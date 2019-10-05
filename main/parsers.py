@@ -4,6 +4,7 @@ from .utils import get_access_token, get_spotify_client
 
 Track = namedtuple("Track", ["title", "artist", "featuring"])
 
+
 class BaseParser:
     def __init__(self, html_source: str) -> None:
         from bs4 import BeautifulSoup
@@ -23,8 +24,7 @@ class AppleMusicParser(BaseParser):
         }
 
     def _get_playlist_title(self):
-        title = self._soup.find(class_="product-header__title").get_text().strip()
-        return title
+        return self._soup.find(class_="product-header__title").get_text().strip()
 
     def _get_playlist_tracks(self):
         soup = self._soup
@@ -52,35 +52,43 @@ class AppleMusicParser(BaseParser):
         return tracks
 
     def _get_playlist_creator(self):
-        creator = self._soup.find(class_='product-header__identity album-header__identity').get_text().strip()
-        return creator
-
-class SpotifyParser(BaseParser):
-    def extract_data(self):
-        return {
-            "playlist_title": self._get_playlist_title(),
-            "tracks": self._get_playlist_tracks(),
-            # "playlist_creator": self._get_playlist_creator(),
-            "_get_playlist_creator": "Testing"
-        }
-
-    def _get_playlist_tracks(self):
-        token = get_access_token()
-        sp = get_spotify_client(token)
-        # plid = urlparse(playlist_url).path.split('/')[-1]
-        plid = '5aFz6ut5AhDfwmZ33J0ZVN'
-        results = sp.playlist_tracks(playlist_id=plid)
-        tracks = []
-        for track in results['items']:
-            title = track['track']['name']
-            artist = track['track']['artists'][0]['name']
-            tracks.append(Track(title=title, artist=artist, featuring=''))
-        return tracks
-
-    def _get_playlist_title(self):
-        return self._soup.title.get_text()
         return (
             self._soup.find(class_="product-header__identity album-header__identity")
             .get_text()
             .strip()
         )
+
+
+class SpotifyParser:
+    def __init__(self, playlist_url):
+        PLAYLIST_RE = r"https://open.spotify.com/playlist/(.+)"
+        mo = re.match(PLAYLIST_RE, playlist_url)
+        if not mo:
+            raise ValueError(
+                "Expected playlist url in the form: https://open.spotify.com/playlist/68QbTIMkw3Gl6Uv4PJaeTQ"
+            )
+        playlist_id = mo.group(1)
+        token = get_access_token()
+        sp = get_spotify_client(token)
+        self.playlist = sp.playlist(playlist_id=playlist_id)
+
+    def extract_data(self):
+        return {
+            "playlist_title": self._get_playlist_title(),
+            "tracks": self._get_playlist_tracks(),
+            "playlist_creator": self._get_playlist_creator(),
+        }
+
+    def _get_playlist_title(self):
+        return self.playlist["name"]
+
+    def _get_playlist_tracks(self):
+        tracks = []
+        for track in self.playlist["tracks"]["items"]:
+            title = track["track"]["name"]
+            artist = track["track"]["artists"][0]["name"]
+            tracks.append(Track(title=title, artist=artist, featuring=""))
+        return tracks
+
+    def _get_playlist_creator(self):
+        return "Tyler, the creator."
