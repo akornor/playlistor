@@ -4,7 +4,7 @@ self-hosted apple music to spotify playlist convertor
 [![CircleCI](https://circleci.com/gh/akornor/playlistor/tree/master.svg?style=svg)](https://circleci.com/gh/akornor/playlistor/tree/master)
 
 ## Demo
-![Demo](docs/demo.gif)
+![Demo](demo.gif)
 
 ## Installing
 This assumes you have python 3.6 or higher, [foreman](https://www.npmjs.com/package/foreman) and [redis](https://redis.io/topics/quickstart) installed.
