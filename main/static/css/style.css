@@ -520,3 +520,30 @@ a, a:link, a:hover, a:visited, a:active {color: var(--color-blue);}
   background-color: #1b1e21;
   border-color: #1b1e21;
 }
+
+.progress-bar {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: rgb(255, 255, 255);
+  text-align: center;
+  white-space: nowrap;
+  border-radius: .25rem;
+  background-color: rgb(118, 206, 96);
+  transition: width 0.6s ease 0s;
+  background-image: linear-gradient(45deg, rgba(255, 255, 255, .15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .15) 50%, rgba(255, 255, 255, .15) 75%, transparent 75%, transparent);
+  background-size: 1rem 1rem;
+}
+
+.progress-wrapper {
+  margin-top: 10px;
+}
+
+#progress-bar-message {
+  text-align: center;
+}
+
+#progress-bar-message a {
+  text-decoration: none;
+  font-size: 14px;
+}
