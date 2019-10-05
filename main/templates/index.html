@@ -54,7 +54,6 @@
 <body>
     <main class="home container">
         <div class="home__icon">
-            <!-- <img src="/images/icon.png" class="icon" alt="icon"/> -->
         </div>
         <h1 class="home__title">Playlistor</h1>
         <p class="home__description">Create Spotify equivalent of Apple Music playlists.</p>
@@ -71,6 +70,7 @@
 ">Convert</button>
             </div>
         </div>
+        {% if playlists %}
         <h2 class="home__subtitle">Recent playlists</h2>
         <ul class="list-group list-group-horizontal">
             <li class="list-group-item" style="width: 20%;"></li>
@@ -84,6 +84,7 @@
             <li class="list-group-item" style="width: 40%;word-wrap: break-word;"><a target="_blank" href="{{ playlist.applemusic_url }}">{{ playlist.applemusic_url }}</a></li>
         </ul>
         {% endfor %}
+        {% endif %}
     </main>
     <footer class="container footer">
         <p>Made with ❤️ in Ghana 🇬🇭 by <a href="https://twitter.com/raymxnde" target="_blank">Raymond</a>
