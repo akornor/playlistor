@@ -6,16 +6,16 @@ Track = namedtuple("Track", ["title", "artist", "featuring"])
 
 
 class BaseParser:
-    def __init__(self, html_source: str) -> None:
-        from bs4 import BeautifulSoup
-
-        self._soup = BeautifulSoup(html_source, "html.parser")
-
     def extract_data(self):
         raise NotImplementedError()
 
 
 class AppleMusicParser(BaseParser):
+    def __init__(self, html_source: str) -> None:
+        from bs4 import BeautifulSoup
+
+        self._soup = BeautifulSoup(html_source, "html.parser")
+        
     def extract_data(self):
         return {
             "playlist_title": self._get_playlist_title(),
@@ -59,7 +59,7 @@ class AppleMusicParser(BaseParser):
         )
 
 
-class SpotifyParser:
+class SpotifyParser(BaseParser):
     def __init__(self, playlist_url):
         PLAYLIST_RE = r"https://open.spotify.com/playlist/(.+)"
         mo = re.match(PLAYLIST_RE, playlist_url)
@@ -68,8 +68,10 @@ class SpotifyParser:
                 "Expected playlist url in the form: https://open.spotify.com/playlist/68QbTIMkw3Gl6Uv4PJaeTQ"
             )
         playlist_id = mo.group(1)
+        self.playlist_id = playlist_id
         token = get_access_token()
         sp = get_spotify_client(token)
+        self.sp = sp
         self.playlist = sp.playlist(playlist_id=playlist_id)
 
     def extract_data(self):
