@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+  redis:
+    image: "redis:alpine"
+  web:
+    build: .
+    command: ./app/manage.py runserver
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    depends_on:
+      - redis
+  celery:
+    build: .
+    command: celery -A audible worker -l info
+    env_file:
+      - .env
+    depends_on:
+      - redis
