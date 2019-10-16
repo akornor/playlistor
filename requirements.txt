@@ -17,3 +17,5 @@ vine==1.1.4
 gunicorn==19.9.0
 sentry-sdk==0.10.2
 django-heroku==0.3.1
+PyJWT==1.7.1
+
