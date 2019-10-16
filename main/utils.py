@@ -52,6 +52,7 @@ redis_client = get_redis_client()
 
 
 def generate_auth_token() -> str:
+    # see https://developer.apple.com/documentation/applemusicapi/getting_keys_and_creating_tokens
     time_now = datetime.datetime.now()
     time_expired = datetime.datetime.now() + datetime.timedelta(hours=12)
     headers = {"alg": "ES256", "kid": settings.APPLE_KEY_ID}
