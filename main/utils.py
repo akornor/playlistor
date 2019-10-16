@@ -1,3 +1,5 @@
+import datetime
+import jwt
 import requests
 import redis
 from django.conf import settings
@@ -47,3 +49,18 @@ def get_redis_client():
 
 
 redis_client = get_redis_client()
+
+
+def generate_auth_token() -> str:
+    time_now = datetime.datetime.now()
+    time_expired = datetime.datetime.now() + datetime.timedelta(hours=12)
+    headers = {"alg": "ES256", "kid": settings.APPLE_KEY_ID}
+    payload = {
+        "iss": settings.APPLE_TEAM_ID,
+        "exp": int(time_expired.strftime("%s")),
+        "iat": int(time_now.strftime("%s")),
+    }
+    token = jwt.encode(
+        payload, settings.APPLE_PRIVATE_KEY, algorithm="ES256", headers=headers
+    )
+    return token.decode()

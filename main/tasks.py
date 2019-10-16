@@ -9,6 +9,7 @@ from .utils import (
     get_spotify_client,
     get_access_token,
     requests_retry_session,
+    generate_auth_token
 )
 from celery_progress.backend import ProgressRecorder
 import json
@@ -78,8 +79,9 @@ def generate_applemusic_playlist(self, playlist_url):
     playlist_title = data["playlist_title"]
     playlist_data = []
     n = len(tracks)
+    auth_token = generate_auth_token()
     headers = {
-        "Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiIsImtpZCI6IlEzNzlBOUtBUVYifQ.eyJpc3MiOiIyM05CNDlSRDM0IiwiZXhwIjoxNTcwMzMwNjQzLCJpYXQiOjE1NzAyODc0NDN9.dJ8-L74qFJEgQPRLA2T7RvvDO1LERdYuZhlgH6Tjduio5ZvniR5q-B1tMnOWMcp79tTVHcPbNx7VRrdjIWfBmQ",
+        "Authorization": f"Bearer {auth_token}",
         "Music-User-Token": "AptLfToaSMg2Nfcal+VFwxnTQ3CQkcerw66NSQhGzfiMJTPmINrgkysUTns6HQn044cGExqJfF1iBeW9s8PGhWh8jVXuOKIGl/VeLg1QCzB+iYRioD4ZhHtf4baRk2MmBXBgrrwFxBS88/9OGDuiqetZ99LG1lBB5tW+TKiwGXoFeAU808ya/FBFypjHmooAWoGN/xVsGDqMRHy9ob2KdM1Dn80Ia7aunS4EYiIi5e8wfvFkxg==",
     }
     _session = requests_retry_session()
