@@ -1,6 +1,6 @@
 from collections import namedtuple
 import re
-from .utils import get_access_token, get_spotify_client
+from .utils import get_spotify_client
 
 Track = namedtuple("Track", ["title", "artist", "featuring"])
 
@@ -69,8 +69,7 @@ class SpotifyParser(BaseParser):
             )
         playlist_id = mo.group(1)
         self.playlist_id = playlist_id
-        token = get_access_token()
-        sp = get_spotify_client(token)
+        sp = get_spotify_client()
         self.sp = sp
         self.playlist = sp.playlist(playlist_id=playlist_id)
 

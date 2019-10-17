@@ -25,12 +25,8 @@ def requests_retry_session(
     session.mount("https://", adapter)
     return session
 
-
-def get_access_token():
-    return oauth.get_cached_token()["access_token"]
-
-
-def get_spotify_client(token):
+def get_spotify_client():
+    token = oauth.get_cached_token()["access_token"]
     return Spotify(auth=token)
 
 
@@ -54,7 +50,7 @@ redis_client = get_redis_client()
 def generate_auth_token() -> str:
     # see https://developer.apple.com/documentation/applemusicapi/getting_keys_and_creating_tokens
     time_now = datetime.datetime.now()
-    time_expired = datetime.datetime.now() + datetime.timedelta(hours=12)
+    time_expired = time_now + datetime.timedelta(hours=12)
     headers = {"alg": "ES256", "kid": settings.APPLE_KEY_ID}
     payload = {
         "iss": settings.APPLE_TEAM_ID,

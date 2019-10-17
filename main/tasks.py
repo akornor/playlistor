@@ -7,7 +7,6 @@ from .utils import (
     grouper,
     redis_client,
     get_spotify_client,
-    get_access_token,
     requests_retry_session,
     generate_auth_token
 )
@@ -18,8 +17,7 @@ import json
 @shared_task(bind=True)
 def generate_spotify_playlist(self, playlist_url):
     progress_recorder = ProgressRecorder(self)
-    token = get_access_token()
-    sp = get_spotify_client(token)
+    sp = get_spotify_client()
     uid = sp.current_user()["id"]
     html = fetch_url(url)
     data = AppleMusicParser(html).extract_data()
@@ -82,7 +80,7 @@ def generate_applemusic_playlist(self, playlist_url):
     auth_token = generate_auth_token()
     headers = {
         "Authorization": f"Bearer {auth_token}",
-        "Music-User-Token": "AptLfToaSMg2Nfcal+VFwxnTQ3CQkcerw66NSQhGzfiMJTPmINrgkysUTns6HQn044cGExqJfF1iBeW9s8PGhWh8jVXuOKIGl/VeLg1QCzB+iYRioD4ZhHtf4baRk2MmBXBgrrwFxBS88/9OGDuiqetZ99LG1lBB5tW+TKiwGXoFeAU808ya/FBFypjHmooAWoGN/xVsGDqMRHy9ob2KdM1Dn80Ia7aunS4EYiIi5e8wfvFkxg==",
+        "Music-User-Token": "AptLfToaSMg2Nfcal+VFwxnTQ3CQkcerw66NSQhGzfiMJTPmINrgkysUTns6HQn044cGExqJfF1iBeW9s8PGhWh8jVXuOKIGl/VeLg1QCzB+iYRioD4ZhHtf4baRk2MmBXBgrrwFxBS88/9OGDuiqetZ99LG1lBB5tW+TKiwGXoFeAU808ya/FBFypjHmooAWoGN/xVsGDqMRHy9ob2KdM1Dn80Ia7aunS4EYiIi5e8wfvFkxg=="
     }
     _session = requests_retry_session()
     for i, track in enumerate(tracks):
@@ -90,7 +88,7 @@ def generate_applemusic_playlist(self, playlist_url):
         response = _session.get(
             "https://api.music.apple.com/v1/catalog/us/search",
             params=params,
-            headers=headers,
+            headers=headers
         )
         response.raise_for_status()
         results = response.json()
