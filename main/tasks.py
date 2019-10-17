@@ -3,7 +3,6 @@ from celery import shared_task
 from spotipy import SpotifyException
 from .parsers import AppleMusicParser, SpotifyParser
 from .utils import (
-    fetch_url,
     grouper,
     redis_client,
     get_spotify_client,
@@ -19,8 +18,7 @@ def generate_spotify_playlist(self, playlist_url):
     progress_recorder = ProgressRecorder(self)
     sp = get_spotify_client()
     uid = sp.current_user()["id"]
-    html = fetch_url(url)
-    data = AppleMusicParser(html).extract_data()
+    data = AppleMusicParser(playlist_url).extract_data()
     playlist_title = data["playlist_title"]
     tracks = data["tracks"]
     creator = data["playlist_creator"]

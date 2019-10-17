@@ -1,6 +1,6 @@
 from collections import namedtuple
 import re
-from .utils import get_spotify_client
+from .utils import get_spotify_client, fetch_url
 
 Track = namedtuple("Track", ["title", "artist", "featuring"])
 
@@ -11,10 +11,10 @@ class BaseParser:
 
 
 class AppleMusicParser(BaseParser):
-    def __init__(self, html_source: str) -> None:
+    def __init__(self, playlist_url: str) -> None:
+        html = fetch_url(url)
         from bs4 import BeautifulSoup
-
-        self._soup = BeautifulSoup(html_source, "html.parser")
+        self._soup = BeautifulSoup(html, "html.parser")
         
     def extract_data(self):
         return {
