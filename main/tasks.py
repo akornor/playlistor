@@ -102,13 +102,13 @@ def generate_applemusic_playlist(self, playlist_url):
             "name": playlist_title,
             "description": f"Originally created on Spotify[{playlist_url}]",
         },
-        "relationships": {"tracks": {"data": playlist_data}},
+        "relationships": {"tracks": {"data": playlist_data}}
     }
     # create playlist here
     response = _session.post(
         "https://api.music.apple.com/v1/me/library/playlists",
         data=json.dumps(payload),
-        headers=headers,
+        headers=headers
     )
     response.raise_for_status()
     return f"Check your recently created playlists on Apple Music."
