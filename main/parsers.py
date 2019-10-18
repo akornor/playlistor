@@ -67,9 +67,9 @@ class SpotifyParser(BaseParser):
             raise ValueError(
                 "Expected playlist url in the form: https://open.spotify.com/playlist/68QbTIMkw3Gl6Uv4PJaeTQ"
             )
-        self.playlist_id = mo.group(1)
+        playlist_id = mo.group(1)
         self.sp = get_spotify_client()
-        self.playlist = self.sp.playlist(playlist_id=self.playlist_id)
+        self.playlist = self.sp.playlist(playlist_id=playlist_id)
 
     def extract_data(self):
         return {
@@ -83,19 +83,20 @@ class SpotifyParser(BaseParser):
 
     def _get_playlist_tracks(self):
         tracks = []
-        for track in self.playlist["tracks"]["items"]:
-            title = track["track"]["name"]
-            artist = track["track"]["artists"][0]["name"]
-            tracks.append(Track(title=title, artist=artist, featuring=""))
+        all_track_results = [] + self.playlist["tracks"]["items"]
         next = self.playlist["tracks"]["next"]
         results = self.playlist["tracks"]
         while next:
             results = self.sp.next(results)
-            for track in results["items"]:
-                title = track["track"]["name"]
-                artist = track["track"]["artists"][0]["name"]
-                tracks.append(Track(title=title, artist=artist, featuring=""))
-            next = results["next"]
+            if results is not None:
+                all_track_results += results["items"]
+                next = results.get("next")
+            else:
+                next = None
+        for track in all_track_results:
+            title = track["track"]["name"]
+            artist = track["track"]["artists"][0]["name"]
+            tracks.append(Track(title=title, artist=artist, featuring=""))
         return tracks
 
     def _get_playlist_creator(self):
