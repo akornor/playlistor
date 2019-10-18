@@ -67,11 +67,9 @@ class SpotifyParser(BaseParser):
             raise ValueError(
                 "Expected playlist url in the form: https://open.spotify.com/playlist/68QbTIMkw3Gl6Uv4PJaeTQ"
             )
-        playlist_id = mo.group(1)
-        self.playlist_id = playlist_id
-        sp = get_spotify_client()
-        self.sp = sp
-        self.playlist = sp.playlist(playlist_id=playlist_id)
+        self.playlist_id = mo.group(1)
+        self.sp = get_spotify_client()
+        self.playlist = self.sp.playlist(playlist_id=self.playlist_id)
 
     def extract_data(self):
         return {
@@ -89,6 +87,15 @@ class SpotifyParser(BaseParser):
             title = track["track"]["name"]
             artist = track["track"]["artists"][0]["name"]
             tracks.append(Track(title=title, artist=artist, featuring=""))
+        next = self.playlist["tracks"]["next"]
+        results = self.playlist["tracks"]
+        while next:
+            results = self.sp.next(results)
+            for track in results["items"]:
+                title = track["track"]["name"]
+                artist = track["track"]["artists"][0]["name"]
+                tracks.append(Track(title=title, artist=artist, featuring=""))
+            next = results["next"]
         return tracks
 
     def _get_playlist_creator(self):
