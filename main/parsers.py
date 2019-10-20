@@ -14,8 +14,9 @@ class AppleMusicParser(BaseParser):
     def __init__(self, playlist_url: str) -> None:
         html = fetch_url(url)
         from bs4 import BeautifulSoup
+
         self._soup = BeautifulSoup(html, "html.parser")
-        
+
     def extract_data(self):
         return {
             "playlist_title": self._get_playlist_title(),
@@ -88,11 +89,10 @@ class SpotifyParser(BaseParser):
         results = self.playlist["tracks"]
         while next:
             results = self.sp.next(results)
-            if results is not None:
-                all_track_results += results["items"]
-                next = results.get("next")
-            else:
-                next = None
+            if results is None:
+                break
+            all_track_results += results["items"]
+            next = results.get("next")
         for track in all_track_results:
             title = track["track"]["name"]
             artist = track["track"]["artists"][0]["name"]
