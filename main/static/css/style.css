@@ -547,3 +547,18 @@ a, a:link, a:hover, a:visited, a:active {color: var(--color-blue);}
   text-decoration: none;
   font-size: 14px;
 }
+
+.convertor{
+  text-align: center;
+  margin-top: 10px;
+  height: 40px;
+}
+
+.convert-button{
+  background-color: Transparent;
+  background-repeat:no-repeat;
+  border: none;
+  cursor:pointer;
+  overflow: hidden;
+  outline:none;
+}

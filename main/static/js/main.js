@@ -19,6 +19,14 @@ button.onclick = async function(event) {
   if (playlist === "") {
     return;
   }
+  const PLAYLIST_URL_REGEX = /open\.spotify\.com\/playlist\/.+/g
+  if (PLAYLIST_URL_REGEX.test(playlist)){
+    swal(
+      "Sign in",
+      "Enter valid url e.g https://itunes.apple.com/us/playlist/ep-3-paak-house-radio-playlist/pl.be45d23328f642cc91cf7086c7126daf"
+    );
+    return;
+  }
   if (!is_valid_url(playlist.trim())) {
     swal(
       "Invalid URL",
