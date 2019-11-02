@@ -28,6 +28,13 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 def get_secret(name, default=None):
     return os.environ.get(name, default)
 
+def get_from_file_if_exists(path: str) -> str:
+    if os.path.exists(path):
+        with open(path, "r") as f:
+            return f.read()
+    else:
+        return ''
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
@@ -137,4 +144,8 @@ REDIS_URL = get_secret('REDIS_URL')
 REDIRECT_URI = get_secret('REDIRECT_URI')
 CLIENT_ID = get_secret('CLIENT_ID')
 CLIENT_SECRET = get_secret('CLIENT_SECRET')
+APPLE_KEY_ID = get_secret('APPLE_KEY_ID')
+APPLE_TEAM_ID = get_secret('APPLE_TEAM_ID')
+APPLE_PRIVATE_KEY = get_from_file_if_exists(os.path.join(BASE_DIR, 'private.pem'))
+
 django_heroku.settings(locals())
