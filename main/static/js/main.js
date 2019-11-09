@@ -13,25 +13,44 @@ const resetButton = () => {
   button.disabled = false;
 };
 
+function getDestinationPlatform(url) {
+  const PLAYLIST_URL_REGEX = /open\.spotify\.com\/playlist\/.+/g;
+  if (PLAYLIST_URL_REGEX.test(url)) {
+    return "apple-music";
+  } else {
+    return "spotify";
+  }
+}
+
 button.onclick = async function(event) {
   event.preventDefault();
-  const playlist = $("#playlist").value;
+  const playlist = $("#playlist").value.trim();
   if (playlist === "") {
     return;
   }
-  const PLAYLIST_URL_REGEX = /open\.spotify\.com\/playlist\/.+/g
-  if (PLAYLIST_URL_REGEX.test(playlist)){
-    swal(
-      "Sign in",
+  if (!is_valid_url(playlist)) {
+    Swal.fire(
+      "Invalid URL",
       "Enter valid url e.g https://itunes.apple.com/us/playlist/ep-3-paak-house-radio-playlist/pl.be45d23328f642cc91cf7086c7126daf"
     );
     return;
   }
-  if (!is_valid_url(playlist.trim())) {
-    swal(
-      "Invalid URL",
-      "Enter valid url e.g https://itunes.apple.com/us/playlist/ep-3-paak-house-radio-playlist/pl.be45d23328f642cc91cf7086c7126daf"
-    );
+  // See https://stackoverflow.com/questions/3891641/regex-test-only-works-every-other-time. Pretty interesting bug 😂
+  const PLAYLIST_URL_REGEX = /open\.spotify\.com\/playlist\/.+/g;
+  if (
+    PLAYLIST_URL_REGEX.test(playlist) &&
+    !MusicKit.getInstance().isAuthorized
+  ) {
+    const result = await Swal.fire({
+      title: "🚨Sign In🚨",
+      html:
+        "We noticed you're trying to convert Spotify ➡️ Apple Music. Kindly sign in with your Apple Music account to continue",
+      showCloseButton: true,
+      confirmButtonText: "SIGN IN."
+    });
+    if (result.value) {
+      MusicKit.getInstance().authorize();
+    }
     return;
   }
   // clear progress bar
@@ -45,11 +64,12 @@ button.onclick = async function(event) {
         playlist
       }),
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "Music-User-Token": `${MusicKit.getInstance().musicUserToken}`
       }
     });
     if (!response.ok) {
-      throw Error(response.statusText);
+      throw new Error(response.statusText);
     }
     let { task_id } = await response.json();
     const progressUrl = `/celery-progress/${task_id}/`;
