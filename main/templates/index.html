@@ -36,9 +36,7 @@
             </div>
             <div style="word-wrap: break-word;" id="progress-bar-message" class="text-center"></div>
             <div style="text-align: center;">
-                <button id="btn" class="button" data-loading-text="<i class='fa fa-spinner fa-spin '></i>" style="
-    width: 80px;
-">Convert</button>
+                <button id="btn" class="button" data-loading-text="<i class='fa fa-spinner fa-spin '></i>" style="width: 80px;">Convert</button>
             </div>
         </div>
         {% if playlists %}
@@ -63,6 +61,19 @@
                 <a href="https://github.com/akornor/playlistor" target="_blank">Github</a>
             </p>
     </footer>
+    <script type="text/javascript">
+        document.addEventListener('musickitloaded', function() {
+          // MusicKit global is now defined
+          MusicKit.configure({
+            developerToken: "{{ APPLE_DEVELOPER_TOKEN }}",
+            app: {
+              name: 'Playlistor',
+              build: '1.0'
+            }
+          });
+        });
+    </script>
+    <script src="{% static 'js/vendor/musickit.js' %}"></script>
     <script src="{% static 'js/vendor/sweetalert.min.js' %}"></script>
     <script src="{% static 'js/vendor/celery_progress.js' %}"></script>
     <script src="{% static 'js/vendor/countUp.min.js' %}"></script>
