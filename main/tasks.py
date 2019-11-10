@@ -1,5 +1,7 @@
+import json
 from audible.celery import app
 from celery import shared_task
+from celery_progress.backend import ProgressRecorder
 from spotipy import SpotifyException
 from .parsers import AppleMusicParser, SpotifyParser
 from .utils import (
@@ -9,9 +11,6 @@ from .utils import (
     requests_retry_session,
     generate_auth_token
 )
-from celery_progress.backend import ProgressRecorder
-import json
-
 
 @shared_task(bind=True)
 def generate_spotify_playlist(self, playlist_url):
@@ -64,11 +63,11 @@ def generate_spotify_playlist(self, playlist_url):
             }
         ),
     )
-    return playlist["external_urls"]["spotify"]
+    return playlist_url
 
 
 @shared_task(bind=True)
-def generate_applemusic_playlist(self, playlist_url):
+def generate_applemusic_playlist(self, playlist_url, token=None):
     progress_recorder = ProgressRecorder(self)
     data = SpotifyParser(playlist_url).extract_data()
     tracks = data["tracks"]
@@ -78,7 +77,7 @@ def generate_applemusic_playlist(self, playlist_url):
     auth_token = generate_auth_token()
     headers = {
         "Authorization": f"Bearer {auth_token}",
-        "Music-User-Token": "AptLfToaSMg2Nfcal+VFwxnTQ3CQkcerw66NSQhGzfiMJTPmINrgkysUTns6HQn044cGExqJfF1iBeW9s8PGhWh8jVXuOKIGl/VeLg1QCzB+iYRioD4ZhHtf4baRk2MmBXBgrrwFxBS88/9OGDuiqetZ99LG1lBB5tW+TKiwGXoFeAU808ya/FBFypjHmooAWoGN/xVsGDqMRHy9ob2KdM1Dn80Ia7aunS4EYiIi5e8wfvFkxg=="
+        "Music-User-Token": "AptLfToaSMg2Nfcal+VFwxnTQ3CQkcerw66NSQhGzfiMJTPmINrgkysUTns6HQn044cGExqJfF1iBeW9s8PGhWh8jVXuOKIGl/VeLg1QCzB+iYRioD4ZhHtf4baRk2MmBXBgrrwFxBS88/9OGDuiqetZ99LG1lBB5tW+TKiwGXoFeAU808ya/FBFypjHmooAWoGN/xVsGDqMRHy9ob2KdM1Dn80Ia7aunS4EYiIi5e8wfvFkxg==" or token
     }
     _session = requests_retry_session()
     for i, track in enumerate(tracks):
@@ -111,4 +110,4 @@ def generate_applemusic_playlist(self, playlist_url):
         headers=headers
     )
     response.raise_for_status()
-    return f"Check your recently created playlists on Apple Music."
+    return "Check your recently created playlists on Apple Music."
