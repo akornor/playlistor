@@ -43,10 +43,6 @@ def grouper(n, iterable):
 def get_redis_client():
     return redis.Redis.from_url(settings.REDIS_URL)
 
-
-redis_client = get_redis_client()
-
-
 def generate_auth_token() -> str:
     # see https://developer.apple.com/documentation/applemusicapi/getting_keys_and_creating_tokens
     time_now = datetime.datetime.now()

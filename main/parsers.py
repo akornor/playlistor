@@ -12,7 +12,7 @@ class BaseParser:
 
 class AppleMusicParser(BaseParser):
     def __init__(self, playlist_url: str) -> None:
-        html = fetch_url(url)
+        html = fetch_url(playlist_url)
         from bs4 import BeautifulSoup
 
         self._soup = BeautifulSoup(html, "html.parser")
