@@ -11,16 +11,8 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 import os
-import sentry_sdk
-from sentry_sdk.integrations.django import DjangoIntegration
-from sentry_sdk.integrations.celery import CeleryIntegration
-from sentry_sdk.integrations.redis import RedisIntegration
 import django_heroku
 
-sentry_sdk.init(
-    dsn="https://64ae31e5d23d451a8ebdf9762ac89b4b@sentry.io/1265770",
-    integrations=[DjangoIntegration(), CeleryIntegration(), RedisIntegration()]
-)
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -43,9 +35,6 @@ def get_from_file_if_exists(path: str) -> str:
 SECRET_KEY = '-h7x5-7v-f*=v9+8swk8)cwu^%b(h2btl0nb&@g$es-28ls5pt'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -132,8 +121,6 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-
-SECURE_SSL_REDIRECT = True
 
 
 # Static files (CSS, JavaScript, Images)
