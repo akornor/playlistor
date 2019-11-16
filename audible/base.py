@@ -136,4 +136,18 @@ APPLE_KEY_ID = get_secret('APPLE_KEY_ID')
 APPLE_TEAM_ID = get_secret('APPLE_TEAM_ID')
 APPLE_PRIVATE_KEY = get_from_file_if_exists(os.path.join(BASE_DIR, 'private.pem'))
 
+CACHES = {
+    'default': {
+        'BACKEND': 'redis_cache.RedisCache',
+        'LOCATION': REDIS_URL,
+        'OPTIONS': {
+            'PICKLE_VERSION': 2,
+            'CONNECTION_POOL_CLASS': 'redis.ConnectionPool',
+            'CONNECTION_POOL_CLASS_KWARGS': {
+                'max_connections': 1,
+            }
+        },
+    },
+}
+
 django_heroku.settings(locals())

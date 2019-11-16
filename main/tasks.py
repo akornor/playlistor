@@ -4,6 +4,7 @@ from celery import shared_task
 from celery_progress.backend import ProgressRecorder
 from spotipy import SpotifyException
 from .parsers import AppleMusicParser, SpotifyParser
+from django.core.cache import cache
 from .utils import (
     grouper,
     get_redis_client,
@@ -15,6 +16,8 @@ from .utils import (
 
 @shared_task(bind=True)
 def generate_spotify_playlist(self, url):
+    if cache.has_key(url):
+        return cache.get(url)
     progress_recorder = ProgressRecorder(self)
     sp = get_spotify_client()
     uid = sp.current_user()["id"]
@@ -65,6 +68,7 @@ def generate_spotify_playlist(self, url):
             }
         ),
     )
+    cache.set(url, playlist_url, timeout=3600)
     return playlist_url
 
 

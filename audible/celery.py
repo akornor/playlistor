@@ -4,7 +4,7 @@ from celery import Celery
 from django.conf import settings
 
 # set the default Django settings module for the 'celery' program.
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'audible.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'audible.dev_settings')
 
 app = Celery('audible', broker=settings.REDIS_URL, backend=settings.REDIS_URL)
 
