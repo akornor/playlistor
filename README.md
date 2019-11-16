@@ -21,4 +21,7 @@ Run `nf start --port 8000` to start app.
 To use app, navigate to `localhost:8000`. You'll be required to login with your Spotify credentials on first attempt.
 
 ## TODO
-- [ ] Add feature to convert apple music playlist to spotify
+- [X] Add feature to convert apple music playlist to spotify
+
+## Thanks and Acknowledgments
+- Thanks to Maame, Mayor, Samuel, Elikem, Dejong, Ike and Paul for helping me put this together. Not sure we'll have playlistor without you guys.

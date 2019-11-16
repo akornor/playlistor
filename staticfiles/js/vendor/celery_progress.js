@@ -9,9 +9,9 @@ const CeleryProgressBar = (function() {
     data
   ) {
     progressBarElement.style.backgroundColor = "#76ce60";
-    progressBarMessageElement.innerHTML = is_valid_url(data.result)
-      ? `<a target="_blank" href="${data.result}">${data.result}</a>`
-      : data.result;
+    progressBarMessageElement.innerHTML = `<a target="_blank" href="${
+      data.result
+    }">${data.result}</a>`;
     resetButton();
   }
 
