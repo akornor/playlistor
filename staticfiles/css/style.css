@@ -1,7 +1,7 @@
 @font-face {
   font-family: 'gilroy-extrabold';
-  src: url('../fonts/gilroy-extrabold-webfont.woff2') format('woff2'),
-       url('../fonts/gilroy-extrabold-webfont.woff') format('woff');
+  /*src: url('../fonts/gilroy-extrabold-webfont.woff2') format('woff2'),
+       url('../fonts/gilroy-extrabold-webfont.woff') format('woff');*/
   font-weight: normal;
   font-style: normal;
 }
@@ -14,7 +14,7 @@
   --color-blue-medium: #6490f0;
   --color-blue: #2329D6;
 
-  --font-family-titles: 'gilroy-extrabold', 'Roboto', 'Helvetica', 'Arial', Sans-serif;
+  /*--font-family-titles: 'gilroy-extrabold', 'Roboto', 'Helvetica', 'Arial', Sans-serif;*/
   --font-family-default: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif;
 
   --font-size-xl: 42px;

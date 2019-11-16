@@ -61,8 +61,7 @@ button.onclick = async function(event) {
     const response = await fetch("/playlist", {
       method: "POST",
       body: JSON.stringify({
-        playlist,
-        platform: getDestinationPlatform(playlist)
+        playlist
       }),
       headers: {
         "Content-Type": "application/json",
