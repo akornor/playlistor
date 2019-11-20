@@ -2,6 +2,8 @@ const $ = (window.$ = document.querySelector.bind(document));
 
 let button = $("#btn");
 
+const PLAYLIST_URL_REGEX = /open\.spotify\.com\/(user\/[0-9]+\/)?playlist\/.+/;
+
 const resetProgressBar = () => {
   $("#progress-bar").style.width = "0%";
   $("#progress-bar-message").innerHTML = "";
@@ -14,7 +16,6 @@ const resetButton = () => {
 };
 
 function getDestinationPlatform(url) {
-  const PLAYLIST_URL_REGEX = /open\.spotify\.com\/playlist\/.+/g;
   if (PLAYLIST_URL_REGEX.test(url)) {
     return "apple-music";
   } else {
@@ -36,7 +37,6 @@ button.onclick = async function(event) {
     return;
   }
   // See https://stackoverflow.com/questions/3891641/regex-test-only-works-every-other-time. Pretty interesting bug 😂
-  const PLAYLIST_URL_REGEX = /open\.spotify\.com\/playlist\/.+/g;
   if (
     PLAYLIST_URL_REGEX.test(playlist) &&
     !MusicKit.getInstance().isAuthorized
