@@ -1,4 +1,4 @@
-amqp==2.5.1
+amqp<2.6,>=2.5.2
 beautifulsoup4==4.6.3
 billiard<4.0,>=3.6.0
 celery==4.3.0
