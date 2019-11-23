@@ -18,7 +18,9 @@ services:
       - redis
   celery:
     build: .
-    command: celery -A audible worker -l info
+    command: ./manage.py runworker
+    volumes:
+      - .:/app
     env_file:
       - .env
     depends_on:
