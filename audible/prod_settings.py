@@ -5,7 +5,7 @@ from sentry_sdk.integrations.celery import CeleryIntegration
 from sentry_sdk.integrations.redis import RedisIntegration
 
 sentry_sdk.init(
-    dsn="https://64ae31e5d23d451a8ebdf9762ac89b4b@sentry.io/1265770",
+    dsn=get_secret('SENTRY_DSN'),
     integrations=[DjangoIntegration(), CeleryIntegration(), RedisIntegration()]
 )
 
