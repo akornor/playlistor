@@ -1,6 +1,8 @@
+from django.conf import settings
 from .utils import generate_auth_token
+
 
 
 def default_context(request):
     token = generate_auth_token()
-    return {"APPLE_DEVELOPER_TOKEN": token}
+    return {"APPLE_DEVELOPER_TOKEN": token, "DEBUG": settings.DEBUG}

@@ -3,6 +3,7 @@
 <html>
 
 <head>
+    {% if not DEBUG %}
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-141685337-1"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -14,6 +15,7 @@
 
         gtag('config', 'UA-141685337-1');
     </script>
+    {% endif %}
     <title>Playlistor</title>
     <meta charset="utf-8">
     <meta content="IE=edge" http-equiv="X-UA-Compatible">
