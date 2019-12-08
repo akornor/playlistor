@@ -9,8 +9,12 @@ sentry_sdk.init(
     integrations=[DjangoIntegration(), CeleryIntegration(), RedisIntegration()]
 )
 
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
 DEBUG = False
 
 SECURE_SSL_REDIRECT = True
 
-ALLOWED_HOSTS = ['playlistor.io']
+ALLOWED_HOSTS = ['*']
