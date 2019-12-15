@@ -60,6 +60,6 @@ def generate_auth_token() -> str:
     )
     return token.decode()
 
-def sanitize_url(url):
+def strip_qs(url):
     # Strips query string from url
     return urlsplit(url)._replace(query=None).geturl()

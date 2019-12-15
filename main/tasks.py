@@ -11,13 +11,13 @@ from .utils import (
     get_spotify_client,
     requests_retry_session,
     generate_auth_token,
-    sanitize_url
+    strip_qs
 )
 
 
 @shared_task(bind=True)
 def generate_spotify_playlist(self, url):
-    url = sanitize_url(url)
+    url = strip_qs(url)
     if cache.has_key(url):
         return cache.get(url)
     progress_recorder = ProgressRecorder(self)
