@@ -18,7 +18,7 @@ from .utils import (
 @shared_task(bind=True)
 def generate_spotify_playlist(self, url):
     url = strip_qs(url)
-    if cache.has_key(url):
+    if url in cache:
         return cache.get(url)
     progress_recorder = ProgressRecorder(self)
     sp = get_spotify_client()
