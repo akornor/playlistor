@@ -17,10 +17,10 @@ from django.urls import path, include
 from main import views
 
 urlpatterns = [
-    path('celery-progress/', include('celery_progress.urls')),
-    path('login', views.login),
-    path('playlist', views.playlist),
-    path('callback', views.callback),
-    path('', views.index),
+    path('celery-progress/', include('celery_progress.urls'), name="celery-progress"),
+    path('login', views.login, name='login'),
+    path('playlist', views.playlist, name="playlist"),
+    path('callback', views.callback, name="spotify-callback"),
+    path('', views.index, name="home"),
 
 ]
