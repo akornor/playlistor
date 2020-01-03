@@ -2,6 +2,7 @@ import json
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
+from django.urls import reverse
 from .tasks import generate_spotify_playlist, generate_applemusic_playlist
 from .decorators import login_required
 from main import oauth
@@ -17,9 +18,9 @@ def callback(request):
     code = request.GET.get("code")
     if code is not None:
         oauth.get_access_token(code)
-        return redirect("/")
+        return redirect(reverse("home"))
     else:
-        return redirect("/login")
+        return redirect(reverse("login"))
 
 
 @require_POST
