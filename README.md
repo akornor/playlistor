@@ -11,8 +11,8 @@ For simplicity, you'll need [docker](docker.com) and [docker-compose](https://do
 ```	
 	REDIS_URL=redis://redis:6379
 	REDIRECT_URI=http://localhost:8000/callback
-	CLIENT_ID=Loremipsumdolorsitamet
-	CLIENT_SECRET=Loremipsumdolorsitamet
+	SPOTIFY_CLIENT_ID=Loremipsumdolorsitamet
+	SPOTIFY_CLIENT_SECRET=Loremipsumdolorsitamet
 ```
 Then run `docker-compose up` to get things running.
 
