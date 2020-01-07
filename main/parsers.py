@@ -62,7 +62,7 @@ class AppleMusicParser(BaseParser):
 
 class SpotifyParser(BaseParser):
     def __init__(self, playlist_url):
-        PLAYLIST_RE = r"https://open.spotify.com/(user\/[0-9]+\/)?playlist/(?P<playlist_id>.+)"
+        PLAYLIST_RE = r"https://open.spotify.com/(user\/.+\/)?playlist/(?P<playlist_id>.+)"
         mo = re.match(PLAYLIST_RE, playlist_url)
         if not mo:
             raise ValueError(

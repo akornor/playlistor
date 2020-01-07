@@ -2,7 +2,7 @@ const $ = (window.$ = document.querySelector.bind(document));
 
 let button = $("#btn");
 
-const PLAYLIST_URL_REGEX = /open\.spotify\.com\/(user\/[0-9]+\/)?playlist\/.+/;
+const PLAYLIST_URL_REGEX = /open\.spotify\.com\/(user\/.+\/)?playlist\/.+/;
 
 const resetProgressBar = () => {
   $("#progress-bar").style.width = "0%";
