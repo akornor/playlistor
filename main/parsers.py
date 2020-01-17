@@ -87,7 +87,7 @@ class SpotifyParser(BaseParser):
         all_track_results = [] + self.playlist["tracks"]["items"]
         next = self.playlist["tracks"]["next"]
         results = self.playlist["tracks"]
-        while next:
+        while next is not None:
             results = self.sp.next(results)
             all_track_results += results["items"]
             next = results.get("next")
