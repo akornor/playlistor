@@ -36,7 +36,6 @@ button.onclick = async function(event) {
     );
     return;
   }
-  // See https://stackoverflow.com/questions/3891641/regex-test-only-works-every-other-time. Pretty interesting bug 😂
   if (
     PLAYLIST_URL_REGEX.test(playlist) &&
     !MusicKit.getInstance().isAuthorized
