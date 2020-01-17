@@ -6,7 +6,7 @@ from django.urls import reverse
 from .tasks import generate_spotify_playlist, generate_applemusic_playlist
 from .decorators import login_required
 from main import oauth
-from .utils import get_redis_client
+from .models import Playlist
 
 
 def login(request):
@@ -49,8 +49,6 @@ def playlist(request):
 
 @login_required(login_url="/login")
 def index(request):
-    redis_client = get_redis_client()
-    count = redis_client.llen("playlists")
-    playlists = redis_client.lrange("playlists", 0, 3)
-    playlists = [json.loads(playlist) for playlist in playlists]
+    count = Playlist.objects.count()
+    playlists = Playlist.objects.all().reverse()[:3]
     return render(request, "index.html", {"playlists": playlists, "count": count})

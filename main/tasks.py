@@ -5,13 +5,14 @@ from celery_progress.backend import ProgressRecorder
 from spotipy import SpotifyException
 from .parsers import AppleMusicParser, SpotifyParser
 from django.core.cache import cache
+from .models import Playlist
 from .utils import (
     grouper,
     get_redis_client,
     get_spotify_client,
     requests_retry_session,
     generate_auth_token,
-    strip_qs
+    strip_qs,
 )
 
 
@@ -58,17 +59,8 @@ def generate_spotify_playlist(self, url):
         sp.user_playlist_unfollow(uid, playlist_id)
         raise e
     playlist_url = playlist["external_urls"]["spotify"]
-    # Store playlist info
-    redis_client = get_redis_client()
-    redis_client.lpush(
-        "playlists",
-        json.dumps(
-            {
-                "spotify_url": playlist_url,
-                "applemusic_url": url,
-                "name": playlist_title,
-            }
-        ),
+    Playlist.objects.create(
+        name=playlist_title, spotify_url=playlist_url, applemusic_url=url
     )
     cache.set(url, playlist_url, timeout=3600)
     return playlist_url
@@ -83,10 +75,7 @@ def generate_applemusic_playlist(self, url, token):
     playlist_data = []
     n = len(tracks)
     auth_token = generate_auth_token()
-    headers = {
-        "Authorization": f"Bearer {auth_token}",
-        "Music-User-Token": token
-    }
+    headers = {"Authorization": f"Bearer {auth_token}", "Music-User-Token": token}
     _session = requests_retry_session()
     for i, track in enumerate(tracks):
         try:
