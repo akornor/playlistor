@@ -80,6 +80,7 @@ def generate_applemusic_playlist(self, url, token):
     data = SpotifyParser(url).extract_data()
     tracks = data["tracks"]
     playlist_title = data["playlist_title"]
+    creator = data["playlist_creator"]
     playlist_data = []
     n = len(tracks)
     auth_token = generate_auth_token()
@@ -107,7 +108,7 @@ def generate_applemusic_playlist(self, url, token):
     payload = {
         "attributes": {
             "name": playlist_title,
-            "description": f"Originally created on Spotify[{url}]",
+            "description": f"Originally created by {creator} on Spotify[{url}].",
         },
         "relationships": {"tracks": {"data": playlist_data}},
     }

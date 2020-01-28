@@ -98,4 +98,4 @@ class SpotifyParser(BaseParser):
         return tracks
 
     def _get_playlist_creator(self):
-        return "Tyler, the creator."
+        return self.playlist["owner"]["display_name"]
