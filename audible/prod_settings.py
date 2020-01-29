@@ -1,4 +1,4 @@
-from .base import *
+from .base_settings import *
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
 from sentry_sdk.integrations.celery import CeleryIntegration
