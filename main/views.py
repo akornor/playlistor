@@ -1,4 +1,5 @@
 import json
+import requests
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
@@ -45,6 +46,15 @@ def playlist(request):
             {"message": f"platform {platform} not supported"}, status=400
         )
     return JsonResponse({"task_id": result.task_id})
+
+@require_POST
+def expand(request):
+    data = json.loads(request.body.decode("utf-8"))
+    url = data.get("url")
+    session = requests.Session()
+    response = session.head(url, allow_redirects=True)
+    response.raise_for_status()
+    return JsonResponse({"url": response.url})
 
 
 @login_required(login_url="/login")
