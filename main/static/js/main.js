@@ -94,6 +94,7 @@ button.onclick = async function(event) {
     if (result.value) {
       MusicKit.getInstance().authorize();
     }
+    resetButton();
     return;
   }
   try {
