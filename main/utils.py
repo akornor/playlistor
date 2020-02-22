@@ -4,6 +4,7 @@ import jwt
 import requests
 import redis
 from django.conf import settings
+from django.core.exceptions import ImproperlyConfigured
 from spotipy import Spotify
 from main import oauth
 from requests.adapters import HTTPAdapter
@@ -63,3 +64,19 @@ def generate_auth_token() -> str:
 def strip_qs(url):
     # Strips query string from url
     return urlsplit(url)._replace(query=None).geturl()
+
+def check_config():
+    if not settings.APPLE_KEY_ID:
+        raise ImproperlyConfigured("APPLE_KEY_ID setting has not been properly defined.")
+    if not settings.APPLE_TEAM_ID:
+        raise ImproperlyConfigured("APPLE_TEAM_ID setting has not been properly defined.")
+    if not settings.APPLE_PRIVATE_KEY:
+        raise ImproperlyConfigured("APPLE_PRIVATE_KEY setting has not been properly defined.")
+    if not settings.SPOTIFY_CLIENT_ID:
+        raise ImproperlyConfigured("SPOTIFY_CLIENT_ID setting has not been properly defined.")
+    if not settings.SPOTIFY_CLIENT_SECRET:
+        raise ImproperlyConfigured("SPOTIFY_CLIENT_SECRET has not been properly defined.")
+    if not settings.REDIRECT_URI:
+        raise ImproperlyConfigured("REDIRECT_URI has not been properly defined.")
+    if not settings.REDIS_URL:
+        raise ImproperlyConfigured("REDIS_URL has not been properly defined.")
