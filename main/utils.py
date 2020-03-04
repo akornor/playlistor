@@ -76,7 +76,7 @@ def check_config():
         raise ImproperlyConfigured("SPOTIFY_CLIENT_ID setting has not been properly defined.")
     if not settings.SPOTIFY_CLIENT_SECRET:
         raise ImproperlyConfigured("SPOTIFY_CLIENT_SECRET has not been properly defined.")
-    if not settings.REDIRECT_URI:
-        raise ImproperlyConfigured("REDIRECT_URI has not been properly defined.")
+    if not settings.SPOTIFY_REDIRECT_URI:
+        raise ImproperlyConfigured("SPOTIFY_REDIRECT_URI has not been properly defined.")
     if not settings.REDIS_URL:
         raise ImproperlyConfigured("REDIS_URL has not been properly defined.")
