@@ -1,2 +1,2 @@
-web: gunicorn audible.wsgi
-worker: REMAP_SIGTERM=SIGQUIT celery -A audible worker -l info
+web: gunicorn playlistor.wsgi
+worker: REMAP_SIGTERM=SIGQUIT celery -A playlistor worker -l info

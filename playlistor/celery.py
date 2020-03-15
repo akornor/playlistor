@@ -4,9 +4,9 @@ from celery import Celery
 from django.conf import settings
 
 # set the default Django settings module for the 'celery' program.
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'audible.dev_settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'playlistor.dev_settings')
 
-app = Celery('audible', broker=settings.REDIS_URL, backend=settings.REDIS_URL)
+app = Celery('playlistor', broker=settings.REDIS_URL, backend=settings.REDIS_URL)
 
 # Using a string here means the worker doesn't have to serialize
 # the configuration object to child processes.
