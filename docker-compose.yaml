@@ -1,6 +1,17 @@
 version: '3'
 
 services:
+  db:
+    image: postgres
+    restart: always
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_PASSWORD=playlistor
+      - POSTGRES_USER=playlistor
+      - POSTGRES_DB=playlistor
+    ports:
+      - "5432:5432"
   redis:
     image: "redis:alpine"
     ports:
@@ -16,6 +27,7 @@ services:
       - .env
     depends_on:
       - redis
+      - db
   celery:
     build: .
     command: ./manage.py runworker
@@ -25,3 +37,6 @@ services:
       - .env
     depends_on:
       - redis
+      - db
+volumes:
+  postgres_data:

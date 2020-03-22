@@ -3,8 +3,9 @@ from playlistor.celery import app
 from celery import shared_task
 from celery_progress.backend import ProgressRecorder
 from spotipy import SpotifyException
-from .parsers import AppleMusicParser, SpotifyParser
 from django.core.cache import cache
+from .parsers import AppleMusicParser, SpotifyParser
+from .models import Playlist
 from .utils import (
     grouper,
     get_redis_client,
@@ -58,18 +59,7 @@ def generate_spotify_playlist(self, url):
         sp.user_playlist_unfollow(uid, playlist_id)
         raise e
     playlist_url = playlist["external_urls"]["spotify"]
-    # Store playlist info
-    redis_client = get_redis_client()
-    redis_client.lpush(
-        "playlists",
-        json.dumps(
-            {
-                "spotify_url": playlist_url,
-                "applemusic_url": url,
-                "name": playlist_title,
-            }
-        ),
-    )
+    Playlist.objects.create(spotify_url=playlist_url, applemusic_url=url, name=playlist_title)
     cache.set(url, playlist_url, timeout=3600)
     return playlist_url
 

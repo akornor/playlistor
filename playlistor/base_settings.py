@@ -83,9 +83,13 @@ WSGI_APPLICATION = 'playlistor.wsgi.application'
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    "default": {
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "NAME": get_secret("DATABASE_NAME"),
+        "USER": get_secret("DATABASE_USER"),
+        "PASSWORD": get_secret("DATABASE_PASSWORD"),
+        "HOST": get_secret("DATABASE_HOST"),
+        "PORT": get_secret("DATABASE_PORT"),
     }
 }
 
