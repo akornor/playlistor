@@ -7,7 +7,7 @@ from django.urls import reverse
 from .tasks import generate_spotify_playlist, generate_applemusic_playlist
 from .decorators import login_required
 from main import oauth
-from .utils import get_redis_client
+from .utils import get_redis_client, requests_retry_session
 
 
 def login(request):
@@ -51,10 +51,14 @@ def playlist(request):
 def expand(request):
     data = json.loads(request.body.decode("utf-8"))
     url = data.get("url")
-    session = requests.Session()
-    response = session.head(url, allow_redirects=True)
-    response.raise_for_status()
-    return JsonResponse({"url": response.url})
+    session = requests_retry_session()
+    try:
+        response = session.head(url, allow_redirects=True)
+        response.raise_for_status()
+        return JsonResponse({"url": response.url})
+    except Exception:
+        return JsonResponse({"message": f"{url} not found."}, status=400)
+    
 
 
 @login_required(login_url="/login")
