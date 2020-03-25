@@ -30,6 +30,7 @@ class AppleMusicParser(BaseParser):
     def _get_playlist_tracks(self):
         soup = self._soup
         tracks = []
+        PAT = re.compile(r"\((.*?)\)")
         tracklist = soup.find_all(class_="tracklist-item--song")
         for track in tracklist:
             title = (
@@ -44,11 +45,10 @@ class AppleMusicParser(BaseParser):
             featuring = ""
             if "feat." in title:
                 title = title.replace("feat. ", "")
-                mo = re.search(r"\((.*?)\)", title)
-                if mo:
+                mo = PAT.search(title)
+                if mo is not None:
                     featuring = mo.group(1).replace("&", ",")
-                i = title.find("(")
-                title = title[:i]
+                    title = PAT.sub('', title).strip()
             tracks.append(Track(title=title, artist=artist, featuring=featuring))
         return tracks
 
