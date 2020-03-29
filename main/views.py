@@ -65,6 +65,6 @@ def expand(request):
 @login_required(login_url="/login")
 def index(request):
     redis_client = get_redis_client()
-    count = int(redis_client.get("playlists"))
+    count = int((redis_client.get("playlists") or 0))
     playlists = Playlist.objects.order_by('-created_at')[:5]
     return render(request, "index.html", {"playlists": playlists, "count": count})
