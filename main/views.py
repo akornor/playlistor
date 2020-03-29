@@ -4,10 +4,11 @@ from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from django.urls import reverse
+from main import oauth
 from .tasks import generate_spotify_playlist, generate_applemusic_playlist
 from .decorators import login_required
-from main import oauth
 from .utils import get_redis_client, requests_retry_session
+from .models import Playlist
 
 
 def login(request):
@@ -64,7 +65,6 @@ def expand(request):
 @login_required(login_url="/login")
 def index(request):
     redis_client = get_redis_client()
-    count = redis_client.llen("playlists")
-    playlists = redis_client.lrange("playlists", 0, 3)
-    playlists = [json.loads(playlist) for playlist in playlists]
+    count = int(redis_client.get("playlists"))
+    playlists = Playlist.objects.order_by('-created_at')[:5]
     return render(request, "index.html", {"playlists": playlists, "count": count})

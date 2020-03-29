@@ -2,9 +2,10 @@ import json
 from playlistor.celery import app
 from celery import shared_task
 from celery_progress.backend import ProgressRecorder
+from django.core.cache import cache
 from spotipy import SpotifyException
 from .parsers import AppleMusicParser, SpotifyParser
-from django.core.cache import cache
+from .models import Playlist
 from .utils import (
     grouper,
     get_redis_client,
@@ -59,17 +60,9 @@ def generate_spotify_playlist(self, url):
         raise e
     playlist_url = playlist["external_urls"]["spotify"]
     # Store playlist info
+    Playlist.objects.create(name=playlist_title, spotify_url=playlist_url, applemusic_url=url)
     redis_client = get_redis_client()
-    redis_client.lpush(
-        "playlists",
-        json.dumps(
-            {
-                "spotify_url": playlist_url,
-                "applemusic_url": url,
-                "name": playlist_title,
-            }
-        ),
-    )
+    redis_client.incr("playlists")
     cache.set(url, playlist_url, timeout=3600)
     return playlist_url
 
@@ -119,4 +112,6 @@ def generate_applemusic_playlist(self, url, token):
         headers=headers,
     )
     response.raise_for_status()
+    redis_client = get_redis_client()
+    redis_client.incr("playlists")
     return "Check your recently created playlists on Apple Music."
