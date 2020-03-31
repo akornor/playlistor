@@ -116,4 +116,4 @@ def generate_applemusic_playlist(self, url, token):
 @task_success.connect
 def handle_task_success(**kwargs):
     redis_client = get_redis_client()
-    redis_client.incr("playlists")
+    redis_client.incr("counter:playlists")

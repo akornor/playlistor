@@ -17,7 +17,7 @@ def move_playlists_to_database(apps: StateApps, schema_editor: DatabaseSchemaEdi
         playlists = [Playlist(name=playlist['name'], spotify_url=playlist['spotify_url'], applemusic_url=playlist['applemusic_url']) for playlist in playlists]
         Playlist.objects.bulk_create(playlists)
         redis_client.delete('playlists')
-        redis_client.incr_by('playlists', n)
+        redis_client.incr_by('counter:playlists', n)
     
 
 class Migration(migrations.Migration):
