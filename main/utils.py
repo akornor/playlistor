@@ -41,10 +41,8 @@ def fetch_url(url):
 def grouper(n, iterable):
     return [iterable[i : i + n] for i in range(0, len(iterable), n)]
 
-redis_pool = redis.ConnectionPool.from_url(settings.REDIS_URL)
-
 def get_redis_client():
-    return redis.Redis(connection_pool=redis_pool)
+    return redis.Redis.from_url(settings.REDIS_URL)
 
 def generate_auth_token() -> str:
     # see https://developer.apple.com/documentation/applemusicapi/getting_keys_and_creating_tokens
