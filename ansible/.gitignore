@@ -1,0 +1,18 @@
+# PyCharm IDE
+.idea
+
+# Vagrant
+.vagrant
+*.log
+vagrant_ansible_inventory_default
+
+# Ansible
+*.retry
+
+# Python
+*.pyc
+
+# Virtual environment
+/env
+
+secrets.yml
