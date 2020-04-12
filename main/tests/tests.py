@@ -6,7 +6,7 @@ from main.parsers import AppleMusicParser
 
 class TestParser(TestCase):
 	def setUp(self):
-		playlist = os.path.join(settings.BASE_DIR, 'main/tests/playlist.html')
+		playlist = os.path.join(settings.BASE_DIR, 'main/tests/fixtures/playlist.html')
 		with open(playlist) as f:
 			self.html = f.read()
 
