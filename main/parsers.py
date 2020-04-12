@@ -12,6 +12,12 @@ class BaseParser:
 
 class AppleMusicParser(BaseParser):
     def __init__(self, playlist_url: str) -> None:
+        PAT = re.compile(r"(https:\/\/)?music\.apple\.com\/.+\/playlist\/.+")
+        mo = PAT.match(playlist_url)
+        if mo is None:
+            raise ValueError(
+                "Expected playlist url in the form: https://music.apple.com/gh/playlist/pl.u-e98lGali2BLmkN"
+            )
         html = fetch_url(playlist_url)
         from bs4 import BeautifulSoup
 
