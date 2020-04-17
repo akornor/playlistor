@@ -13,7 +13,7 @@ from .utils import (
     get_spotify_client,
     requests_retry_session,
     generate_auth_token,
-    strip_qs
+    strip_qs,
 )
 
 
@@ -61,7 +61,9 @@ def generate_spotify_playlist(self, url):
         raise e
     playlist_url = playlist["external_urls"]["spotify"]
     # Store playlist info
-    Playlist.objects.create(name=playlist_title, spotify_url=playlist_url, applemusic_url=url)
+    Playlist.objects.create(
+        name=playlist_title, spotify_url=playlist_url, applemusic_url=url
+    )
     cache.set(url, playlist_url, timeout=3600)
     return playlist_url
 
@@ -71,15 +73,13 @@ def generate_applemusic_playlist(self, url, token):
     progress_recorder = ProgressRecorder(self)
     data = SpotifyParser(url).extract_data()
     tracks = data["tracks"]
+    print(tracks)
     playlist_title = data["playlist_title"]
     creator = data["playlist_creator"]
     playlist_data = []
     n = len(tracks)
     auth_token = generate_auth_token()
-    headers = {
-        "Authorization": f"Bearer {auth_token}",
-        "Music-User-Token": token
-    }
+    headers = {"Authorization": f"Bearer {auth_token}", "Music-User-Token": token}
     _session = requests_retry_session()
     for i, track in enumerate(tracks):
         try:
@@ -112,6 +112,7 @@ def generate_applemusic_playlist(self, url, token):
     )
     response.raise_for_status()
     return "Check your recently created playlists on Apple Music."
+
 
 @task_success.connect
 def handle_task_success(**kwargs):

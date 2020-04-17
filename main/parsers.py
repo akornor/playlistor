@@ -1,6 +1,11 @@
 from collections import namedtuple
 import re
-from .utils import get_spotify_client, fetch_url
+from .utils import (
+    get_spotify_client,
+    fetch_url,
+    requests_retry_session,
+    generate_auth_token,
+)
 
 Track = namedtuple("Track", ["title", "artist", "featuring"])
 
@@ -12,16 +17,24 @@ class BaseParser:
 
 class AppleMusicParser(BaseParser):
     def __init__(self, playlist_url: str) -> None:
-        PAT = re.compile(r"(https:\/\/)?music\.apple\.com\/.+\/playlist\/.+")
+        PAT = re.compile(
+            r"(https:\/\/)?music\.apple\.com\/(?P<storefront>.+)\/playlist\/.+\/(?P<playlist_id>.+)"
+        )
         mo = PAT.match(playlist_url)
         if mo is None:
             raise ValueError(
                 "Expected playlist url in the form: https://music.apple.com/gh/playlist/pl.u-e98lGali2BLmkN"
             )
-        html = fetch_url(playlist_url)
-        from bs4 import BeautifulSoup
-
-        self._soup = BeautifulSoup(html, "html.parser")
+        session = requests_retry_session()
+        token = generate_auth_token()
+        headers = {"Authorization": f"Bearer {token}"}
+        storefront = mo.group("storefront")
+        playlist_id = mo.group("playlist_id")
+        self.response = session.get(
+            f"https://api.music.apple.com/v1/catalog/{storefront}/playlists/{playlist_id}",
+            headers=headers,
+        )
+        self.response.raise_for_status()
 
     def extract_data(self):
         return {
@@ -31,39 +44,29 @@ class AppleMusicParser(BaseParser):
         }
 
     def _get_playlist_title(self):
-        return self._soup.find(class_="product-header__title").get_text().strip()
+        data = self.response.json()["data"]
+        return data[0]["attributes"]["name"]
 
     def _get_playlist_tracks(self):
-        soup = self._soup
         tracks = []
         PAT = re.compile(r"\((.*?)\)")
-        tracklist = soup.find_all(class_="tracklist-item--song")
-        for track in tracklist:
-            title = (
-                track.find(class_="tracklist-item__text__headline").get_text().strip()
-            )
-            artist = (
-                track.find(class_="table__row__link table__row__link--secondary")
-                .get_text()
-                .strip()
-                .replace("&", ",")
-            )
+        data = self.response.json()["data"]
+        for track in data[0]["relationships"]["tracks"]["data"]:
+            artist = track["attributes"]["artistName"].replace("&", ",")
+            title = track["attributes"]["name"]
             featuring = ""
             if "feat." in title:
                 title = title.replace("feat. ", "")
                 mo = PAT.search(title)
                 if mo is not None:
                     featuring = mo.group(1).replace("&", ",")
-                    title = PAT.sub('', title).strip()
+                    title = PAT.sub("", title).strip()
             tracks.append(Track(title=title, artist=artist, featuring=featuring))
         return tracks
 
     def _get_playlist_creator(self):
-        return (
-            self._soup.find(class_="product-header__identity album-header__identity")
-            .get_text()
-            .strip()
-        )
+        data = self.response.json()["data"]
+        return data[0]["attributes"]["curatorName"]
 
 
 class SpotifyParser(BaseParser):
@@ -74,7 +77,7 @@ class SpotifyParser(BaseParser):
             raise ValueError(
                 "Expected playlist url in the form: https://open.spotify.com/playlist/68QbTIMkw3Gl6Uv4PJaeTQ or https://open.spotify.com/user/333aaddaf/playlist/68QbTIMkw3Gl6Uv4PJaeTQ"
             )
-        playlist_id = mo.group('playlist_id')
+        playlist_id = mo.group("playlist_id")
         self.sp = get_spotify_client()
         self.playlist = self.sp.playlist(playlist_id=playlist_id)
 
