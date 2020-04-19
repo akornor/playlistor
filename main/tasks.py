@@ -33,7 +33,7 @@ def generate_spotify_playlist(self, url):
     playlist = sp.user_playlist_create(
         uid,
         playlist_title,
-        description=f"Created with playlistor.io from original playlist by {creator} on Apple Music[{url}].",
+        description=f"Created with playlistor.io from the original playlist by {creator} on Apple Music[{url}].",
     )
     playlist_id = playlist["id"]
     tracks_uris = []
@@ -100,7 +100,7 @@ def generate_applemusic_playlist(self, url, token):
     payload = {
         "attributes": {
             "name": playlist_title,
-            "description": f"Created with playlistor.io from original playlist by {creator} on Spotify[{url}].",
+            "description": f"Created with playlistor.io the from original playlist by {creator} on Spotify[{url}].",
         },
         "relationships": {"tracks": {"data": playlist_data}},
     }
