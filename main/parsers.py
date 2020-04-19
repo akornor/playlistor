@@ -1,11 +1,6 @@
 from collections import namedtuple
 import re
-from .utils import (
-    get_spotify_client,
-    fetch_url,
-    requests_retry_session,
-    generate_auth_token,
-)
+from .utils import get_spotify_client, requests_retry_session, generate_auth_token
 
 Track = namedtuple("Track", ["title", "artist", "featuring"])
 
