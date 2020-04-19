@@ -30,11 +30,12 @@ class AppleMusicParser(BaseParser):
         headers = {"Authorization": f"Bearer {token}"}
         storefront = mo.group("storefront")
         playlist_id = mo.group("playlist_id")
-        self.response = session.get(
+        response = session.get(
             f"https://api.music.apple.com/v1/catalog/{storefront}/playlists/{playlist_id}",
             headers=headers,
         )
-        self.response.raise_for_status()
+        response.raise_for_status()
+        self.data = response.json()["data"]
 
     def extract_data(self):
         return {
@@ -44,14 +45,12 @@ class AppleMusicParser(BaseParser):
         }
 
     def _get_playlist_title(self):
-        data = self.response.json()["data"]
-        return data[0]["attributes"]["name"]
+        return self.data[0]["attributes"]["name"]
 
     def _get_playlist_tracks(self):
         tracks = []
         PAT = re.compile(r"\((.*?)\)")
-        data = self.response.json()["data"]
-        for track in data[0]["relationships"]["tracks"]["data"]:
+        for track in self.data[0]["relationships"]["tracks"]["data"]:
             artist = track["attributes"]["artistName"].replace("&", ",")
             title = track["attributes"]["name"]
             featuring = ""
@@ -65,8 +64,7 @@ class AppleMusicParser(BaseParser):
         return tracks
 
     def _get_playlist_creator(self):
-        data = self.response.json()["data"]
-        return data[0]["attributes"]["curatorName"]
+        return self.data[0]["attributes"]["curatorName"]
 
 
 class SpotifyParser(BaseParser):
