@@ -73,7 +73,6 @@ def generate_applemusic_playlist(self, url, token):
     progress_recorder = ProgressRecorder(self)
     data = SpotifyParser(url).extract_data()
     tracks = data["tracks"]
-    print(tracks)
     playlist_title = data["playlist_title"]
     creator = data["playlist_creator"]
     playlist_data = []
