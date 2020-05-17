@@ -13,7 +13,8 @@ class BaseParser:
 class AppleMusicParser(BaseParser):
     def __init__(self, playlist_url: str) -> None:
         PAT = re.compile(
-            r"(https:\/\/)?music\.apple\.com\/(?P<storefront>.+)\/playlist\/.+\/(?P<playlist_id>.+)"
+            r"https:\/\/music\.apple\.com\/(?P<storefront>.+)\/playlist\/.+\/(?P<playlist_id>.+)",
+            re.I
         )
         mo = PAT.match(playlist_url)
         if mo is None:
@@ -64,7 +65,7 @@ class AppleMusicParser(BaseParser):
 
 class SpotifyParser(BaseParser):
     def __init__(self, playlist_url):
-        PAT = r"(https:\/\/)?open.spotify.com/(user\/.+\/)?playlist/(?P<playlist_id>.+)"
+        PAT = r"https:\/\/open.spotify.com/(user\/.+\/)?playlist/(?P<playlist_id>.+)", re.I
         mo = re.match(PAT, playlist_url)
         if mo is None:
             raise ValueError(
