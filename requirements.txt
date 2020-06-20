@@ -1,6 +1,6 @@
-amqp<2.6,>=2.5.2
+amqp<2.7,>=2.6.0
 billiard<4.0,>=3.6.0
-celery==4.3.0
+celery==4.4.5
 git+https://github.com/akornor/celery-progress
 certifi==2018.11.29
 chardet==3.0.4
