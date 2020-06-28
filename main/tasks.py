@@ -70,6 +70,7 @@ def generate_spotify_playlist(self, url):
 
 @shared_task(bind=True)
 def generate_applemusic_playlist(self, url, token):
+    url = strip_qs(url)
     progress_recorder = ProgressRecorder(self)
     data = SpotifyParser(url).extract_data()
     tracks = data["tracks"]
