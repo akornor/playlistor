@@ -95,9 +95,10 @@ class SpotifyParser(BaseParser):
             all_track_results += results["items"]
             next = results.get("next")
         for track in all_track_results:
-            title = track["track"]["name"]
-            artist = track["track"]["artists"][0]["name"]
-            tracks.append(Track(title=title, artist=artist, featuring=""))
+            if track["track"] is not None:
+                title = track["track"]["name"]
+                artist = track["track"]["artists"][0]["name"]
+                tracks.append(Track(title=title, artist=artist, featuring=""))
         return tracks
 
     def _get_playlist_creator(self):
