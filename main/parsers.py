@@ -60,7 +60,8 @@ class AppleMusicParser(BaseParser):
         return tracks
 
     def _get_playlist_creator(self):
-        return self.data[0]["attributes"]["curatorName"]
+        # Note: It's possible attribute doesn't contain curator name
+        return self.data[0]["attributes"].get("curatorName")
 
 
 class SpotifyParser(BaseParser):
