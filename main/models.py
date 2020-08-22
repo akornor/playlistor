@@ -9,3 +9,15 @@ class Playlist(models.Model):
 
     def __str__(self):
         return f"Playlist({self.name})"
+
+class Track(models.Model):
+	MAX_LENGTH = 255
+	name = models.CharField(max_length=MAX_LENGTH, null=True)
+	artist = models.CharField(max_length=MAX_LENGTH, null=True)
+	featuring = models.CharField(max_length=MAX_LENGTH, null=True)
+	spotify_id = models.CharField(max_length=MAX_LENGTH, null=True)
+	apple_music_id = models.CharField(max_length=MAX_LENGTH, null=True)
+	isrc = models.CharField(max_length=MAX_LENGTH, null=True)
+
+	def __str__(self):
+		return f"Track({self.name})"
