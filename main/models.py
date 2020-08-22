@@ -15,8 +15,8 @@ class Track(models.Model):
 	name = models.CharField(max_length=MAX_LENGTH, null=True)
 	artist = models.CharField(max_length=MAX_LENGTH, null=True)
 	featuring = models.CharField(max_length=MAX_LENGTH, null=True)
-	spotify_id = models.CharField(max_length=MAX_LENGTH, null=True)
-	apple_music_id = models.CharField(max_length=MAX_LENGTH, null=True)
+	spotify_id = models.CharField(max_length=MAX_LENGTH, null=True, unique=True)
+	apple_music_id = models.CharField(max_length=MAX_LENGTH, null=True, unique=True)
 	isrc = models.CharField(max_length=MAX_LENGTH, null=True)
 
 	class Meta:
