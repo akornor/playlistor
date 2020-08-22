@@ -12,9 +12,9 @@ class Playlist(models.Model):
 
 class Track(models.Model):
 	MAX_LENGTH = 255
-	name = models.CharField(max_length=MAX_LENGTH, null=True)
-	artist = models.CharField(max_length=MAX_LENGTH, null=True)
-	featuring = models.CharField(max_length=MAX_LENGTH, null=True)
+	name = models.CharField(max_length=MAX_LENGTH, null=True, db_index=True)
+	artist = models.CharField(max_length=MAX_LENGTH, null=True, db_index=True)
+	featuring = models.CharField(max_length=MAX_LENGTH, null=True, db_index=True)
 	spotify_id = models.CharField(max_length=MAX_LENGTH, null=True, unique=True)
 	apple_music_id = models.CharField(max_length=MAX_LENGTH, null=True, unique=True)
 	isrc = models.CharField(max_length=MAX_LENGTH, null=True)
