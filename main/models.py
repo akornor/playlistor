@@ -19,5 +19,10 @@ class Track(models.Model):
 	apple_music_id = models.CharField(max_length=MAX_LENGTH, null=True)
 	isrc = models.CharField(max_length=MAX_LENGTH, null=True)
 
+	class Meta:
+		constraints = [
+			models.UniqueConstraint(fields=['spotify_id', 'apple_music_id'], name='unique_spotify_id_apple_music_id')
+		]
+
 	def __str__(self):
 		return f"Track({self.name})"
