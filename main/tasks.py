@@ -16,6 +16,9 @@ from .utils import (
     strip_qs,
 )
 
+def increase_playlist_count():
+    redis_client = get_redis_client()
+    redis_client.incr("counter:playlists")
 
 @shared_task(bind=True)
 def generate_spotify_playlist(self, url):
@@ -67,6 +70,7 @@ def generate_spotify_playlist(self, url):
         name=playlist_title, spotify_url=playlist_url, applemusic_url=url
     )
     cache.set(url, playlist_url, timeout=3600)
+    increase_playlist_count()
     return playlist_url
 
 
@@ -113,10 +117,5 @@ def generate_applemusic_playlist(self, url, token):
         headers=headers,
     )
     response.raise_for_status()
+    increase_playlist_count()
     return "Check your recently created playlists on Apple Music."
-
-
-@task_success.connect
-def handle_task_success(**kwargs):
-    redis_client = get_redis_client()
-    redis_client.incr("counter:playlists")
