@@ -4,6 +4,7 @@ from celery import shared_task
 from celery.signals import task_success
 from celery_progress.backend import ProgressRecorder
 from django.core.cache import cache
+from django.conf import settings
 from spotipy import SpotifyException
 from .parsers import AppleMusicParser, SpotifyParser
 from .models import Playlist
@@ -23,8 +24,9 @@ def increase_playlist_count():
 @shared_task(bind=True)
 def generate_spotify_playlist(self, url):
     url = strip_qs(url)
-    if url in cache:
-        return cache.get(url)
+    if not settings.DEBUG:
+        if url in cache:
+            return cache.get(url)
     progress_recorder = ProgressRecorder(self)
     sp = get_spotify_client()
     uid = sp.current_user()["id"]
