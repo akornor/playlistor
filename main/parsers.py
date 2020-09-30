@@ -48,7 +48,7 @@ class AppleMusicParser(BaseParser):
         tracks = []
         track_items = []
         track_items += self.data[0]["relationships"]["tracks"]["data"]
-        has_next = self.data[0]["relationships"]["tracks"]["next"]
+        has_next = self.data[0]["relationships"]["tracks"].get("next")
         while has_next is not None:
             response = self.session.get(self.BASE_URL + has_next, headers=self.headers)
             response.raise_for_status()
