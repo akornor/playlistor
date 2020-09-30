@@ -89,18 +89,19 @@ class SpotifyParser(BaseParser):
 
     def _get_playlist_tracks(self):
         tracks = []
-        all_track_results = [] + self.playlist["tracks"]["items"]
+        items = [] + self.playlist["tracks"]["items"]
         next = self.playlist["tracks"]["next"]
         results = self.playlist["tracks"]
         while next is not None:
             results = self.sp.next(results)
-            all_track_results += results["items"]
+            items += results["items"]
             next = results.get("next")
-        for track in all_track_results:
-            if track["track"] is not None:
-                track_id = track["track"]["id"]
-                title = track["track"]["name"]
-                artist = track["track"]["artists"][0]["name"]
+        for item in items:
+            track = item["track"]
+            if track is not None:
+                track_id = track["id"]
+                title = track["name"]
+                artist = track["artists"][0]["name"]
                 tracks.append(Track(id=track_id, title=title, artist=artist, featuring=""))
         return tracks
 
