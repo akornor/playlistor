@@ -59,12 +59,12 @@ def generate_spotify_playlist(self, url):
         # You can add a maximum of 100 tracks per request.
         if len(tracks_uris) > 100:
             for chunk in grouper(100, tracks_uris):
-                sp.user_playlist_add_tracks(uid, playlist_id, chunk)
+                sp.playlist_add_items(playlist_id, chunk)
         else:
-            sp.user_playlist_add_tracks(uid, playlist_id, tracks_uris)
+            sp.playlist_add_items(playlist_id, tracks_uris)
     except SpotifyException as e:
         # Delete playlist if error occurs while adding songs
-        sp.user_playlist_unfollow(uid, playlist_id)
+        sp.current_user_unfollow_playlist(playlist_id)
         raise e
     playlist_url = playlist["external_urls"]["spotify"]
     # Store playlist info
