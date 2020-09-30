@@ -21,13 +21,14 @@ class AppleMusicParser(BaseParser):
             raise ValueError(
                 "Expected playlist url in the form: https://music.apple.com/gh/playlist/pl.u-e98lGali2BLmkN"
             )
-        session = requests_retry_session()
+        self.session = session = requests_retry_session()
         token = generate_auth_token()
-        headers = {"Authorization": f"Bearer {token}"}
+        self.headers = headers = {"Authorization": f"Bearer {token}"}
         storefront = mo.group("storefront")
         playlist_id = mo.group("playlist_id")
+        self.BASE_URL = BASE_URL = "https://api.music.apple.com"
         response = session.get(
-            f"https://api.music.apple.com/v1/catalog/{storefront}/playlists/{playlist_id}",
+            f"{BASE_URL}/v1/catalog/{storefront}/playlists/{playlist_id}",
             headers=headers,
         )
         response.raise_for_status()
@@ -45,8 +46,16 @@ class AppleMusicParser(BaseParser):
 
     def _get_playlist_tracks(self):
         tracks = []
+        track_items = []
+        track_items += self.data[0]["relationships"]["tracks"]["data"]
+        has_next = self.data[0]["relationships"]["tracks"]["next"]
+        while has_next is not None:
+            response = self.session.get(self.BASE_URL + has_next, headers=self.headers)
+            response.raise_for_status()
+            track_items += response.json()["data"]
+            has_next = response.json().get("next")
         PAT = re.compile(r"\((.*?)\)")
-        for track in self.data[0]["relationships"]["tracks"]["data"]:
+        for track in track_items:
             track_id = track["id"]
             artist = track["attributes"]["artistName"].replace("&", ",").replace(", ", " ")
             title = track["attributes"]["name"]
