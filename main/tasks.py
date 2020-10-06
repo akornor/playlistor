@@ -98,8 +98,7 @@ def generate_applemusic_playlist(self, url, token):
                 headers=headers,
             )
             response.raise_for_status()
-            results = response.json()
-            song = results["results"]["songs"]["data"][0]
+            song = response.json()["results"]["songs"]["data"][0]
             playlist_data.append({"id": song["id"], "type": song["type"]})
         except:
             continue
