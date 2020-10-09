@@ -57,14 +57,14 @@ class AppleMusicParser(BaseParser):
         PAT = re.compile(r"\((.*?)\)")
         for track in track_items:
             track_id = track["id"]
-            artist = track["attributes"]["artistName"].replace("&", ",").replace(", ", " ")
+            artist = track["attributes"]["artistName"].replace("&", " ")
             title = track["attributes"]["name"]
             featuring = ""
             if "feat." in title:
                 title = title.replace("feat. ", "")
                 mo = PAT.search(title)
                 if mo is not None:
-                    featuring = mo.group(1).replace("&", ",").replace(", ", " ")
+                    featuring = mo.group(1).replace("&", " ")
                     title = PAT.sub("", title).strip()
             tracks.append(Track(id=track_id, title=title, artist=artist, featuring=featuring))
         return tracks
