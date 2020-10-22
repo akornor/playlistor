@@ -7,7 +7,7 @@ from django.core.cache import cache
 from django.conf import settings
 from spotipy import SpotifyException
 from .parsers import AppleMusicParser, SpotifyParser
-from .models import Playlist
+from .models import Playlist, Track
 from .utils import (
     grouper,
     get_redis_client,
@@ -17,7 +17,7 @@ from .utils import (
     strip_qs,
 )
 
-def increase_playlist_count():
+def incr_playlist_count():
     redis_client = get_redis_client()
     redis_client.incr("counter:playlists")
 
@@ -35,6 +35,20 @@ def generate_spotify_playlist(self, url):
     tracks = data["tracks"]
     creator = data["playlist_creator"]
     n = len(tracks)
+    tracks_uris = []
+    for i, track in enumerate(tracks):
+        try:
+            results = sp.search(
+                f"{track.name} {' '.join(track.artists)}", limit=1
+            )
+            track_uri = results["tracks"]["items"][0]["uri"]
+            track_id = results["tracks"]["items"][0]["id"]
+            tracks_uris.append(track_uri)
+            Track.objects.create(name=track.name, artists=','.join(track.artists), apple_music_id=track.id, spotify_id=track_id)
+        except:
+            continue
+        finally:
+            progress_recorder.set_progress(i + 1, n)
     playlist = sp.user_playlist_create(
         uid,
         playlist_title,
@@ -43,36 +57,19 @@ def generate_spotify_playlist(self, url):
         else f"Created with playlistor.io from the original playlist on Apple Music[{url}].",
     )
     playlist_id = playlist["id"]
-    tracks_uris = []
-    try:
-        for i, track in enumerate(tracks):
-            try:
-                results = sp.search(
-                    f"{track.name} {' '.join(track.artists)}", limit=1
-                )
-                track_uri = results["tracks"]["items"][0]["uri"]
-                tracks_uris.append(track_uri)
-            except (IndexError, KeyError):
-                continue
-            finally:
-                progress_recorder.set_progress(i + 1, n)
-        # You can add a maximum of 100 tracks per request.
-        if len(tracks_uris) > 100:
-            for chunk in grouper(100, tracks_uris):
-                sp.playlist_add_items(playlist_id, chunk)
-        else:
-            sp.playlist_add_items(playlist_id, tracks_uris)
-    except SpotifyException as e:
-        # Delete playlist if error occurs while adding songs
-        sp.current_user_unfollow_playlist(playlist_id)
-        raise e
     playlist_url = playlist["external_urls"]["spotify"]
+    # You can add a maximum of 100 tracks per request.
+    if len(tracks_uris) > 100:
+        for chunk in grouper(100, tracks_uris):
+            sp.playlist_add_items(playlist_id, chunk)
+    else:
+        sp.playlist_add_items(playlist_id, tracks_uris)
     # Store playlist info
     Playlist.objects.create(
         name=playlist_title, spotify_url=playlist_url, applemusic_url=url
     )
     cache.set(url, playlist_url, timeout=3600)
-    increase_playlist_count()
+    incr_playlist_count()
     return playlist_url
 
 
@@ -118,5 +115,5 @@ def generate_applemusic_playlist(self, url, token):
         headers=headers,
     )
     response.raise_for_status()
-    increase_playlist_count()
+    incr_playlist_count()
     return "Check your recently created playlists on Apple Music."
