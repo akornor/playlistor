@@ -97,6 +97,7 @@ def generate_applemusic_playlist(self, url, token):
             response.raise_for_status()
             song = response.json()["results"]["songs"]["data"][0]
             playlist_data.append({"id": song["id"], "type": song["type"]})
+            Track.objects.create(name=track.name, artists=','.join(track.artists), apple_music_id=song["id"], spotify_id=track.id)
         except:
             continue
         finally:
