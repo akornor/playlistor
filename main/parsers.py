@@ -2,7 +2,7 @@ from collections import namedtuple
 import re
 from .utils import get_spotify_client, requests_retry_session, generate_auth_token
 
-Track = namedtuple("Track", ["id", "title", "artist", "featuring"])
+Track = namedtuple("Track", ["id", "name", "artist", "featuring"])
 
 
 class BaseParser:
@@ -58,15 +58,15 @@ class AppleMusicParser(BaseParser):
         for track in track_items:
             track_id = track["id"]
             artist = track["attributes"]["artistName"].replace("&", " ")
-            title = track["attributes"]["name"]
+            name = track["attributes"]["name"]
             featuring = ""
-            if "feat." in title:
-                title = title.replace("feat. ", "")
-                mo = PAT.search(title)
+            if "feat." in name:
+                name = name.replace("feat. ", "")
+                mo = PAT.search(name)
                 if mo is not None:
                     featuring = mo.group(1).replace("&", " ")
-                    title = PAT.sub("", title).strip()
-            tracks.append(Track(id=track_id, title=title, artist=artist, featuring=featuring))
+                    name = PAT.sub("", name).strip()
+            tracks.append(Track(id=track_id, name=name, artist=artist, featuring=featuring))
         return tracks
 
     def _get_playlist_creator(self):
@@ -109,9 +109,9 @@ class SpotifyParser(BaseParser):
             track = item["track"]
             if track is not None:
                 track_id = track["id"]
-                title = track["name"]
+                name = track["name"]
                 artist = track["artists"][0]["name"]
-                tracks.append(Track(id=track_id, title=title, artist=artist, featuring=""))
+                tracks.append(Track(id=track_id, name=name, artist=artist, featuring=""))
         return tracks
 
     def _get_playlist_creator(self):
