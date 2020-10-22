@@ -48,7 +48,7 @@ def generate_spotify_playlist(self, url):
         for i, track in enumerate(tracks):
             try:
                 results = sp.search(
-                    f"{track.name} {track.artist} {track.featuring}", limit=1
+                    f"{track.name} {' '.join(track.artists)}", limit=1
                 )
                 track_uri = results["tracks"]["items"][0]["uri"]
                 tracks_uris.append(track_uri)
@@ -91,7 +91,7 @@ def generate_applemusic_playlist(self, url, token):
     _session = requests_retry_session()
     for i, track in enumerate(tracks):
         try:
-            params = {"term": f"{track.name} {track.artist}", "limit": 1}
+            params = {"term": f"{track.name} {' '.join(track.artists)}", "limit": 1}
             response = _session.get(
                 "https://api.music.apple.com/v1/catalog/us/search",
                 params=params,
