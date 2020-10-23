@@ -21,6 +21,12 @@ def incr_playlist_count():
     redis_client = get_redis_client()
     redis_client.incr("counter:playlists")
 
+def get_track(**kwargs):
+    try:
+        return Track.objects.get(**kwargs)
+    except Track.DoesNotExist:
+        return None
+
 @shared_task(bind=True)
 def generate_spotify_playlist(self, url):
     url = strip_qs(url)
@@ -35,16 +41,20 @@ def generate_spotify_playlist(self, url):
     tracks = data["tracks"]
     creator = data["playlist_creator"]
     n = len(tracks)
-    tracks_uris = []
+    track_uris = []
+    tracks_to_save = []
     for i, track in enumerate(tracks):
         try:
-            results = sp.search(
-                f"{track.name} {' '.join(track.artists)}", limit=1
-            )
-            track_uri = results["tracks"]["items"][0]["uri"]
-            track_id = results["tracks"]["items"][0]["id"]
-            tracks_uris.append(track_uri)
-            Track.objects.create(name=track.name, artists=','.join(track.artists), apple_music_id=track.id, spotify_id=track_id)
+            t = get_track(apple_music_id=track.id)
+            if t is not None:
+                track_uris.append(f"spotify:track:{t.spotify_id}")
+            else:
+                results = sp.search(
+                    f"{track.name} {' '.join(track.artists)}", limit=1
+                )
+                track_id = results["tracks"]["items"][0]["id"]
+                track_uris.append(f"spotify:track:{track_id}")
+                tracks_to_save.append(Track(name=track.name, artists=','.join(track.artists), apple_music_id=track.id, spotify_id=track_id))
         except:
             continue
         finally:
@@ -59,15 +69,17 @@ def generate_spotify_playlist(self, url):
     playlist_id = playlist["id"]
     playlist_url = playlist["external_urls"]["spotify"]
     # You can add a maximum of 100 tracks per request.
-    if len(tracks_uris) > 100:
-        for chunk in grouper(100, tracks_uris):
+    if len(track_uris) > 100:
+        for chunk in grouper(100, track_uris):
             sp.playlist_add_items(playlist_id, chunk)
     else:
-        sp.playlist_add_items(playlist_id, tracks_uris)
+        sp.playlist_add_items(playlist_id, track_uris)
     # Store playlist info
     Playlist.objects.create(
         name=playlist_title, spotify_url=playlist_url, applemusic_url=url
     )
+    if len(tracks_to_save) > 0:
+        Track.objects.bulk_update_or_create(tracks_to_save, ['name', 'artists', 'apple_music_id', 'spotify_id'], match_field='spotify_id')
     cache.set(url, playlist_url, timeout=3600)
     incr_playlist_count()
     return playlist_url
@@ -82,22 +94,27 @@ def generate_applemusic_playlist(self, url, token):
     playlist_title = data["playlist_title"]
     creator = data["playlist_creator"]
     playlist_data = []
+    tracks_to_save = []
     n = len(tracks)
     auth_token = generate_auth_token()
     headers = {"Authorization": f"Bearer {auth_token}", "Music-User-Token": token}
     _session = requests_retry_session()
     for i, track in enumerate(tracks):
         try:
-            params = {"term": f"{track.name} {' '.join(track.artists)}", "limit": 1}
-            response = _session.get(
-                "https://api.music.apple.com/v1/catalog/us/search",
-                params=params,
-                headers=headers,
-            )
-            response.raise_for_status()
-            song = response.json()["results"]["songs"]["data"][0]
-            playlist_data.append({"id": song["id"], "type": song["type"]})
-            Track.objects.create(name=track.name, artists=','.join(track.artists), apple_music_id=song["id"], spotify_id=track.id)
+            t = get_track(spotify_id=track.id)
+            if t is not None:
+                playlist_data.append({"id": t.apple_music_id, "type": "songs"})
+            else:
+                params = {"term": f"{track.name} {' '.join(track.artists)}", "limit": 1}
+                response = _session.get(
+                    "https://api.music.apple.com/v1/catalog/us/search",
+                    params=params,
+                    headers=headers,
+                )
+                response.raise_for_status()
+                song = response.json()["results"]["songs"]["data"][0]
+                playlist_data.append({"id": song["id"], "type": song["type"]})
+                tracks_to_save.append(Track(name=track.name, artists=','.join(track.artists), apple_music_id=song["id"], spotify_id=track.id))
         except:
             continue
         finally:
@@ -117,4 +134,6 @@ def generate_applemusic_playlist(self, url, token):
     )
     response.raise_for_status()
     incr_playlist_count()
+    if len(tracks_to_save) > 0:
+        Track.objects.bulk_update_or_create(tracks_to_save, ['name', 'artists', 'apple_music_id', 'spotify_id'], match_field='spotify_id')
     return "Check your recently created playlists on Apple Music."
