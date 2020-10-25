@@ -9,6 +9,7 @@ from spotipy import Spotify
 from main import oauth
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
+from .client import AppleMusicClient
 
 
 def requests_retry_session(
@@ -31,6 +32,9 @@ def requests_retry_session(
 def get_spotify_client():
     token = oauth.get_cached_token()["access_token"]
     return Spotify(auth=token)
+
+def get_apple_music_client():
+    return AppleMusicClient(settings.APPLE_TEAM_ID, settings.APPLE_KEY_ID, settings.APPLE_PRIVATE_KEY)
 
 def grouper(n, iterable):
     return [iterable[i : i + n] for i in range(0, len(iterable), n)]
