@@ -119,21 +119,46 @@ def generate_applemusic_playlist(self, url, token):
             continue
         finally:
             progress_recorder.set_progress(i + 1, n)
-    payload = {
-        "attributes": {
-            "name": playlist_title,
-            "description": f"Created with playlistor.io from the original playlist by {creator} on Spotify[{url}].",
-        },
-        "relationships": {"tracks": {"data": playlist_data}},
-    }
-    # create playlist here
-    response = _session.post(
-        "https://api.music.apple.com/v1/me/library/playlists",
-        data=json.dumps(payload),
-        headers=headers,
-    )
-    response.raise_for_status()
+    if len(playlist_data) > 200:
+        payload = {
+            "attributes": {
+                "name": playlist_title,
+                "description": f"Created with playlistor.io from the original playlist by {creator} on Spotify[{url}].",
+            },
+            "relationships": {"tracks": {"data": playlist_data[:200]}},
+        }
+        # create playlist here
+        response = _session.post(
+            "https://api.music.apple.com/v1/me/library/playlists",
+            data=json.dumps(payload),
+            headers=headers,
+        )
+        response.raise_for_status()
+        playlist_id = response.json()["data"][0]["id"]
+        playlist_data = playlist_data[200:]
+        for chunk in grouper(200, playlist_data):
+            payload = { "data": chunk }
+            response = _session.post(
+                f"https://api.music.apple.com/v1/me/library/playlists/{playlist_id}/tracks",
+                data=json.dumps(payload),
+                headers=headers,
+                )
+    else:
+        payload = {
+            "attributes": {
+                "name": playlist_title,
+                "description": f"Created with playlistor.io from the original playlist by {creator} on Spotify[{url}].",
+            },
+            "relationships": {"tracks": {"data": playlist_data}},
+        }
+        # create playlist here
+        response = _session.post(
+            "https://api.music.apple.com/v1/me/library/playlists",
+            data=json.dumps(payload),
+            headers=headers,
+        )
+        response.raise_for_status()
     incr_playlist_count()
     if len(tracks_to_save) > 0:
-        Track.objects.bulk_update_or_create(tracks_to_save, ['name', 'artists', 'apple_music_id', 'spotify_id'], match_field='spotify_id')
+        Track.objects.bulk_update_or_create(tracks_to_save, ['name', 'artists', 'apple_music_id', 'spotify_id'], match_field='apple_music_id')
     return "Check your recently created playlists on Apple Music."
