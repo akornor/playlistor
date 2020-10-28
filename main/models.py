@@ -1,5 +1,4 @@
 from django.db import models
-from bulk_update_or_create import BulkUpdateOrCreateQuerySet
 
 
 class Playlist(models.Model):
@@ -18,8 +17,6 @@ class Track(models.Model):
 	spotify_id = models.CharField(max_length=MAX_LENGTH, null=True, unique=True)
 	apple_music_id = models.CharField(max_length=MAX_LENGTH, null=True, unique=True)
 	isrc = models.CharField(max_length=MAX_LENGTH, null=True)
-
-	objects = BulkUpdateOrCreateQuerySet.as_manager()
 
 	class Meta:
 		constraints = [

@@ -19,4 +19,3 @@ whitenoise==5.0.1
 PyJWT==1.7.1
 cryptography==3.2
 django-redis-cache==2.1.0
-django-bulk-update-or-create==0.2.0
