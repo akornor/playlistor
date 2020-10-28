@@ -105,7 +105,8 @@ def generate_applemusic_playlist(self, url, token):
             if t is not None:
                 playlist_data.append({"id": t.apple_music_id, "type": "songs"})
             else:
-                params = {"term": f"{track.name} {' '.join(track.artists)}", "limit": 1}
+                # use single artist as it's observed to improve search accuracy.
+                params = {"term": f"{track.name} {track.artists[0]}", "limit": 1}
                 response = _session.get(
                     "https://api.music.apple.com/v1/catalog/us/search",
                     params=params,
