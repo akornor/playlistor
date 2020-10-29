@@ -84,6 +84,7 @@ button.onclick = async function(event) {
     SPOTIFY_PLAYLIST_URL_REGEX.test(url) &&
     !MusicKit.getInstance().isAuthorized
   ) {
+    resetButton();
     const result = await Swal.fire({
       title: "🚨Sign In🚨",
       html:
@@ -92,9 +93,8 @@ button.onclick = async function(event) {
       confirmButtonText: "SIGN IN."
     });
     if (result.value) {
-      MusicKit.getInstance().authorize();
+      await MusicKit.getInstance().authorize();
     }
-    resetButton();
     return;
   }
   try {
