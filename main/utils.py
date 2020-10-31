@@ -33,7 +33,7 @@ def get_spotify_client():
     token = oauth.get_cached_token()["access_token"]
     return Spotify(auth=token)
 
-def get_apple_music_client():
+def get_applemusic_client():
     return AppleMusicClient(settings.APPLE_TEAM_ID, settings.APPLE_KEY_ID, settings.APPLE_PRIVATE_KEY)
 
 def grouper(n, iterable):
