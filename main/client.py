@@ -20,12 +20,6 @@ TRACK_TYPE_LIBRARY_MUSIC_VIDEOS = 'library-music-videos'
 
 
 class AppleMusicClient:
-
-    # Client-specific JSON Web Token
-    # https://pyjwt.readthedocs.io/en/latest/
-    # <str>
-    developer_token = None
-
     def __init__(self, team_id, key_id, private_key, access_token=None,
                  base_url=BASE_URL, api_version=API_VERSION,
                  timeout=TIMEOUT_SECONDS):
@@ -48,22 +42,19 @@ class AppleMusicClient:
         return headers
 
     def _generate_developer_token(self, team_id, key_id, private_key):
-        algorithm = 'ES256'
+        # see https://developer.apple.com/documentation/applemusicapi/getting_keys_and_creating_tokens
         time_now = datetime.datetime.now()
         time_expired = time_now + datetime.timedelta(hours=12)
+        headers = {"alg": "ES256", "kid": key_id}
         payload = {
-            'iss': team_id,
-            'exp': int(time_expired.strftime('%s')),
-            'iat': int(time_now.strftime('%s')),
+            "iss": team_id,
+            "exp": int(time_expired.strftime("%s")),
+            "iat": int(time_now.strftime("%s")),
         }
-        headers = {
-            'alg': algorithm,
-            'kid': key_id,
-        }
-        return jwt.encode(payload,
-                          private_key,
-                          algorithm=algorithm,
-                          headers=headers)
+        token = jwt.encode(
+            payload, private_key, algorithm="ES256", headers=headers
+        )
+        return token.decode()
 
     def _request_method(self, method):
         return {
@@ -88,7 +79,7 @@ class AppleMusicClient:
                                   data=json.dumps(payload),
                                   timeout=self.timeout)
         response.raise_for_status()
-        return response.content and response.json() or {}
+        return response.json()
 
     """Helper Functions"""
 
@@ -122,16 +113,12 @@ class AppleMusicClient:
         """https://developer.apple.com/documentation/applemusicapi/libraryplaylistrequesttrack
         """
         return {
-            'id': str(track_id),
+            'id': track_id,
             'type': TRACK_TYPE_SONGS,
         }
 
     def _build_tracks(self, track_ids, track_type=TRACK_TYPE_SONGS):
-        """
-        TODO: Offer the ability to add dynamic track types per track id
-        """
-        return map(lambda track_id: self._build_track(track_id, track_type),
-                   track_ids)
+        return [self._build_track(track_id, track_type) for track_id in track_ids]
 
     """API Endpoints"""
 
@@ -261,7 +248,7 @@ class AppleMusicClient:
             # https://developer.apple.com/documentation/applemusicapi/libraryplaylistcreationrequest/relationships
             # https://developer.apple.com/documentation/applemusicapi/libraryplaylistrequesttrack
             tracks = self._build_tracks(track_ids)
-            payload['relationships'] = {'tracks': tracks}
+            payload['relationships'] = {'tracks': {"data": tracks}}
         if include:
             params = {'include': include}
         return self._make_request(
