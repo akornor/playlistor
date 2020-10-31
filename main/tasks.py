@@ -12,6 +12,7 @@ from .utils import (
     grouper,
     get_redis_client,
     get_spotify_client,
+    get_applemusic_client,
     requests_retry_session,
     generate_auth_token,
     strip_qs,
@@ -93,9 +94,11 @@ def generate_applemusic_playlist(self, url, token):
     tracks = data["tracks"]
     playlist_title = data["playlist_title"]
     creator = data["playlist_creator"]
-    playlist_data = []
     tracks_to_save = []
+    track_ids = []
     n = len(tracks)
+    am = get_applemusic_client()
+    am.access_token = token
     auth_token = generate_auth_token()
     headers = {"Authorization": f"Bearer {auth_token}", "Music-User-Token": token}
     _session = requests_retry_session()
@@ -104,61 +107,25 @@ def generate_applemusic_playlist(self, url, token):
             t = get_track(spotify_id=track.id)
             if t is not None:
                 playlist_data.append({"id": t.apple_music_id, "type": "songs"})
+                track_ids.append(t.apple_music_id)
             else:
                 # use single artist as it's observed to improve search accuracy.
-                params = {"term": f"{track.name} {track.artists[0]}", "limit": 1}
-                response = _session.get(
-                    "https://api.music.apple.com/v1/catalog/us/search",
-                    params=params,
-                    headers=headers,
-                )
-                response.raise_for_status()
-                song = response.json()["results"]["songs"]["data"][0]
-                playlist_data.append({"id": song["id"], "type": song["type"]})
+                query = f"{track.name} {track.artists[0]}"
+                song = am.search(query=query, limit=1)["results"]["songs"]["data"][0]
+                track_ids.append(song["id"])
                 tracks_to_save.append(Track(name=track.name, artists=','.join(track.artists), apple_music_id=song["id"], spotify_id=track.id))
         except:
             continue
         finally:
             progress_recorder.set_progress(i + 1, n)
-    if len(playlist_data) > 200:
-        payload = {
-            "attributes": {
-                "name": playlist_title,
-                "description": f"Created with playlistor.io from the original playlist by {creator} on Spotify[{url}].",
-            },
-            "relationships": {"tracks": {"data": playlist_data[:200]}},
-        }
-        # create playlist here
-        response = _session.post(
-            "https://api.music.apple.com/v1/me/library/playlists",
-            data=json.dumps(payload),
-            headers=headers,
-        )
-        response.raise_for_status()
-        playlist_id = response.json()["data"][0]["id"]
-        playlist_data = playlist_data[200:]
-        for chunk in grouper(200, playlist_data):
-            payload = { "data": chunk }
-            response = _session.post(
-                f"https://api.music.apple.com/v1/me/library/playlists/{playlist_id}/tracks",
-                data=json.dumps(payload),
-                headers=headers,
-                )
+    if len(track_ids) > 200:
+        playlist_data =am.user_playlist_create(name=playlist_title, description=f"Created with playlistor.io from the original playlist by {creator} on Spotify[{url}].", track_ids=track_ids[:200])
+        playlist_id = playlist_data["data"][0]["id"]
+        track_ids = track_ids[200:]
+        for chunk in grouper(200, track_ids):
+            am.user_playlist_add_tracks(playlist_id, chunk)
     else:
-        payload = {
-            "attributes": {
-                "name": playlist_title,
-                "description": f"Created with playlistor.io from the original playlist by {creator} on Spotify[{url}].",
-            },
-            "relationships": {"tracks": {"data": playlist_data}},
-        }
-        # create playlist here
-        response = _session.post(
-            "https://api.music.apple.com/v1/me/library/playlists",
-            data=json.dumps(payload),
-            headers=headers,
-        )
-        response.raise_for_status()
+        am.user_playlist_create(name=playlist_title, description=f"Created with playlistor.io from the original playlist by {creator} on Spotify[{url}].", track_ids=track_ids)
     incr_playlist_count()
     if len(tracks_to_save) > 0:
         Track.objects.bulk_update_or_create(tracks_to_save, ['name', 'artists', 'apple_music_id', 'spotify_id'], match_field='apple_music_id')
