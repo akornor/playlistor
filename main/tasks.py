@@ -13,8 +13,6 @@ from .utils import (
     get_redis_client,
     get_spotify_client,
     get_applemusic_client,
-    requests_retry_session,
-    generate_auth_token,
     strip_qs,
 )
 
@@ -99,14 +97,10 @@ def generate_applemusic_playlist(self, url, token):
     n = len(tracks)
     am = get_applemusic_client()
     am.access_token = token
-    auth_token = generate_auth_token()
-    headers = {"Authorization": f"Bearer {auth_token}", "Music-User-Token": token}
-    _session = requests_retry_session()
     for i, track in enumerate(tracks):
         try:
             t = get_track(spotify_id=track.id)
             if t is not None:
-                playlist_data.append({"id": t.apple_music_id, "type": "songs"})
                 track_ids.append(t.apple_music_id)
             else:
                 # use single artist as it's observed to improve search accuracy.
