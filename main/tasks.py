@@ -16,15 +16,18 @@ from .utils import (
     strip_qs,
 )
 
+
 def incr_playlist_count():
     redis_client = get_redis_client()
     redis_client.incr("counter:playlists")
+
 
 def get_track(**kwargs):
     try:
         return Track.objects.get(**kwargs)
     except Track.DoesNotExist:
         return None
+
 
 @shared_task(bind=True)
 def generate_spotify_playlist(self, url):
@@ -48,12 +51,17 @@ def generate_spotify_playlist(self, url):
             if t is not None:
                 track_uris.append(f"spotify:track:{t.spotify_id}")
             else:
-                results = sp.search(
-                    f"{track.name} {' '.join(track.artists)}", limit=1
-                )
+                results = sp.search(f"{track.name} {' '.join(track.artists)}", limit=1)
                 track_id = results["tracks"]["items"][0]["id"]
                 track_uris.append(f"spotify:track:{track_id}")
-                tracks_to_save.append(Track(name=track.name, artists=','.join(track.artists), apple_music_id=track.id, spotify_id=track_id))
+                tracks_to_save.append(
+                    Track(
+                        name=track.name,
+                        artists=",".join(track.artists),
+                        apple_music_id=track.id,
+                        spotify_id=track_id,
+                    )
+                )
         except:
             continue
         finally:
@@ -78,7 +86,11 @@ def generate_spotify_playlist(self, url):
         name=playlist_title, spotify_url=playlist_url, applemusic_url=url
     )
     if len(tracks_to_save) > 0:
-        Track.objects.bulk_update_or_create(tracks_to_save, ['name', 'artists', 'apple_music_id', 'spotify_id'], match_field='spotify_id')
+        Track.objects.bulk_update_or_create(
+            tracks_to_save,
+            ["name", "artists", "apple_music_id", "spotify_id"],
+            match_field="spotify_id",
+        )
     cache.set(url, playlist_url, timeout=3600)
     incr_playlist_count()
     return playlist_url
@@ -107,20 +119,39 @@ def generate_applemusic_playlist(self, url, token):
                 query = f"{track.name} {track.artists[0]}"
                 song = am.search(query=query, limit=1)["results"]["songs"]["data"][0]
                 track_ids.append(song["id"])
-                tracks_to_save.append(Track(name=track.name, artists=','.join(track.artists), apple_music_id=song["id"], spotify_id=track.id))
+                tracks_to_save.append(
+                    Track(
+                        name=track.name,
+                        artists=",".join(track.artists),
+                        apple_music_id=song["id"],
+                        spotify_id=track.id,
+                    )
+                )
         except:
             continue
         finally:
             progress_recorder.set_progress(i + 1, n)
     if len(track_ids) > 200:
-        playlist_data =am.user_playlist_create(name=playlist_title, description=f"Created with playlistor.io from the original playlist by {creator} on Spotify[{url}].", track_ids=track_ids[:200])
+        playlist_data = am.user_playlist_create(
+            name=playlist_title,
+            description=f"Created with playlistor.io from the original playlist by {creator} on Spotify[{url}].",
+            track_ids=track_ids[:200],
+        )
         playlist_id = playlist_data["data"][0]["id"]
         track_ids = track_ids[200:]
         for chunk in grouper(200, track_ids):
             am.user_playlist_add_tracks(playlist_id, chunk)
     else:
-        am.user_playlist_create(name=playlist_title, description=f"Created with playlistor.io from the original playlist by {creator} on Spotify[{url}].", track_ids=track_ids)
+        am.user_playlist_create(
+            name=playlist_title,
+            description=f"Created with playlistor.io from the original playlist by {creator} on Spotify[{url}].",
+            track_ids=track_ids,
+        )
     incr_playlist_count()
     if len(tracks_to_save) > 0:
-        Track.objects.bulk_update_or_create(tracks_to_save, ['name', 'artists', 'apple_music_id', 'spotify_id'], match_field='apple_music_id')
+        Track.objects.bulk_update_or_create(
+            tracks_to_save,
+            ["name", "artists", "apple_music_id", "spotify_id"],
+            match_field="apple_music_id",
+        )
     return "Check your recently created playlists on Apple Music."
