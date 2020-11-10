@@ -3,9 +3,9 @@ import jwt
 import json
 import requests
 
-BASE_URL = 'https://api.music.apple.com'
+BASE_URL = "https://api.music.apple.com"
 
-API_VERSION = 'v1'
+API_VERSION = "v1"
 
 TIMEOUT_SECONDS = 30
 
@@ -13,16 +13,23 @@ TIMEOUT_SECONDS = 30
 # Track types
 # The possible values are songs, music-videos, library-songs, or library-music-videos.
 # https://developer.apple.com/documentation/applemusicapi/libraryplaylistrequesttrack
-TRACK_TYPE_SONGS = 'songs'
-TRACK_TYPE_MUSIC_VIDEOS = 'music-videos'
-TRACK_TYPE_LIBRARY_SONGS = 'library-songs'
-TRACK_TYPE_LIBRARY_MUSIC_VIDEOS = 'library-music-videos'
+TRACK_TYPE_SONGS = "songs"
+TRACK_TYPE_MUSIC_VIDEOS = "music-videos"
+TRACK_TYPE_LIBRARY_SONGS = "library-songs"
+TRACK_TYPE_LIBRARY_MUSIC_VIDEOS = "library-music-videos"
 
 
 class AppleMusicClient:
-    def __init__(self, team_id, key_id, private_key, access_token=None,
-                 base_url=BASE_URL, api_version=API_VERSION,
-                 timeout=TIMEOUT_SECONDS):
+    def __init__(
+        self,
+        team_id,
+        key_id,
+        private_key,
+        access_token=None,
+        base_url=BASE_URL,
+        api_version=API_VERSION,
+        timeout=TIMEOUT_SECONDS,
+    ):
         self.team_id = team_id
         self.key_id = key_id
         self.private_key = private_key
@@ -33,12 +40,15 @@ class AppleMusicClient:
         self.headers = self._get_auth_headers()
 
     def _get_auth_headers(self):
-        self.developer_token = self._generate_developer_token(self.team_id,
-                                                              self.key_id,
-                                                              self.private_key)
-        headers = {'Authorization': 'Bearer %s' % self.developer_token}
+        self.developer_token = self._generate_developer_token(
+            self.team_id, self.key_id, self.private_key
+        )
+        headers = {
+            "Authorization": "Bearer %s" % self.developer_token,
+            "Content-Type": "application/json",
+        }
         if self.user_access_token:
-            headers['Music-User-Token'] = self.user_access_token
+            headers["Music-User-Token"] = self.user_access_token
         return headers
 
     def _generate_developer_token(self, team_id, key_id, private_key):
@@ -51,33 +61,34 @@ class AppleMusicClient:
             "exp": int(time_expired.strftime("%s")),
             "iat": int(time_now.strftime("%s")),
         }
-        token = jwt.encode(
-            payload, private_key, algorithm="ES256", headers=headers
-        )
+        token = jwt.encode(payload, private_key, algorithm="ES256", headers=headers)
         return token.decode()
 
     def _request_method(self, method):
         return {
-            'GET': requests.get,
-            'POST': requests.post,
-            'PUT': requests.put,
-            'PATCH': requests.patch,
-            'DELETE': requests.delete,
+            "GET": requests.get,
+            "POST": requests.post,
+            "PUT": requests.put,
+            "PATCH": requests.patch,
+            "DELETE": requests.delete,
         }.get(method)
 
-    def _make_request(self, method, endpoint, base_path=None, params=None,
-                      payload=None):
+    def _make_request(
+        self, method, endpoint, base_path=None, params=None, payload=None
+    ):
         if base_path is None:
             base_path = "/%s" % self.api_version
         params = params or {}
         payload = payload or {}
         url = "%s%s%s" % (self.base_url, base_path, endpoint)
         request_method = self._request_method(method)
-        response = request_method(url,
-                                  params=params,
-                                  headers=self.headers,
-                                  data=json.dumps(payload),
-                                  timeout=self.timeout)
+        response = request_method(
+            url,
+            params=params,
+            headers=self.headers,
+            data=json.dumps(payload),
+            timeout=self.timeout,
+        )
         response.raise_for_status()
         return response.json()
 
@@ -89,7 +100,7 @@ class AppleMusicClient:
 
     @access_token.setter
     def access_token(self, value):
-        self.headers['Music-User-Token'] = self.user_access_token = value
+        self.headers["Music-User-Token"] = self.user_access_token = value
 
     def refresh_developer_token(self):
         self.headers = self._get_auth_headers()
@@ -97,136 +108,122 @@ class AppleMusicClient:
     def next(self, resource, limit=None):
         """https://developer.apple.com/library/content/documentation/NetworkingInternetWeb/Conceptual/AppleMusicWebServicesReference/RelationshipsandPagination.html#//apple_ref/doc/uid/TP40017625-CH135-SW1
         """
-        if not (resource and resource.get('next')):
+        if not (resource and resource.get("next")):
             return None
         params = {}
         if limit:
-            params['limit'] = limit
+            params["limit"] = limit
         return self._make_request(
-            method='GET',
-            endpoint=resource.get('next'),
-            base_path='',
-            params=params,
+            method="GET", endpoint=resource.get("next"), base_path="", params=params
         )
 
     def _build_track(self, track_id, track_type=TRACK_TYPE_SONGS):
         """https://developer.apple.com/documentation/applemusicapi/libraryplaylistrequesttrack
         """
-        return {
-            'id': track_id,
-            'type': TRACK_TYPE_SONGS,
-        }
+        return {"id": track_id, "type": TRACK_TYPE_SONGS}
 
     def _build_tracks(self, track_ids, track_type=TRACK_TYPE_SONGS):
         return [self._build_track(track_id, track_type) for track_id in track_ids]
 
     """API Endpoints"""
 
-    def search(self, query, limit=None, offset=None, storefront='us',
-               types=TRACK_TYPE_SONGS):
+    def search(
+        self, query, limit=None, offset=None, storefront="us", types=TRACK_TYPE_SONGS
+    ):
         """https://developer.apple.com/library/content/documentation/NetworkingInternetWeb/Conceptual/AppleMusicWebServicesReference/Searchforresources.html#//apple_ref/doc/uid/TP40017625-CH58-SW1
         """
         if not query:
             return
-        params = {'term': query}
+        params = {"term": query}
         if limit:
-            params['limit'] = limit
+            params["limit"] = limit
         if offset:
-            params['offset'] = offset
+            params["offset"] = offset
         if types:
-            params['types'] = types
+            params["types"] = types
         return self._make_request(
-            method='GET',
-            endpoint="/catalog/%s/search" % storefront,
-            params=params,
+            method="GET", endpoint="/catalog/%s/search" % storefront, params=params
         )
 
-    def get_song(self, id, storefront='us', include=None):
+    def get_song(self, id, storefront="us", include=None):
         """https://developer.apple.com/documentation/applemusicapi/get_a_catalog_song
         """
         params = {}
         if include:
-            params['include'] = include
+            params["include"] = include
         return self._make_request(
-            method='GET',
+            method="GET",
             endpoint="/catalog/%s/songs/%s" % (storefront, id),
             params=params,
         )
 
-    def get_songs(self, ids, storefront='us', include=None):
+    def get_songs(self, ids, storefront="us", include=None):
         """https://developer.apple.com/documentation/applemusicapi/get_multiple_catalog_songs_by_id
         """
-        params = {'ids': ','.join(ids)}
+        params = {"ids": ",".join(ids)}
         if include:
-            params['include'] = include
+            params["include"] = include
         return self._make_request(
-            method='GET',
-            endpoint="/catalog/%s/songs" % storefront,
-            params=params,
+            method="GET", endpoint="/catalog/%s/songs" % storefront, params=params
         )
 
-    def get_songs_by_isrc(self, isrc, storefront='us', include=None):
+    def get_songs_by_isrc(self, isrc, storefront="us", include=None):
         """https://developer.apple.com/documentation/applemusicapi/get_multiple_catalog_songs_by_isrc
         """
-        params = {'filter[isrc]': isrc}
+        params = {"filter[isrc]": isrc}
         if include:
-            params['include'] = include
+            params["include"] = include
         return self._make_request(
-            method='GET',
-            endpoint="/catalog/%s/songs" % storefront,
-            params=params,
+            method="GET", endpoint="/catalog/%s/songs" % storefront, params=params
         )
 
-    def get_playlist(self, id, storefront='us', include=None):
+    def get_playlist(self, id, storefront="us", include=None):
         """https://developer.apple.com/library/content/documentation/NetworkingInternetWeb/Conceptual/AppleMusicWebServicesReference/GetaSinglePlaylist.html#//apple_ref/doc/uid/TP40017625-CH20-SW1
         """
         params = {}
         if include:
-            params['include'] = include
+            params["include"] = include
         return self._make_request(
-            method='GET',
+            method="GET",
             endpoint="/catalog/%s/playlists/%s" % (storefront, id),
             params=params,
         )
 
-    def get_playlists(self, ids, storefront='us', include=None):
+    def get_playlists(self, ids, storefront="us", include=None):
         """https://developer.apple.com/library/content/documentation/NetworkingInternetWeb/Conceptual/AppleMusicWebServicesReference/GetMultiplePlaylists.html#//apple_ref/doc/uid/TP40017625-CH21-SW1
         """
-        params = {'ids': ','.join(ids)}
+        params = {"ids": ",".join(ids)}
         if include:
-            params['include'] = include
+            params["include"] = include
         return self._make_request(
-            method='GET',
-            endpoint="/catalog/%s/playlists" % storefront,
-            params=params,
+            method="GET", endpoint="/catalog/%s/playlists" % storefront, params=params
         )
 
-    def get_genre(self, id, storefront='us', include=None):
+    def get_genre(self, id, storefront="us", include=None):
         """https://developer.apple.com/library/content/documentation/NetworkingInternetWeb/Conceptual/AppleMusicWebServicesReference/GetaSingleGenres.html#//apple_ref/doc/uid/TP40017625-CH16-SW1
         """
         params = {}
         if include:
-            params['include'] = include
+            params["include"] = include
         return self._make_request(
-            method='GET',
+            method="GET",
             endpoint="/catalog/%s/genres/%s" % (storefront, id),
             params=params,
         )
 
-    def get_genres(self, ids, storefront='us', include=None):
+    def get_genres(self, ids, storefront="us", include=None):
         """https://developer.apple.com/library/content/documentation/NetworkingInternetWeb/Conceptual/AppleMusicWebServicesReference/GetMultipleGenres.html#//apple_ref/doc/uid/TP40017625-CH17-SW1
         """
-        params = {'ids': ','.join(ids)}
+        params = {"ids": ",".join(ids)}
         if include:
-            params['include'] = include
+            params["include"] = include
         return self._make_request(
-            method='GET',
-            endpoint="/catalog/%s/genres" % storefront,
-            params=params,
+            method="GET", endpoint="/catalog/%s/genres" % storefront, params=params
         )
 
-    def user_playlist_create(self, name, description=None, track_ids=None,
-                             include=None):
+    def user_playlist_create(
+        self, name, description=None, track_ids=None, include=None
+    ):
         """
         Params:
             `name` <str>
@@ -241,19 +238,19 @@ class AppleMusicClient:
         params = None
         # https://developer.apple.com/documentation/applemusicapi/libraryplaylistcreationrequest
         # https://developer.apple.com/documentation/applemusicapi/libraryplaylistcreationrequest/attributes
-        payload = {'attributes': {'name': name}}
+        payload = {"attributes": {"name": name}}
         if description:
-            payload['attributes']['description'] = description
+            payload["attributes"]["description"] = description
         if track_ids:
             # https://developer.apple.com/documentation/applemusicapi/libraryplaylistcreationrequest/relationships
             # https://developer.apple.com/documentation/applemusicapi/libraryplaylistrequesttrack
             tracks = self._build_tracks(track_ids)
-            payload['relationships'] = {'tracks': {"data": tracks}}
+            payload["relationships"] = {"tracks": {"data": tracks}}
         if include:
-            params = {'include': include}
+            params = {"include": include}
         return self._make_request(
-            method='POST',
-            endpoint='/me/library/playlists',
+            method="POST",
+            endpoint="/me/library/playlists",
             params=params,
             payload=payload,
         )
@@ -285,9 +282,9 @@ class AppleMusicClient:
         """https://developer.apple.com/documentation/applemusicapi/add_tracks_to_library_playlist
         """
         tracks = self._build_tracks(track_ids)
-        payload = {'data': tracks}
+        payload = {"data": tracks}
         return self._make_request(
-            method='POST',
+            method="POST",
             endpoint="/me/library/playlists/%s/tracks" % id,
             payload=payload,
         )
@@ -296,13 +293,11 @@ class AppleMusicClient:
         """https://developer.apple.com/library/content/documentation/NetworkingInternetWeb/Conceptual/AppleMusicWebServicesReference/DeleteTrackfromLibraryPlaylist.html#//apple_ref/doc/uid/TP40017625-CH251-SW1
         """
         params = {
-            'ids[library-songs]': [str(track_id) for track_id in track_ids],
-            'mode': 'all',
+            "ids[library-songs]": [str(track_id) for track_id in track_ids],
+            "mode": "all",
         }
         return self._make_request(
-            method='DELETE',
-            endpoint="/me/library/playlists/%s" % id,
-            params=params,
+            method="DELETE", endpoint="/me/library/playlists/%s" % id, params=params
         )
 
     def user_playlist(self, id, include=None):
@@ -310,11 +305,9 @@ class AppleMusicClient:
         """
         params = {}
         if include:
-            params['include'] = include
+            params["include"] = include
         return self._make_request(
-            method='GET',
-            endpoint="/me/library/playlists/%s" % id,
-            params=params,
+            method="GET", endpoint="/me/library/playlists/%s" % id, params=params
         )
 
     def user_playlists(self, limit=None, offset=None, include=None):
@@ -336,15 +329,13 @@ class AppleMusicClient:
         """
         params = {}
         if limit:
-            params['limit'] = limit
+            params["limit"] = limit
         if offset:
-            params['offset'] = offset
+            params["offset"] = offset
         if include:
-            params['include'] = include
+            params["include"] = include
         return self._make_request(
-            method='GET',
-            endpoint='/me/library/playlists',
-            params=params,
+            method="GET", endpoint="/me/library/playlists", params=params
         )
 
     def user_heavy_rotation(self, limit=None, offset=None):
@@ -352,13 +343,11 @@ class AppleMusicClient:
         """
         params = {}
         if limit:
-            params['limit'] = limit
+            params["limit"] = limit
         if offset:
-            params['offset'] = offset
+            params["offset"] = offset
         return self._make_request(
-            method='GET',
-            endpoint='/me/history/heavy-rotation',
-            params=params,
+            method="GET", endpoint="/me/history/heavy-rotation", params=params
         )
 
     def user_recent_played(self, limit=None, offset=None):
@@ -374,13 +363,11 @@ class AppleMusicClient:
         """
         params = {}
         if limit:
-            params['limit'] = limit
+            params["limit"] = limit
         if offset:
-            params['offset'] = offset
+            params["offset"] = offset
         return self._make_request(
-            method='GET',
-            endpoint='/me/recent/played',
-            params=params,
+            method="GET", endpoint="/me/recent/played", params=params
         )
 
     def user_recent_added(self, limit=None, offset=None):
@@ -388,13 +375,11 @@ class AppleMusicClient:
         """
         params = {}
         if limit:
-            params['limit'] = limit
+            params["limit"] = limit
         if offset:
-            params['offset'] = offset
+            params["offset"] = offset
         return self._make_request(
-            method='GET',
-            endpoint='/me/library/recently-added',
-            params=params,
+            method="GET", endpoint="/me/library/recently-added", params=params
         )
 
     def user_songs(self, limit=None, include=None):
@@ -402,13 +387,11 @@ class AppleMusicClient:
         """
         params = {}
         if limit:
-            params['limit'] = limit
+            params["limit"] = limit
         if include:
-            params['include'] = include
+            params["include"] = include
         return self._make_request(
-            method='GET',
-            endpoint='/me/library/songs',
-            params=params,
+            method="GET", endpoint="/me/library/songs", params=params
         )
 
     def test(self):
@@ -416,4 +399,4 @@ class AppleMusicClient:
         https://api.music.apple.com/v1/test
         https://developer.apple.com/documentation/applemusicapi/getting_keys_and_creating_tokens
         """
-        return self._make_request(method='GET', endpoint='/test')
+        return self._make_request(method="GET", endpoint="/test")
