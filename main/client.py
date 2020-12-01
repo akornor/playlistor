@@ -90,7 +90,7 @@ class AppleMusicClient:
             timeout=self.timeout,
         )
         response.raise_for_status()
-        return response.json()
+        return response.content and response.json() or {}
 
     """Helper Functions"""
 
