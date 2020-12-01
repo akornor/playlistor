@@ -1,4 +1,5 @@
 import json
+import requests
 from playlistor.celery import app
 from celery import shared_task
 from celery.signals import task_success
@@ -131,22 +132,29 @@ def generate_applemusic_playlist(self, url, token):
             continue
         finally:
             progress_recorder.set_progress(i + 1, n)
-    if len(track_ids) > 200:
-        playlist_data = am.user_playlist_create(
-            name=playlist_title,
-            description=f"Created with playlistor.io from the original playlist by {creator} on Spotify[{url}].",
-            track_ids=track_ids[:200],
-        )
-        playlist_id = playlist_data["data"][0]["id"]
-        track_ids = track_ids[200:]
-        for chunk in grouper(200, track_ids):
-            am.user_playlist_add_tracks(playlist_id, chunk)
-    else:
-        am.user_playlist_create(
-            name=playlist_title,
-            description=f"Created with playlistor.io from the original playlist by {creator} on Spotify[{url}].",
-            track_ids=track_ids,
-        )
+    try:
+        if len(track_ids) > 200:
+            playlist_data = am.user_playlist_create(
+                name=playlist_title,
+                description=f"Created with playlistor.io from the original playlist by {creator} on Spotify[{url}].",
+                track_ids=track_ids[:200],
+            )
+            playlist_id = playlist_data["data"][0]["id"]
+            track_ids = track_ids[200:]
+            for chunk in grouper(200, track_ids):
+                am.user_playlist_add_tracks(playlist_id, chunk)
+        else:
+            am.user_playlist_create(
+                name=playlist_title,
+                description=f"Created with playlistor.io from the original playlist by {creator} on Spotify[{url}].",
+                track_ids=track_ids,
+            )
+    except requests.exceptions.HTTPError as http_error:
+        response = http_error.response
+        if response.status_code in [500]:
+            raise self.retry(exc=http_error, countdown=30)
+        else:
+            raise http_error
     incr_playlist_count()
     if len(tracks_to_save) > 0:
         Track.objects.bulk_update_or_create(
