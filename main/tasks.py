@@ -1,4 +1,5 @@
 import json
+import time
 import requests
 from playlistor.celery import app
 from celery import shared_task
@@ -133,22 +134,26 @@ def generate_applemusic_playlist(self, url, token):
         finally:
             progress_recorder.set_progress(i + 1, n)
     try:
-        if len(track_ids) > 200:
+        N = 100
+        if len(track_ids) > N:
             playlist_data = am.user_playlist_create(
                 name=playlist_title,
                 description=f"Created with playlistor.io from the original playlist by {creator} on Spotify[{url}].",
-                track_ids=track_ids[:200],
+                track_ids=track_ids[:N],
             )
             playlist_id = playlist_data["data"][0]["id"]
-            track_ids = track_ids[200:]
-            for chunk in grouper(200, track_ids):
+            track_ids = track_ids[N:]
+            for chunk in grouper(N, track_ids):
                 am.user_playlist_add_tracks(playlist_id, chunk)
+                # sleep for 5 seconds. Might increase success rate of request.
+                time.sleep(5)
         else:
             am.user_playlist_create(
                 name=playlist_title,
                 description=f"Created with playlistor.io from the original playlist by {creator} on Spotify[{url}].",
                 track_ids=track_ids,
             )
+
     except requests.exceptions.HTTPError as http_error:
         response = http_error.response
         if response.status_code in [500]:
