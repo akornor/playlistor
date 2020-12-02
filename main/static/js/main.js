@@ -2,6 +2,41 @@ const $ = (window.$ = document.querySelector.bind(document));
 
 let button = $("#btn");
 
+function onSuccess(
+    progressBarElement,
+    progressBarMessageElement,
+    result
+  ) {
+    progressBarElement.style.backgroundColor = "#76ce60";
+    progressBarMessageElement.innerHTML = is_valid_url(result)
+      ? `<a target="_blank" href="${result}">${result}</a>`
+      : result;
+    resetButton();
+  }
+
+function onError(progressBarElement, progressBarMessageElement) {
+    progressBarElement.style.backgroundColor = "#dc4f63";
+    progressBarMessageElement.innerHTML = "Uh-Oh, something went wrong!";
+    resetButton();
+  }
+
+function onProgress(
+    progressBarElement,
+    progressBarMessageElement,
+    progress
+  ) {
+    progressBarElement.style.backgroundColor = "#68a9ef";
+    progressBarElement.style.width = progress.percent + "%";
+    progressBarMessageElement.innerHTML =
+      progress.current + " of " + progress.total + " songs processed.";
+  }
+
+function onTaskError(progressBarElement, progressBarMessageElement, excMessage) {
+        progressBarElement.style.backgroundColor = this.barColors.error;
+        excMessage = excMessage || '';
+        progressBarMessageElement.textContent = "Uh-Oh, something went wrong! " + excMessage;
+    }
+
 const SPOTIFY_PLAYLIST_URL_REGEX = /open\.spotify\.com\/(user\/.+\/)?playlist\/.+/;
 const APPLE_MUSIC_PLAYLIST_URL_REGEX = /music\.apple\.com\/.+\/playlist\/.+/;
 const SUPPORTED_PLATFORMS_PLAYLIST_URL_REGEX = /open\.spotify\.com\/(user\/.+\/)?playlist\/.+|music\.apple\.com\/.+\/playlist\/.+/;
@@ -112,7 +147,7 @@ button.onclick = async function(event) {
     raiseForStatus(response);
     let { task_id } = await response.json();
     const progressUrl = `/celery-progress/${task_id}/`;
-    CeleryProgressBar.initProgressBar(progressUrl);
+    CeleryProgressBar.initProgressBar(progressUrl, {onProgress, onError, onSuccess, onTaskError});
   } catch (error) {
     CeleryProgressBar.onErrorDefault();
   }
