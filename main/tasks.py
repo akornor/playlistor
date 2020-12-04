@@ -33,6 +33,13 @@ def get_track(**kwargs):
 
 @shared_task(bind=True)
 def generate_spotify_playlist(self, url):
+    def save_or_update_tracks(tracks):
+        Track.objects.bulk_update_or_create(
+            tracks,
+            ["name", "artists", "apple_music_id", "spotify_id"],
+            match_field="spotify_id",
+        )
+
     url = strip_qs(url)
     if not settings.DEBUG:
         if url in cache:
@@ -88,11 +95,7 @@ def generate_spotify_playlist(self, url):
         name=playlist_title, spotify_url=playlist_url, applemusic_url=url
     )
     if len(tracks_to_save) > 0:
-        Track.objects.bulk_update_or_create(
-            tracks_to_save,
-            ["name", "artists", "apple_music_id", "spotify_id"],
-            match_field="spotify_id",
-        )
+        save_or_update_tracks(tracks_to_save)
     cache.set(url, playlist_url, timeout=3600)
     incr_playlist_count()
     return playlist_url
@@ -100,6 +103,13 @@ def generate_spotify_playlist(self, url):
 
 @shared_task(bind=True)
 def generate_applemusic_playlist(self, url, token):
+    def save_or_update_tracks(tracks):
+        Track.objects.bulk_update_or_create(
+            tracks,
+            ["name", "artists", "apple_music_id", "spotify_id"],
+            match_field="apple_music_id",
+        )
+
     url = strip_qs(url)
     progress_recorder = ProgressRecorder(self)
     data = SpotifyParser(url).extract_data()
@@ -144,9 +154,9 @@ def generate_applemusic_playlist(self, url, token):
             playlist_id = playlist_data["data"][0]["id"]
             track_ids = track_ids[N:]
             for chunk in grouper(N, track_ids):
-                am.user_playlist_add_tracks(playlist_id, chunk)
                 # sleep for 5 seconds. Might increase success rate of request.
                 time.sleep(5)
+                am.user_playlist_add_tracks(playlist_id, chunk)
         else:
             am.user_playlist_create(
                 name=playlist_title,
@@ -157,14 +167,12 @@ def generate_applemusic_playlist(self, url, token):
     except requests.exceptions.HTTPError as http_error:
         response = http_error.response
         if response.status_code in [500]:
+            if len(tracks_to_save):
+                save_or_update_tracks(tracks_to_save)
             raise self.retry(exc=http_error, countdown=30)
         else:
             raise http_error
     incr_playlist_count()
     if len(tracks_to_save) > 0:
-        Track.objects.bulk_update_or_create(
-            tracks_to_save,
-            ["name", "artists", "apple_music_id", "spotify_id"],
-            match_field="apple_music_id",
-        )
+        save_or_update_tracks(tracks_to_save)
     return "Check your recently created playlists on Apple Music."
