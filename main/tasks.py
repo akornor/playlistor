@@ -1,5 +1,4 @@
 import json
-import time
 import requests
 from playlistor.celery import app
 from celery import shared_task
@@ -154,8 +153,6 @@ def generate_applemusic_playlist(self, url, token):
             playlist_id = playlist_data["data"][0]["id"]
             track_ids = track_ids[N:]
             for chunk in grouper(N, track_ids):
-                # sleep for 5 seconds. Might increase success rate of request.
-                time.sleep(5)
                 am.user_playlist_add_tracks(playlist_id, chunk)
         else:
             am.user_playlist_create(
