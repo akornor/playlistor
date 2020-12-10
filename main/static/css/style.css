@@ -54,10 +54,33 @@ input {
 input:focus {
   outline: none;
   border: 1px solid var(--color-blue-medium);
-  border-radius: 3px; 
+  border-radius: 3px;
 }
 
 a, a:link, a:hover, a:visited, a:active {color: var(--color-blue);}
+
+.banner {
+  max-height: 50px;
+  background-color:blue;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  color:white;
+}
+
+.banner .message {
+  margin:0 auto;
+  font-size:14px;
+  font-family: var(--font-family-default);
+  padding:8px;
+  text-align:center;
+}
+
+.banner .message a {
+  color: inherit;
+  font-weight:bold;
+}
 
 .home__icon {
   text-align: center;
@@ -90,6 +113,7 @@ a, a:link, a:hover, a:visited, a:active {color: var(--color-blue);}
   font-family: var(--font-family-titles);
   font-size: var(--font-size-xl);
   margin-top: 0;
+  padding-top:30px;
 }
 
 .home__description {
