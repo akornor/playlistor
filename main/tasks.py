@@ -3,6 +3,7 @@ import requests
 from playlistor.celery import app
 from celery import shared_task
 from celery.signals import task_success
+from celery.utils.log import get_task_logger
 from celery_progress.backend import ProgressRecorder
 from django.core.cache import cache
 from django.conf import settings
@@ -16,6 +17,8 @@ from .utils import (
     get_applemusic_client,
     strip_qs,
 )
+
+logger = get_task_logger(__name__)
 
 
 def incr_playlist_count():
@@ -102,6 +105,8 @@ def generate_spotify_playlist(self, url):
 
 @shared_task(bind=True)
 def generate_applemusic_playlist(self, url, token):
+    logger.info(f"Generating apple music playlist for spotify playlist:{url}")
+
     def save_or_update_tracks(tracks):
         Track.objects.bulk_update_or_create(
             tracks,
