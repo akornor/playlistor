@@ -105,8 +105,6 @@ def generate_spotify_playlist(self, url):
 
 @shared_task(bind=True)
 def generate_applemusic_playlist(self, url, token):
-    logger.info(f"Generating apple music playlist for spotify playlist:{url}")
-
     def save_or_update_tracks(tracks):
         Track.objects.bulk_update_or_create(
             tracks,
@@ -115,6 +113,7 @@ def generate_applemusic_playlist(self, url, token):
         )
 
     url = strip_qs(url)
+    logger.info(f"Generating apple music playlist for spotify playlist:{url}")
     progress_recorder = ProgressRecorder(self)
     data = SpotifyParser(url).extract_data()
     tracks = data["tracks"]
