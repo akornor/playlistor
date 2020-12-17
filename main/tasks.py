@@ -2,7 +2,6 @@ import json
 import requests
 from playlistor.celery import app
 from celery import shared_task
-from celery.signals import task_success
 from celery.utils.log import get_task_logger
 from celery_progress.backend import ProgressRecorder
 from django.core.cache import cache
