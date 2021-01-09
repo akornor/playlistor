@@ -1,5 +1,6 @@
 from collections import namedtuple
 import re
+from sentry_sdk import capture_exception
 from .utils import get_spotify_client, requests_retry_session, generate_auth_token
 
 Track = namedtuple("Track", ["id", "name", "artists"])
@@ -14,7 +15,7 @@ class AppleMusicParser(BaseParser):
     def __init__(self, playlist_url: str) -> None:
         PAT = re.compile(
             r"https:\/\/music\.apple\.com\/(?P<storefront>.+)\/playlist(\/.+)?\/(?P<playlist_id>.+)",
-            re.I
+            re.I,
         )
         mo = PAT.match(playlist_url)
         if mo is None:
@@ -56,17 +57,25 @@ class AppleMusicParser(BaseParser):
             has_next = response.json().get("next")
         PAT = re.compile(r"\((.*?)\)")
         for track in track_items:
-            artists = []
-            track_id = track["id"]
-            artists += track["attributes"]["artistName"].replace("&", ",").split(',')
-            name = track["attributes"]["name"]
-            if "feat." in name:
-                name = name.replace("feat. ", "")
-                mo = PAT.search(name)
-                if mo is not None:
-                    artists += mo.group(1).replace("&", ",").replace("and", ",").split(',')
-                    name = PAT.sub("", name).strip()
-            tracks.append(Track(id=track_id, name=name, artists=artists))
+            try:
+                artists = []
+                track_id = track["id"]
+                artists += (
+                    track["attributes"]["artistName"].replace("&", ",").split(",")
+                )
+                name = track["attributes"]["name"]
+                if "feat." in name:
+                    name = name.replace("feat. ", "")
+                    mo = PAT.search(name)
+                    if mo is not None:
+                        artists += (
+                            mo.group(1).replace("&", ",").replace("and", ",").split(",")
+                        )
+                        name = PAT.sub("", name).strip()
+                tracks.append(Track(id=track_id, name=name, artists=artists))
+            except KeyError as e:
+                capture_exception(e)
+                continue
         return tracks
 
     def _get_playlist_creator(self):
@@ -76,7 +85,10 @@ class AppleMusicParser(BaseParser):
 
 class SpotifyParser(BaseParser):
     def __init__(self, playlist_url):
-        PAT = re.compile(r"https:\/\/open.spotify.com/(user\/.+\/)?playlist/(?P<playlist_id>.+)", re.I)
+        PAT = re.compile(
+            r"https:\/\/open.spotify.com/(user\/.+\/)?playlist/(?P<playlist_id>.+)",
+            re.I,
+        )
         mo = PAT.match(playlist_url)
         if mo is None:
             raise ValueError(
