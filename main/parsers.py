@@ -1,6 +1,5 @@
 from collections import namedtuple
 import re
-from sentry_sdk import capture_exception
 from .utils import get_spotify_client, requests_retry_session, generate_auth_token
 
 Track = namedtuple("Track", ["id", "name", "artists"])
@@ -73,8 +72,7 @@ class AppleMusicParser(BaseParser):
                         )
                         name = PAT.sub("", name).strip()
                 tracks.append(Track(id=track_id, name=name, artists=artists))
-            except KeyError as e:
-                capture_exception(e)
+            except KeyError:
                 continue
         return tracks
 
