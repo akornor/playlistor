@@ -6,6 +6,7 @@ from celery.utils.log import get_task_logger
 from celery_progress.backend import ProgressRecorder
 from django.core.cache import cache
 from django.conf import settings
+from django.db import IntegrityError
 from spotipy import SpotifyException
 from .parsers import AppleMusicParser, SpotifyParser
 from .models import Playlist, Track
@@ -35,11 +36,14 @@ def get_track(**kwargs):
 @shared_task(bind=True)
 def generate_spotify_playlist(self, url):
     def save_or_update_tracks(tracks):
-        Track.objects.bulk_update_or_create(
-            tracks,
-            ["name", "artists", "apple_music_id", "spotify_id"],
-            match_field="spotify_id",
-        )
+        try:
+            Track.objects.bulk_update_or_create(
+                tracks,
+                ["name", "artists", "apple_music_id", "spotify_id"],
+                match_field="spotify_id",
+            )
+        except IntegrityError as e:
+            return
 
     url = strip_qs(url)
     if not settings.DEBUG:
@@ -105,11 +109,14 @@ def generate_spotify_playlist(self, url):
 @shared_task(bind=True)
 def generate_applemusic_playlist(self, url, token):
     def save_or_update_tracks(tracks):
-        Track.objects.bulk_update_or_create(
-            tracks,
-            ["name", "artists", "apple_music_id", "spotify_id"],
-            match_field="apple_music_id",
-        )
+        try:
+            Track.objects.bulk_update_or_create(
+                tracks,
+                ["name", "artists", "apple_music_id", "spotify_id"],
+                match_field="apple_music_id",
+            )
+        except IntegrityError as e:
+            return
 
     url = strip_qs(url)
     logger.info(f"Generating apple music playlist for spotify playlist:{url}")
