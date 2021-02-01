@@ -13,7 +13,7 @@ class BaseParser:
 class AppleMusicParser(BaseParser):
     def __init__(self, playlist_url: str) -> None:
         PAT = re.compile(
-            r"https:\/\/music\.apple\.com\/(?P<storefront>.+)\/playlist(\/.+)?\/(?P<playlist_id>.+)",
+            r"https:\/\/(embed.)?music\.apple\.com\/(?P<storefront>.+)\/playlist(\/.+)?\/(?P<playlist_id>.+)",
             re.I,
         )
         mo = PAT.match(playlist_url)
