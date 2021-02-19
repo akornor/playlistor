@@ -48,6 +48,7 @@ def playlist(request):
         )
     return JsonResponse({"task_id": result.task_id})
 
+
 @require_POST
 def expand(request):
     data = json.loads(request.body.decode("utf-8"))
@@ -59,12 +60,13 @@ def expand(request):
         return JsonResponse({"url": response.url})
     except Exception:
         return JsonResponse({"message": f"{url} not found."}, status=400)
-    
 
 
 @login_required(login_url="/login")
 def index(request):
     redis_client = get_redis_client()
     count = int((redis_client.get("counter:playlists") or 0))
-    playlists = Playlist.objects.order_by('-created_at')[:5]
+    playlists = Playlist.objects.filter(
+        spotify_url__isnull=False, applemusic_url__isnull=False
+    ).order_by("-created_at")[:5]
     return render(request, "index.html", {"playlists": playlists, "count": count})
