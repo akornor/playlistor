@@ -83,11 +83,7 @@ def generate_spotify_playlist(self, url):
         finally:
             progress_recorder.set_progress(i + 1, n)
     playlist = sp.user_playlist_create(
-        uid,
-        playlist_title,
-        description=f"Created with playlistor.io from the original playlist by {creator} on Apple Music[{url}]."
-        if creator
-        else f"Created with playlistor.io from the original playlist on Apple Music[{url}].",
+        uid, playlist_title, description=f"Made with https://playlistor.io :)"
     )
     playlist_id = playlist["id"]
     playlist_url = playlist["external_urls"]["spotify"]
@@ -161,7 +157,7 @@ def generate_applemusic_playlist(self, url, token):
         if len(track_ids) > N:
             playlist_data = am.user_playlist_create(
                 name=playlist_title,
-                description=f"Created with playlistor.io from the original playlist by {creator} on Spotify[{url}].",
+                description=f"Made with https://playlistor.io :)",
                 track_ids=track_ids[:N],
             )
             playlist_id = playlist_data["data"][0]["id"]
@@ -171,7 +167,7 @@ def generate_applemusic_playlist(self, url, token):
         else:
             am.user_playlist_create(
                 name=playlist_title,
-                description=f"Created with playlistor.io from the original playlist by {creator} on Spotify[{url}].",
+                description=f"Made with https://playlistor.io :)",
                 track_ids=track_ids,
             )
 
