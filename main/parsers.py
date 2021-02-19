@@ -5,6 +5,14 @@ from .utils import get_spotify_client, requests_retry_session, generate_auth_tok
 Track = namedtuple("Track", ["id", "name", "artists"])
 
 
+SPOTIFY_PLAYLIST_URL_PAT = re.compile(
+    r"https:\/\/open.spotify.com/(user\/.+\/)?playlist/(?P<playlist_id>.+)"
+)
+APPLE_MUSIC_PLAYLIST_URL_PAT = re.compile(
+    r"https:\/\/(embed.)?music\.apple\.com\/(?P<storefront>.+)\/playlist(\/.+)?\/(?P<playlist_id>.+)"
+)
+
+
 class BaseParser:
     def extract_data(self):
         raise NotImplementedError()
@@ -12,11 +20,8 @@ class BaseParser:
 
 class AppleMusicParser(BaseParser):
     def __init__(self, playlist_url: str) -> None:
-        PAT = re.compile(
-            r"https:\/\/(embed.)?music\.apple\.com\/(?P<storefront>.+)\/playlist(\/.+)?\/(?P<playlist_id>.+)",
-            re.I,
-        )
-        mo = PAT.match(playlist_url)
+
+        mo = APPLE_MUSIC_PLAYLIST_URL_PAT.match(playlist_url)
         if mo is None:
             raise ValueError(
                 "Expected playlist url in the form: https://music.apple.com/gh/playlist/pl.u-e98lGali2BLmkN"
@@ -83,11 +88,7 @@ class AppleMusicParser(BaseParser):
 
 class SpotifyParser(BaseParser):
     def __init__(self, playlist_url):
-        PAT = re.compile(
-            r"https:\/\/open.spotify.com/(user\/.+\/)?playlist/(?P<playlist_id>.+)",
-            re.I,
-        )
-        mo = PAT.match(playlist_url)
+        mo = SPOTIFY_PLAYLIST_URL_PAT.match(playlist_url)
         if mo is None:
             raise ValueError(
                 "Expected playlist url in the form: https://open.spotify.com/playlist/68QbTIMkw3Gl6Uv4PJaeTQ or https://open.spotify.com/user/333aaddaf/playlist/68QbTIMkw3Gl6Uv4PJaeTQ"
