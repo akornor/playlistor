@@ -59,6 +59,7 @@ def generate_spotify_playlist(self, url):
     n = len(tracks)
     track_uris = []
     tracks_to_save = []
+    missed_tracks = []
     for i, track in enumerate(tracks):
         try:
             t = get_track(apple_music_id=track.id)
@@ -77,6 +78,7 @@ def generate_spotify_playlist(self, url):
                     )
                 )
         except:
+            missed_tracks.append(track)
             continue
         finally:
             progress_recorder.set_progress(i + 1, n)
@@ -127,6 +129,7 @@ def generate_applemusic_playlist(self, url, token):
     creator = data["playlist_creator"]
     tracks_to_save = []
     track_ids = []
+    missed_tracks = []
     n = len(tracks)
     am = get_applemusic_client()
     am.access_token = token
@@ -149,6 +152,7 @@ def generate_applemusic_playlist(self, url, token):
                     )
                 )
         except:
+            missed_tracks.append(track)
             continue
         finally:
             progress_recorder.set_progress(i + 1, n)
