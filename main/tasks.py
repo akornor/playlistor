@@ -175,14 +175,14 @@ def generate_applemusic_playlist(self, url, token):
                 track_ids=track_ids,
             )
 
-    except requests.exceptions.HTTPError as http_error:
-        response = http_error.response
+    except requests.exceptions.HTTPError as e:
+        response = e.response
         if response.status_code in [500]:
             if len(tracks_to_save) > 0:
                 save_or_update_tracks(tracks_to_save)
-            raise self.retry(exc=http_error, countdown=30)
+            raise self.retry(exc=e, countdown=30)
         else:
-            raise http_error
+            raise e
     incr_playlist_count()
     if len(tracks_to_save) > 0:
         save_or_update_tracks(tracks_to_save)
