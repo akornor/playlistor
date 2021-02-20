@@ -45,6 +45,7 @@ def generate_spotify_playlist(self, url):
             return
 
     url = strip_qs(url)
+    logger.info(f"Generating spotify playlist for apple music playlist:{url}")
     if not settings.DEBUG:
         if url in cache:
             return cache.get(url)
@@ -100,6 +101,7 @@ def generate_spotify_playlist(self, url):
         save_or_update_tracks(tracks_to_save)
     cache.set(url, playlist_url, timeout=3600)
     counters.incr_playlist_counter()
+    logger.info(f"Missed {len(missed_tracks)} track(s): {missed_tracks}")
     return playlist_url
 
 
@@ -181,4 +183,5 @@ def generate_applemusic_playlist(self, url, token):
     counters.incr_playlist_counter()
     if len(tracks_to_save) > 0:
         save_or_update_tracks(tracks_to_save)
+    logger.info(f"Missed {len(missed_tracks)} track(s): {missed_tracks}")
     return "Check your recently created playlists on Apple Music."
