@@ -17,13 +17,9 @@ from .utils import (
     get_applemusic_client,
     strip_qs,
 )
+from .counters import Counters
 
 logger = get_task_logger(__name__)
-
-
-def incr_playlist_count():
-    redis_client = get_redis_client()
-    redis_client.incr("counter:playlists")
 
 
 def get_track(**kwargs):
@@ -31,6 +27,9 @@ def get_track(**kwargs):
         return Track.objects.get(**kwargs)
     except Track.DoesNotExist:
         return None
+
+
+counters = Counters()
 
 
 @shared_task(bind=True)
@@ -100,7 +99,7 @@ def generate_spotify_playlist(self, url):
     if len(tracks_to_save) > 0:
         save_or_update_tracks(tracks_to_save)
     cache.set(url, playlist_url, timeout=3600)
-    incr_playlist_count()
+    counters.incr_playlist_counter()
     return playlist_url
 
 
@@ -179,7 +178,7 @@ def generate_applemusic_playlist(self, url, token):
             raise self.retry(exc=e, countdown=30)
         else:
             raise e
-    incr_playlist_count()
+    counters.incr_playlist_counter()
     if len(tracks_to_save) > 0:
         save_or_update_tracks(tracks_to_save)
     return "Check your recently created playlists on Apple Music."
