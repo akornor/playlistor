@@ -101,7 +101,7 @@ def generate_spotify_playlist(self, url):
         save_or_update_tracks(tracks_to_save)
     cache.set(url, playlist_url, timeout=3600)
     counters.incr_playlist_counter()
-    logger.info(f"Missed {len(missed_tracks)} track(s): {missed_tracks}")
+    logger.info(f"Missed {len(missed_tracks)} in {n} track(s): {missed_tracks}")
     return playlist_url
 
 
@@ -183,5 +183,5 @@ def generate_applemusic_playlist(self, url, token):
     counters.incr_playlist_counter()
     if len(tracks_to_save) > 0:
         save_or_update_tracks(tracks_to_save)
-    logger.info(f"Missed {len(missed_tracks)} track(s): {missed_tracks}")
+    logger.info(f"Missed {len(missed_tracks)} in {n} track(s): {missed_tracks}")
     return "Check your recently created playlists on Apple Music."
