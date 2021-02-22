@@ -121,6 +121,8 @@ class SpotifyParser(BaseParser):
             if track is not None:
                 track_id = track["id"]
                 name = track["name"]
+                # This is pretty naive. But this is done to remove noisy parts of track name. For example, Loving Cup - (Live At The Beacon Theatre, New York / 2006) -> Loving Cup
+                name, *parts = name.partition("-")
                 artists = [artist["name"] for artist in track["artists"]]
                 tracks.append(Track(id=track_id, name=name, artists=artists))
         return tracks
