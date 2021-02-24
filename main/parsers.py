@@ -59,7 +59,7 @@ class AppleMusicParser(BaseParser):
             response.raise_for_status()
             track_items += response.json()["data"]
             has_next = response.json().get("next")
-        PAT = re.compile(r"\((.*?)\)")
+        PAT = re.compile(r"\((.*?)\)|\[(.*?)\]")
         for track in track_items:
             try:
                 artists = []
@@ -68,14 +68,12 @@ class AppleMusicParser(BaseParser):
                     track["attributes"]["artistName"].replace("&", ",").split(",")
                 )
                 name = track["attributes"]["name"]
-                if "feat." in name:
-                    name = name.replace("feat. ", "")
-                    mo = PAT.search(name)
-                    if mo is not None:
-                        artists += (
-                            mo.group(1).replace("&", ",").replace("and", ",").split(",")
-                        )
-                        name = PAT.sub("", name).strip()
+                mo = PAT.search(name)
+                if mo:
+                    # Remove content in brackets as it tends to be too much noise for track resolution.
+                    # Free Trial (feat. Qari & Phoelix) [Explicit] -> Free Trial
+                    # This is a temporary fix until I properly understand the problem space to come up with a more general solution.
+                    name = PAT.sub("", name).strip()
                 tracks.append(Track(id=track_id, name=name, artists=artists))
             except KeyError:
                 continue
