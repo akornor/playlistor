@@ -19,6 +19,8 @@ from .utils import (
 )
 from .counters import Counters
 
+APPLE_MUSIC_PLAYLIST_CACHE_KEY = "playlists:applemusic:%s"
+
 logger = get_task_logger(__name__)
 
 
@@ -47,8 +49,9 @@ def generate_spotify_playlist(self, url):
     url = strip_qs(url)
     logger.info(f"Generating spotify playlist for apple music playlist:{url}")
     if not settings.DEBUG:
-        if url in cache:
-            return cache.get(url)
+        cache_key = APPLE_MUSIC_PLAYLIST_CACHE_KEY % url
+        if cache_key in cache:
+            return cache.get(cache_key)
     progress_recorder = ProgressRecorder(self)
     sp = get_spotify_client()
     uid = sp.current_user()["id"]
@@ -99,7 +102,7 @@ def generate_spotify_playlist(self, url):
     )
     if len(tracks_to_save) > 0:
         save_or_update_tracks(tracks_to_save)
-    cache.set(url, playlist_url, timeout=3600)
+    cache.set(APPLE_MUSIC_PLAYLIST_CACHE_KEY % url, playlist_url, timeout=3600)
     counters.incr_playlist_counter()
     logger.info(f"Missed {len(missed_tracks)} in {n} track(s): {missed_tracks}")
     return playlist_url
