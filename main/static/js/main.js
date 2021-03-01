@@ -1,6 +1,6 @@
 const $ = (window.$ = document.querySelector.bind(document));
 
-let button = $("#btn");
+let button = $("#submit_btn");
 
 function onSuccess(
     progressBarElement,
@@ -11,6 +11,17 @@ function onSuccess(
     progressBarMessageElement.innerHTML = is_valid_url(result)
       ? `<a target="_blank" href="${result}">${result}</a>`
       : result;
+    const clipboardButton = document.createElement('button');
+    // clipboardButton.innerHTML = "Copy to clipboard."
+    clipboardButton.setAttribute('class', 'clipboard-btn');
+    clipboardButton.setAttribute('data-clipboard-text', result)
+    new ClipboardJS('.clipboard-btn');
+    const img = document.createElement('img');
+    img.setAttribute('src', '/static/svg/clippy.svg');
+    img.setAttribute('height', '15px')
+    clipboardButton.appendChild(img);
+    progressBarMessageElement.appendChild(clipboardButton);
+    console.log(clipboardButton);
     resetButton();
   }
 
@@ -102,7 +113,8 @@ async function expandURL(shortenedURL) {
 
 button.onclick = async function(event) {
   event.preventDefault();
-  const playlist = $("#playlist").value.trim();
+  const playlist = $("#input_big").value.trim();
+  console.log(playlist)
   if (playlist === "") {
     return;
   }
@@ -149,6 +161,7 @@ button.onclick = async function(event) {
     const progressUrl = `/celery-progress/${task_id}/`;
     CeleryProgressBar.initProgressBar(progressUrl, {onProgress, onError, onSuccess, onTaskError});
   } catch (error) {
+    console.log(error)
     CeleryProgressBar.onErrorDefault();
   }
 };
