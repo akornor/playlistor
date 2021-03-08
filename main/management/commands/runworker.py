@@ -6,11 +6,13 @@ from django.utils import autoreload
 
 
 def restart_celery():
-    subprocess.call(shlex.split('pkill celery'))
-    subprocess.call(shlex.split('celery -A playlistor worker -l info'))
+    subprocess.call(shlex.split("pkill celery"))
+    subprocess.call(
+        shlex.split("celery -A playlistor worker -l info -P gevent -c 1000")
+    )
 
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        print('Starting celery worker with autoreload')
-        autoreload.run_with_reloader(restart_celery) 
+        print("Starting celery worker with autoreload")
+        autoreload.run_with_reloader(restart_celery)
