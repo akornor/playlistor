@@ -58,8 +58,8 @@ def expand(request):
         response = session.head(url, allow_redirects=True)
         response.raise_for_status()
         return JsonResponse({"url": response.url})
-    except requests.exceptions.RequestException:
-        return JsonResponse({"message": f"{url} not found."}, status=404)
+    except Exception:
+        return JsonResponse({"message": f"{url} not found."}, status=400)
 
 
 @login_required(login_url="/login")
