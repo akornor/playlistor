@@ -59,7 +59,7 @@ def expand(request):
         response.raise_for_status()
         return JsonResponse({"url": response.url})
     except Exception:
-        return JsonResponse({"message": f"{url} not found."}, status=400)
+        return JsonResponse({"message": f"{url} not found."}, status=404)
 
 
 @login_required(login_url="/login")
