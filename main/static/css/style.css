@@ -490,7 +490,8 @@ footer .wrapper .flex .headings, .twitter{
   text-align: center;
   padding: 10px;
   mix-blend-mode: difference;
-  min-width: 80%;
+  min-width: 70vw;
+  width: 100%;
 }
 
 #progress-bar-message a {
