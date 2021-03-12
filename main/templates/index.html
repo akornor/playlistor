@@ -1,150 +1,154 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-   <head>
-      <meta charset="UTF-8">
-      <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
-      {% if not DEBUG %}
-      <script async src="https://www.googletagmanager.com/gtag/js?id=UA-141685337-1"></script>
-      <script>
-         window.dataLayer = window.dataLayer || [];
 
-         function gtag() {
-             dataLayer.push(arguments);
-         }
-         gtag('js', new Date());
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" /> {% if not DEBUG %}
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-141685337-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
 
-         gtag('config', 'UA-141685337-1');
-      </script>
-      {% endif %}
-      <title>Playlistor - Convert playlists between Apple Music and Spotify</title>
-      <link rel="shortcut icon" href="{%  static 'favicon.ico' %}">
-      <meta charset="utf-8">
-      <meta content="IE=edge" http-equiv="X-UA-Compatible">
-      <meta content="width=device-width, initial-scale=1" name="viewport">
-      <meta name="title" content="Playlistor">
-      <meta name="description" content="Convert Apple Music playlists to Spotify">
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
 
-      <!-- Twitter meta tags -->
-      <meta name="twitter:title" content="Playlistor">
-      <meta name="twitter:description" content="Convert playlists between Apple Music and Spotify.">
-      <meta name="twitter:image:src" content="https://playlistor.io/static/img/screenshot.jpg">
-      <meta name="twitter:card" content="summary_large_image">
-      <meta name="twitter:site" content="@playlistor_io" />
+        gtag('config', 'UA-141685337-1');
+    </script>
+    {% endif %}
+    <title>Playlistor - Convert playlists between Apple Music and Spotify</title>
+    <link rel="shortcut icon" href="{%  static 'favicon.ico' %}">
+    <meta charset="utf-8">
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <meta name="title" content="Playlistor">
+    <meta name="description" content="Convert Apple Music playlists to Spotify">
 
-      <!-- Open Graph tags -->
-      <meta property="og:title" content="Playlistor">
-      <meta property="og:description" content="Convert playlists between Apple Music and Spotify.">
-      <meta property="og:image" content="https://playlistor.io/static/img/screenshot.jpg">
-      <meta property="og:url" content="https://playlistor.io">
+    <!-- Twitter meta tags -->
+    <meta name="twitter:title" content="Playlistor">
+    <meta name="twitter:description" content="Convert playlists between Apple Music and Spotify.">
+    <meta name="twitter:image:src" content="https://playlistor.io/static/img/screenshot.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@playlistor_io" />
 
-      <link href="{% static 'css/style.css' %}" rel='stylesheet' />
-   </head>
-   <body>
-      <section id="head">
-         <!-- Navigation -->
-         <nav>
+    <!-- Open Graph tags -->
+    <meta property="og:title" content="Playlistor">
+    <meta property="og:description" content="Convert playlists between Apple Music and Spotify.">
+    <meta property="og:image" content="https://playlistor.io/static/img/screenshot.jpg">
+    <meta property="og:url" content="https://playlistor.io">
+
+    <link href="{% static 'css/style.css' %}" rel='stylesheet' />
+</head>
+
+<body>
+    <section id="head">
+        <!-- Navigation -->
+        <nav>
             <div class="flex wrapper">
-               <div id="nav-logo-box">
-                  <a href="#" class="flex">
-                  <img id="logo" src="{% static 'img/logo.png' %}" alt="Playlistor">
-                  </a>
-               </div>
-               <div id="links-bar" flex>
-                  <a id="coffee_btn" class="bmc-button" target="_blank" href="https://www.buymeacoffee.com/hWU7wIk">
-                  <img src="https://cdn.buymeacoffee.com/buttons/bmc-new-btn-logo.svg" alt="Buy me coffee">
-                  <span>Buy me a coffee</span>
-                  </a>
-               </div>
+                <div id="nav-logo-box">
+                    <a href="#" class="flex">
+                        <img id="logo" src="{% static 'img/logo.png' %}" alt="Playlistor">
+                    </a>
+                </div>
+                <div id="links-bar" flex>
+                    <a id="coffee_btn" class="bmc-button" target="_blank" href="https://www.buymeacoffee.com/hWU7wIk">
+                        <img src="https://cdn.buymeacoffee.com/buttons/bmc-new-btn-logo.svg" alt="Buy me coffee">
+                        <span>Buy me a coffee</span>
+                    </a>
+                </div>
             </div>
-         </nav>
-         <!-- Newsletter banner -->
-         <div class="banner">
+        </nav>
+        <!-- Newsletter banner -->
+        <div class="banner">
             <p class="message main-text">
-               Subscribe to the <a class="links" target="_blank" href="https://tinyletter.com/playlistor"> newsletter</a>&nbsp;📬 for updates on new features, new design &amp; general improvements.
+                Subscribe to the <a class="links" target="_blank" href="https://tinyletter.com/playlistor"> newsletter</a>&nbsp;📬 for updates on new features, new design &amp; general improvements.
             </p>
-         </div>
-         <div class="wrapper">
+        </div>
+        <div class="wrapper">
             <!-- Big banner text -->
             <div class="">
-               <h1 id="big-banner-head" class="big-text">
-                  Convert playlists <br>
-                  between Apple Music <br>
-                  and Spotify.
-               </h1>
-               <h6 id="conversions" class="sup-text"><span id="counter">0</span> playlists converted.</h6>
+                <h1 id="big-banner-head" class="big-text">
+                    Convert playlists <br> between Apple Music <br> and Spotify.
+                </h1>
+                <h6 id="conversions" class="sup-text"><span id="counter">0</span> playlists converted.</h6>
             </div>
             <!-- Search bar -->
             <div id="input_container" class="flex shadow_custom">
-               <input placeholder="Enter Apple Music or Spotify playlist url." id="input_big" type="text">
-               <button class="big-button-text" id="submit_btn">Convert</button>
+                <input placeholder="Enter Apple Music or Spotify playlist url." id="input_big" type="text">
+                <button class="big-button-text" id="submit_btn">Convert</button>
             </div>
-         </div>
-      </section>
-      <section id="card-body">
-         <div class="wrapper">
-            <div class='progress-wrapper' >
-               <div id='progress-bar' class='progress-bar'>
-                  <div style="word-wrap: break-word;" id="progress-bar-message" class="text-center"></div>
-               </div>
+        </div>
+    </section>
+    <section id="card-body">
+        <div class="wrapper">
+            <div class='progress-wrapper'>
+                <div id='progress-bar' class='progress-bar'>
+                    <div style="word-wrap: break-word;" id="progress-bar-message" class="text-center"></div>
+                </div>
             </div>
             <h3 id="recents_head" class="sp-heads" style="padding-top: 30px">
-               Recent Playlists
+                Recent Playlists
             </h3>
             <div id="card-wrapper">
-               {% for playlist in playlists %}
-               <div class="card" data-tilt data-tilt-perspective="1400">
-                  <img src="{% static 'img/placeholder03.jpg' %}" alt="album art">
-                  <h3 class="playlist_title">
-                     {{ playlist.name }}
-                  </h3>
-                  <div class="button-wrap">
-                     <a href="{{ playlist.applemusic_url }}" target="_blank"><button class="apple_btn"><i class="fab fa-itunes-note"></i>&nbsp;</button></a>
-                     <a href="{{ playlist.spotify_url }}" target="_blank"><button class="spotify_btn"><i class="fab fa-spotify"></i>&nbsp;</button></a>
-                  </div>
-               </div>
-               {% endfor %}
+                {% for playlist in playlists %}
+                <div class="card" data-tilt data-tilt-perspective="1400">
+                    <img src="{% static 'img/placeholder03.jpg' %}" alt="album art">
+                    <h3 class="playlist_title">
+                        {{ playlist.name }}
+                    </h3>
+                    <div class="button-wrap">
+                        <a href="{{ playlist.applemusic_url }}" target="_blank"><button class="apple_btn"><i class="fab fa-itunes-note"></i>&nbsp;</button></a>
+                        <a href="{{ playlist.spotify_url }}" target="_blank"><button class="spotify_btn"><i class="fab fa-spotify"></i>&nbsp;</button></a>
+                    </div>
+                </div>
+                {% endfor %}
             </div>
-         </div>
-      </section>
-      <footer>
-         <div class="wrapper">
+        </div>
+    </section>
+    <footer>
+        <div class="wrapper">
             <div class="flex">
-               <div>
-                  <a class="git" href="https://github.com/akornor/playlistor" target="_blank">
-                  <i class="fab fa-github"></i>
-                  </a>
-                  <a class="twitter" href="https://twitter.com/raymxnde" target="_blank">
-                  <i class="fab fa-twitter"></i>
-                  </a>
-               </div>
-               <h3 class="headings">Built 👨🏾‍💻 by <a href="https://twitter.com/raymxnde">Raymond Akornor</a> & Designed🖌 by <a href="https://twitter.com/theafrodev">Kafui Fialor</a></h3>
+                <div>
+                    <a class="git" href="https://github.com/akornor/playlistor" target="_blank">
+                        <i class="fab fa-github"></i>
+                    </a>
+                    <a class="twitter" href="https://twitter.com/playlistor_io" target="_blank">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                </div>
+                <h3 class="headings">Built by <a href="https://twitter.com/raymxnde">Raymond Akornor</a> & Designed by <a href="https://twitter.com/theafrodev">Kafui Fialor</a></h3>
             </div>
-         </div>
-      </footer>
-      <script type="text/javascript">
-         document.addEventListener('musickitloaded', function() {
-           // MusicKit global is now defined
-           MusicKit.configure({
-             developerToken: "{{ APPLE_DEVELOPER_TOKEN }}",
-             app: {
-               name: 'Playlistor',
-               build: '1.0'
-             }
-           });
-         });
-      </script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.0/jquery.min.js" integrity="sha256-xNzN2a4ltkB44Mc/Jz3pT4iU1cmeR0FkXs4pru/JxaQ=" crossorigin="anonymous"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/tilt.js/1.2.1/tilt.jquery.min.js"></script>
-      <!-- <script src="js/script.js"></script> -->
-      <script src="https://js-cdn.music.apple.com/musickit/v1/musickit.js"></script>
-      <script src="{% static 'js/vendor/sweetalert.min.js' %}" type="text/javascript"></script>
-      <script src="{% static 'celery_progress/celery_progress.js' %}" type="text/javascript"></script>
-      <script src="{% static 'js/vendor/countUp.min.js' %}" type="text/javascript"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js"></script>
-      <script src="{% static 'js/main.js' %}" type="text/javascript"></script>
-      <script type="text/javascript">
-         const counter = new CountUp("counter", 0, {{ count }} ).start();
-      </script>
-   </body>
+        </div>
+    </footer>
+    <script type="text/javascript">
+        document.addEventListener('musickitloaded', function() {
+            // MusicKit global is now defined
+            MusicKit.configure({
+                developerToken: "{{ APPLE_DEVELOPER_TOKEN }}",
+                app: {
+                    name: 'Playlistor',
+                    build: '1.0'
+                }
+            });
+        });
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.0/jquery.min.js" integrity="sha256-xNzN2a4ltkB44Mc/Jz3pT4iU1cmeR0FkXs4pru/JxaQ=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tilt.js/1.2.1/tilt.jquery.min.js"></script>
+    <!-- <script src="js/script.js"></script> -->
+    <script src="https://js-cdn.music.apple.com/musickit/v1/musickit.js"></script>
+    <script src="{% static 'js/vendor/sweetalert.min.js' %}" type="text/javascript"></script>
+    <script src="{% static 'celery_progress/celery_progress.js' %}" type="text/javascript"></script>
+    <script src="{% static 'js/vendor/countUp.min.js' %}" type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js"></script>
+    <script src="{% static 'js/main.js' %}" type="text/javascript"></script>
+    <script type="text/javascript">
+        const counter = new CountUp("counter", 0, {
+            {
+                count
+            }
+        }).start();
+    </script>
+</body>
+
 </html>
