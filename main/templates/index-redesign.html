@@ -87,8 +87,8 @@
                      {{ playlist.name }}
                   </h3>
                   <div class="button-wrap">
-                     <button class="apple_btn"><a href="{{ playlist.applemusic_url }}"><i class="fab fa-itunes-note"></i></a>&nbsp;</button>
-                     <button class="spotify_btn"><a href="{{ playlist.spotify_url }}"><i class="fab fa-spotify"></i></a>&nbsp;</button>
+                     <a href="{{ playlist.applemusic_url }}" target="_blank"><button class="apple_btn"><i class="fab fa-itunes-note"></i>&nbsp;</button></a>
+                     <a href="{{ playlist.spotify_url }}" target="_blank"><button class="spotify_btn"><i class="fab fa-spotify"></i>&nbsp;</button></a>
                   </div>
                </div>
                {% endfor %}
