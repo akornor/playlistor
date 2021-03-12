@@ -25,6 +25,13 @@
       <meta content="width=device-width, initial-scale=1" name="viewport">
       <meta name="title" content="Playlistor">
       <meta name="description" content="Convert Apple Music playlists to Spotify">
+
+      <!-- Twitter meta tags -->
+      <meta name="twitter:title" content="Playlistor">
+      <meta name="twitter:description" content="Convert playlists between Apple Music and Spotify.">
+      <meta name="twitter:image:src" content="https://playlistor.com/static/img/screenshot.png">
+      <meta name="twitter:card" content="summary_large_image">
+      <meta name="twitter:site" content="@playlistor_io" />
       <!-- <link href="{% static 'css/style.css' %}" rel='stylesheet' /> -->
       <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}">
    </head>
@@ -82,7 +89,7 @@
             <div id="card-wrapper">
                {% for playlist in playlists %}
                <div class="card" data-tilt data-tilt-perspective="1400">
-                  <img src="{% static 'img/placeholder.jpg' %}" alt="album art">
+                  <img src="{% static 'img/placeholder03.jpg' %}" alt="album art">
                   <h3 class="playlist_title">
                      {{ playlist.name }}
                   </h3>
@@ -98,9 +105,14 @@
       <footer>
          <div class="wrapper">
             <div class="flex">
-               <a class="git" href="#">
-               <i class="fab fa-github"></i>
-               </a>
+               <div>
+                  <a class="git" href="https://github.com/akornor/playlistor" target="_blank">
+                  <i class="fab fa-github"></i>
+                  </a>
+                  <a class="twitter" href="https://twitter.com/raymxnde" target="_blank">
+                  <i class="fab fa-twitter"></i>
+                  </a>
+               </div>
                <h3 class="headings">Property of the Half-Blood Prince.</h3>
             </div>
          </div>
