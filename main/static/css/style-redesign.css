@@ -271,6 +271,12 @@ a{
     font-size: 1.2rem;
 }
 
+@media (max-width: 768px) {
+    #input_big{
+        font-size: .55rem;
+    }
+}
+
 #submit_btn{
     background-color: #203551;
     color: #ffffff;
@@ -363,6 +369,7 @@ a{
 }
 
 .button-wrap button{
+    width: 100%;
     cursor: pointer;
     font-size: 1rem;
     font-family: var(--font-family-titles);
