@@ -21,7 +21,6 @@ function onSuccess(
     img.setAttribute('height', '15px')
     clipboardButton.appendChild(img);
     progressBarMessageElement.appendChild(clipboardButton);
-    console.log(clipboardButton);
     resetButton();
   }
 
@@ -114,7 +113,6 @@ async function expandURL(shortenedURL) {
 button.onclick = async function(event) {
   event.preventDefault();
   const playlist = $("#input_big").value.trim();
-  console.log(playlist)
   if (playlist === "") {
     return;
   }
@@ -161,7 +159,6 @@ button.onclick = async function(event) {
     const progressUrl = `/celery-progress/${task_id}/`;
     CeleryProgressBar.initProgressBar(progressUrl, {onProgress, onError, onSuccess, onTaskError});
   } catch (error) {
-    console.log(error)
     CeleryProgressBar.onErrorDefault();
   }
 };
