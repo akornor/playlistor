@@ -68,16 +68,5 @@ def index(request):
     count = int((redis_client.get("counter:playlists") or 0))
     playlists = Playlist.objects.filter(
         spotify_url__isnull=False, applemusic_url__isnull=False
-    ).order_by("-created_at")[:5]
-    return render(request, "index.html", {"playlists": playlists, "count": count})
-
-
-def index_redesign(request):
-    redis_client = get_redis_client()
-    count = int((redis_client.get("counter:playlists") or 0))
-    playlists = Playlist.objects.filter(
-        spotify_url__isnull=False, applemusic_url__isnull=False
     ).order_by("-created_at")[:3]
-    return render(
-        request, "index-redesign.html", {"playlists": playlists, "count": 1000}
-    )
+    return render(request, "index.html", {"playlists": playlists, "count": count})

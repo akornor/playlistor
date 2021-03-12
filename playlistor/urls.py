@@ -8,5 +8,4 @@ urlpatterns = [
     path("playlist", views.playlist, name="playlist"),
     path("callback", views.callback, name="spotify-callback"),
     path("", views.index, name="home"),
-    path("redesign", views.index_redesign, name="redesign"),
 ]
