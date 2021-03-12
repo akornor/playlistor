@@ -23,4 +23,4 @@ Navigate to `localhost:8000`. You'll be required to login with your Spotify cred
 - [X] Add feature to convert apple music playlist to spotify
 
 ## Thanks and Acknowledgments
-Thanks to Maame, Mayor, Samuel, Elikem, Diayan, Ike and Paul for helping me put this together. Not sure we'll have playlistor without you guys.
+Thanks to Maame, Mayor, Samuel, Elikem, Diayan, Ike, Paul and Christian for helping me put this together. Not sure we'll have playlistor without you guys.
