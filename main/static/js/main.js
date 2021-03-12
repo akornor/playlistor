@@ -11,16 +11,27 @@ function onSuccess(
     progressBarMessageElement.innerHTML = is_valid_url(result)
       ? `<a target="_blank" href="${result}">${result}</a>`
       : result;
+    // Extract into functions to be cleaner.
     const clipboardButton = document.createElement('button');
-    // clipboardButton.innerHTML = "Copy to clipboard."
+    clipboardButton.innerHTML = "Copy to clipboard"
     clipboardButton.setAttribute('class', 'clipboard-btn');
     clipboardButton.setAttribute('data-clipboard-text', result)
     new ClipboardJS('.clipboard-btn');
-    const img = document.createElement('img');
-    img.setAttribute('src', '/static/svg/clippy.svg');
-    img.setAttribute('height', '15px')
-    clipboardButton.appendChild(img);
+    const i = document.createElement('i');
+    i.setAttribute('class', 'fas fa-clipboard-list');
+    clipboardButton.appendChild(i);
     progressBarMessageElement.appendChild(clipboardButton);
+    const spanEl = document.createElement('span');
+    spanEl.setAttribute('class', 'tooltiptext');
+    spanEl.innerHTML = "Copied!"
+    clipboardButton.appendChild(spanEl)
+    clipboardButton.onclick = function(event){
+      const tooltip = document.querySelectorAll('.tooltiptext')[0];
+      tooltip.style.visibility = 'visible';
+      setTimeout(function() {
+        tooltip.style.visibility = 'hidden';
+      }, 1000);
+    }
     resetButton();
   }
 
