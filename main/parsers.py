@@ -65,7 +65,10 @@ class AppleMusicParser(BaseParser):
                 artists = []
                 track_id = track["id"]
                 artists += (
-                    track["attributes"]["artistName"].replace("&", ",").split(",")
+                    track["attributes"]["artistName"]
+                    .replace("&", ",")  # Rah Digga & Missy Elliot
+                    .replace(" x ", ",")  # Chloe x Halle
+                    .split(",")
                 )
                 name = track["attributes"]["name"]
                 mo = PAT.search(name)
@@ -114,6 +117,7 @@ class SpotifyParser(BaseParser):
             results = self.sp.next(results)
             items += results["items"]
             next = results.get("next")
+        PAT = re.compile(r"\((.*?)\)|\[(.*?)\]")
         for item in items:
             track = item["track"]
             if track is not None:
@@ -121,6 +125,9 @@ class SpotifyParser(BaseParser):
                 name = track["name"]
                 # This is pretty naive. But this is done to remove noisy parts of track name. For example, Loving Cup - (Live At The Beacon Theatre, New York / 2006) -> Loving Cup
                 name, *parts = name.partition("-")
+                mo = PAT.search(name)
+                if mo:
+                    name = PAT.sub("", name).strip()
                 artists = [artist["name"] for artist in track["artists"]]
                 tracks.append(Track(id=track_id, name=name, artists=artists))
         return tracks
