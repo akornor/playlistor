@@ -130,12 +130,20 @@ button.onclick = async function(event) {
   if (!is_valid_url(playlist)) {
     Swal.fire(
       "Invalid URL",
-      "Enter valid url e.g https://itunes.apple.com/us/playlist/ep-3-paak-house-radio-playlist/pl.be45d23328f642cc91cf7086c7126daf"
+      "Enter valid playlist url e.g https://itunes.apple.com/us/playlist/ep-3-paak-house-radio-playlist/pl.be45d23328f642cc91cf7086c7126daf or https://open.spotify.com/playlist/0uvKonJpIZpRWoffhkMq2O"
+    );
+    return;
+  }
+  const url = await maybeExpandURL(playlist);
+  if (!SUPPORTED_PLATFORMS_PLAYLIST_URL_REGEX.test(url)){
+    // TODO: Extract into function.
+    Swal.fire(
+      "Invalid URL",
+      "Enter valid playlist url e.g https://itunes.apple.com/us/playlist/ep-3-paak-house-radio-playlist/pl.be45d23328f642cc91cf7086c7126daf or https://open.spotify.com/playlist/0uvKonJpIZpRWoffhkMq2O"
     );
     return;
   }
   displaySpinner();
-  const url = await maybeExpandURL(playlist);
   if (
     SPOTIFY_PLAYLIST_URL_REGEX.test(url) &&
     !MusicKit.getInstance().isAuthorized
