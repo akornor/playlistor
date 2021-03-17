@@ -66,7 +66,9 @@ def generate_spotify_playlist(self, url):
             if t is not None:
                 track_uris.append(f"spotify:track:{t.spotify_id}")
             else:
-                results = sp.search(f"{track.name} {' '.join(track.artists)}", limit=1)
+                # Reduce number of artists in query to improve search accuracy
+                query = f"{track.name} {' '.join(track.artists if len(track.artists) <= 2 else track.artists[:2])}"
+                results = sp.search(query, limit=1)
                 track_id = results["tracks"]["items"][0]["id"]
                 track_uris.append(f"spotify:track:{track_id}")
                 tracks_to_save.append(
