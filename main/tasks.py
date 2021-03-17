@@ -122,7 +122,8 @@ def generate_applemusic_playlist(self, url, token):
     progress_recorder = ProgressRecorder(self)
     data = SpotifyParser(url).extract_data()
     tracks = data["tracks"]
-    playlist_title = data["playlist_title"]
+    # For some reason Spotify playlists can have an empty string as playlist name.
+    playlist_title = data["playlist_title"] or "Untitled"
     creator = data["playlist_creator"]
     tracks_to_save = []
     track_ids = []
