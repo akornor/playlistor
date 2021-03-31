@@ -4,6 +4,8 @@ from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from django.urls import reverse
+from jsonschema import validate
+from jsonschema.exceptions import ValidationError
 from main import oauth
 from .tasks import generate_spotify_playlist, generate_applemusic_playlist
 from .decorators import login_required
@@ -31,12 +33,20 @@ def playlist(request):
     API endpoint to schedule generate_playlist tasks
     """
     data = json.loads(request.body.decode("utf-8"))
+    schema = {
+        "type": "object",
+        "required": ["playlist", "platform"],
+        "properties": {
+            "playlist": {"type": "string"},
+            "platform": {"enum": ["spotify", "apple-music"]},
+        },
+    }
+    try:
+        validate(data, schema=schema)
+    except ValidationError as e:
+        return JsonResponse({"error": True, "message": e.message}, status=400)
     playlist = data.get("playlist")
     platform = data.get("platform")
-    if playlist is None:
-        return JsonResponse({"message": "playlist required in payload"}, status=400)
-    if platform is None:
-        return JsonResponse({"message": "platform required in payload"}, status=400)
     if platform == "apple-music":
         token = request.headers.get("Music-User-Token")
         result = generate_applemusic_playlist.delay(playlist, token)
