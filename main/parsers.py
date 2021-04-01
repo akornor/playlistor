@@ -44,7 +44,19 @@ class AppleMusicParser(BaseParser):
             "playlist_title": self._get_playlist_title(),
             "tracks": self._get_playlist_tracks(),
             "playlist_creator": self._get_playlist_creator(),
+            "playlist_artwork_url": self._get_playlist_artwork_url(),
         }
+
+    def _get_playlist_artwork_url(self):
+        try:
+            artwork_url = self.data[0]["attributes"]["artwork"]["url"]
+            w = self.data[0]["attributes"]["artwork"]["width"]
+            h = self.data[0]["attributes"]["artwork"]["height"]
+            artwork_url = artwork_url.replace("{w}", str(w))
+            artwork_url = artwork_url.replace("{h}", str(h))
+            return artwork_url
+        except Exception:
+            return None
 
     def _get_playlist_title(self):
         return self.data[0]["attributes"]["name"]

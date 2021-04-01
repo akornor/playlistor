@@ -56,6 +56,7 @@ def generate_spotify_playlist(self, url):
     playlist_title = data["playlist_title"]
     tracks = data["tracks"]
     creator = data["playlist_creator"]
+    artwork_url = data["playlist_artwork_url"]
     n = len(tracks)
     track_uris = []
     tracks_to_save = []
@@ -97,7 +98,10 @@ def generate_spotify_playlist(self, url):
         sp.playlist_add_items(playlist_id, track_uris)
     # Store playlist info
     Playlist.objects.create(
-        name=playlist_title, spotify_url=playlist_url, applemusic_url=url
+        name=playlist_title,
+        artwork_url=artwork_url,
+        spotify_url=playlist_url,
+        applemusic_url=url,
     )
     if len(tracks_to_save) > 0:
         save_or_update_tracks(tracks_to_save)

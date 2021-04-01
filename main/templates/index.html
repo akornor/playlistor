@@ -94,7 +94,11 @@
             <div id="card-wrapper">
                 {% for playlist in playlists %}
                 <div class="card" data-tilt data-tilt-perspective="1400">
+                    {% if playlist.artwork_url %}
+                    <img src="{{ playlist.artwork_url }}" alt="album art">
+                    {% else %}
                     <img src="{% static 'img/placeholder03.jpg' %}" alt="album art">
+                    {% endif %}
                     <h3 class="playlist_title">
                         {{ playlist.name }}
                     </h3>
