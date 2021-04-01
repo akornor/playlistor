@@ -4,6 +4,7 @@ from bulk_update_or_create import BulkUpdateOrCreateQuerySet
 
 class Playlist(models.Model):
     name = models.CharField(max_length=200)
+    artwork_url = models.URLField(null=True)
     spotify_url = models.URLField(null=True)
     applemusic_url = models.URLField(null=True)
     created_at = models.DateTimeField(auto_now_add=True)
