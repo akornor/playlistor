@@ -67,6 +67,24 @@ const is_valid_url = str => {
   return regexp.test(str);
 };
 
+// copied from https://stackoverflow.com/questions/2536379/difference-in-months-between-two-dates-in-javascript
+function monthDiff(d1, d2) {
+    var months;
+    months = (d2.getFullYear() - d1.getFullYear()) * 12;
+    months -= d1.getMonth();
+    months += d2.getMonth();
+    return months <= 0 ? 0 : months;
+}
+
+function isSpotifyPlaylistURL(url){
+  return SPOTIFY_PLAYLIST_URL_REGEX.test(url)
+}
+
+function isAppleMusicPlaylistURL(url){
+  return APPLE_MUSIC_PLAYLIST_URL_REGEX.test(url)
+}
+
+
 const resetProgressBar = () => {
   $("#progress-bar").style.width = "0%";
   $("#progress-bar-message").innerHTML = "";
@@ -84,9 +102,9 @@ function displaySpinner() {
   button.disabled = true;
 }
 function getDestinationPlatform(url) {
-  if (SPOTIFY_PLAYLIST_URL_REGEX.test(url)) {
+  if (isSpotifyPlaylistURL(url)) {
     return "apple-music";
-  } else if (APPLE_MUSIC_PLAYLIST_URL_REGEX.test(url)) {
+  } else if (isAppleMusicPlaylistURL(url)) {
     return "spotify";
   } else {
     throw new Error("Platform not yet supported.");
@@ -144,8 +162,21 @@ button.onclick = async function(event) {
     return;
   }
   displaySpinner();
+  if (isSpotifyPlaylistURL(url) && MusicKit.getInstance().isAuthorized){
+    let lastLoginDate = await localStorage.getItem("LAST_APPLE_MUSIC_LOGIN");
+    if (!lastLoginDate){
+      await MusicKit.getInstance().storekit.renewUserToken();
+      await localStorage.setItem("LAST_APPLE_MUSIC_LOGIN", new Date.toISOString());
+    }
+    lastLoginDate = new Date(lastLoginDate);
+    const today = new Date();
+    const MONTH_THRESHOLD = 1
+    if (monthDiff(lastLoginDate, today) > MONTH_THRESHOLD){
+      await MusicKit.getInstance().storekit.renewUserToken();
+    }
+  }
   if (
-    SPOTIFY_PLAYLIST_URL_REGEX.test(url) &&
+    isSpotifyPlaylistURL(url) &&
     !MusicKit.getInstance().isAuthorized
   ) {
     resetButton();
@@ -158,6 +189,7 @@ button.onclick = async function(event) {
     });
     if (result.value) {
       await MusicKit.getInstance().authorize();
+      await localStorage.setItem("LAST_APPLE_MUSIC_LOGIN", new Date().toISOString())
     }
     return;
   }
