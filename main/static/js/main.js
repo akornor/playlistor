@@ -84,6 +84,10 @@ function isAppleMusicPlaylistURL(url){
   return APPLE_MUSIC_PLAYLIST_URL_REGEX.test(url)
 }
 
+function isSupportedPlaylistURL(url){
+  return SUPPORTED_PLATFORMS_PLAYLIST_URL_REGEX.test(url)
+}
+
 
 const resetProgressBar = () => {
   $("#progress-bar").style.width = "0%";
@@ -112,7 +116,7 @@ function getDestinationPlatform(url) {
 }
 
 async function maybeExpandURL(url) {
-  if (SUPPORTED_PLATFORMS_PLAYLIST_URL_REGEX.test(url)) {
+  if (isSupportedPlaylistURL(url)) {
     return url;
   }
   url = await expandURL(url);
@@ -153,7 +157,7 @@ button.onclick = async function(event) {
     return;
   }
   const url = await maybeExpandURL(playlist);
-  if (!SUPPORTED_PLATFORMS_PLAYLIST_URL_REGEX.test(url)){
+  if (!isSupportedPlaylistURL(url)){
     // TODO: Extract into function.
     Swal.fire(
       "Invalid URL",
