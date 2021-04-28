@@ -176,17 +176,18 @@ button.onclick = async function(event) {
         // do nothing
         console.log(e)
       }
-    }
-    lastLoginDate = new Date(lastLoginDate);
-    const today = new Date();
-    const MONTH_THRESHOLD = 1
-    if (monthDiff(lastLoginDate, today) > MONTH_THRESHOLD){
-      try{
-        await MusicKit.getInstance().storekit.renewUserToken();
-        await localStorage.setItem("LAST_APPLE_MUSIC_LOGIN", new Date.toISOString());
-      }catch(e){
-        // do nothing
-        console.log(e)
+    }else{
+      lastLoginDate = new Date(lastLoginDate);
+      const today = new Date();
+      const MONTH_THRESHOLD = 1
+      if (monthDiff(lastLoginDate, today) > MONTH_THRESHOLD){
+        try{
+          await MusicKit.getInstance().storekit.renewUserToken();
+          await localStorage.setItem("LAST_APPLE_MUSIC_LOGIN", new Date.toISOString());
+        }catch(e){
+          // do nothing
+          console.log(e)
+        }
       }
     }
   }
