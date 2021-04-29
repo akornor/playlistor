@@ -9,7 +9,7 @@ SPOTIFY_PLAYLIST_URL_PAT = re.compile(
     r"https:\/\/open.spotify.com/(user\/.+\/)?playlist/(?P<playlist_id>.+)"
 )
 APPLE_MUSIC_PLAYLIST_URL_PAT = re.compile(
-    r"https:\/\/(embed.)?music\.apple\.com\/(?P<storefront>.+)\/playlist(\/.+)?\/(?P<playlist_id>.+)"
+    r"https:\/\/(embed.)?music\.apple\.com\/(?P<storefront>.{2})\/playlist(\/.+)?\/(?P<playlist_id>.+)"
 )
 
 
