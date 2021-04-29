@@ -55,7 +55,8 @@ function onProgress(
 function onTaskError(progressBarElement, progressBarMessageElement, excMessage) {
         progressBarElement.style.backgroundColor = this.barColors.error;
         excMessage = excMessage || '';
-        progressBarMessageElement.textContent = "Uh-Oh, something went wrong! " + excMessage;
+        progressBarMessageElement.textContent = "Uh-Oh, something went wrong!"
+        resetButton();
     }
 
 const SPOTIFY_PLAYLIST_URL_REGEX = /open\.spotify\.com\/(user\/.+\/)?playlist\/.+/;
