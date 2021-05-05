@@ -7,5 +7,6 @@ urlpatterns = [
     path("expand", views.expand, name="expand"),
     path("playlist", views.playlist, name="playlist"),
     path("callback", views.callback, name="spotify-callback"),
+    path("subscribers", views.add_subscriber, name="add_subscriber"),
     path("", views.index, name="home"),
 ]

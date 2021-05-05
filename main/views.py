@@ -10,7 +10,7 @@ from main import oauth
 from .tasks import generate_spotify_playlist, generate_applemusic_playlist
 from .decorators import login_required
 from .utils import get_redis_client, requests_retry_session
-from .models import Playlist
+from .models import Playlist, Subscriber
 
 
 def login(request):
@@ -70,6 +70,17 @@ def expand(request):
         return JsonResponse({"url": response.url})
     except Exception:
         return JsonResponse({"message": f"{url} not found."}, status=404)
+
+
+@require_POST
+def add_subscriber(request):
+    data = json.loads(request.body.decode("utf-8"))
+    email = data.get("email")
+    try:
+        subscriber = Subscriber.objects.create(email=email)
+        return JsonResponse({"email": subscriber.email}, status=201)
+    except Exception:
+        return JsonResponse({}, status=400)
 
 
 @login_required(login_url="/login")

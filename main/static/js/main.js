@@ -1,3 +1,51 @@
+window.onload = function(event){
+  if (true && !localStorage.getItem("subscribed")){
+      Swal.fire({
+      title: 'Be the first to know',
+      html:  `<p>Hi, I’m actively working on a new and improved version of <a href="/" style="color:#3085d6">Playlistor</a> with <b>exciting features</b> I can’t wait to share.
+      Be the first to know when it goes live 🚀<br/>-- <a href="https://twitter.com/raymxnde" style="color:#3085d6">Raymond Akornor(@raymxnde)</a></p>`,
+      input: 'email',
+      inputAttributes: {
+        autocapitalize: 'off',
+        placeholder: 'Enter your email address'
+      },
+      showCloseButton: true,
+      confirmButtonText: 'Submit',
+      showLoaderOnConfirm: true,
+      preConfirm: async (email) => {
+        try{
+          const response = await fetch("/subscribers", {
+            method: "POST",
+            body: JSON.stringify({
+              email,
+            }),
+            headers: {
+              "Content-Type": "application/json",
+            }
+          });
+          if (!response.ok) {
+            throw new Error(response.statusText)
+          }
+          // set flag to indicate user has subscribed to newsletter
+          localStorage.setItem("subscribed", true)
+          return response.json();
+        }catch(e){
+          Swal.showValidationMessage(
+            `Request failed: ${e}`
+          )
+        }
+      },
+      allowOutsideClick: () => !Swal.isLoading()
+    }).then((result) => {
+      if (result.value.email) {
+        Swal.fire({
+          title: 'Thanks for joining our newsletter.',
+        })
+      }
+    })
+  }
+}
+
 const $ = (window.$ = document.querySelector.bind(document));
 
 let button = $("#submit_btn");
