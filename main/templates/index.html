@@ -102,6 +102,11 @@
                     <h3 class="playlist_title">
                         {{ playlist.name }}
                     </h3>
+                    {% if not playlist.creator %}
+                    <h5 class="playlist_creator">
+                        By {{ playlist.creator }}
+                    </h5>
+                    {% endif %}
                     <div class="button-wrap">
                         <a href="{{ playlist.applemusic_url }}" target="_blank"><button class="apple_btn"><i class="fab fa-itunes-note"></i>&nbsp;</button></a>
                         <a href="{{ playlist.spotify_url }}" target="_blank"><button class="spotify_btn"><i class="fab fa-spotify"></i>&nbsp;</button></a>

@@ -102,6 +102,7 @@ def generate_spotify_playlist(self, url):
         artwork_url=artwork_url,
         spotify_url=playlist_url,
         applemusic_url=url,
+        creator=creator,
     )
     if len(tracks_to_save) > 0:
         save_or_update_tracks(tracks_to_save)

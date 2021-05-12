@@ -356,6 +356,14 @@ a{
     font-size: 1.1rem;
 }
 
+.playlist_creator{
+    padding-bottom: 15px;
+    font-family: var(--font-family-titles);
+    font-weight: bold;
+    font-size: 1rem;
+    color: grey;
+}
+
 .button-wrap{
     display: grid;
     grid-template-columns: 1fr 1fr;
