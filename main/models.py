@@ -7,6 +7,7 @@ class Playlist(models.Model):
     artwork_url = models.URLField(null=True)
     spotify_url = models.URLField(null=True)
     applemusic_url = models.URLField(null=True)
+    creator = models.CharField(max_length=255, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
