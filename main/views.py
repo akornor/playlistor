@@ -65,7 +65,8 @@ def expand(request):
     url = data.get("url")
     session = requests_retry_session()
     try:
-        response = session.head(url, allow_redirects=True)
+        # TODO: Check if value for timeout is good enough
+        response = session.head(url, allow_redirects=True, timeout=3)
         response.raise_for_status()
         return JsonResponse({"url": response.url})
     except Exception:
