@@ -89,6 +89,13 @@ function onError(progressBarElement, progressBarMessageElement) {
     resetButton();
   }
 
+function onRetry(progressBarElement, progressBarMessageElement, excMessage, retryWhen) {
+    retryWhen = new Date(retryWhen);
+    let message = 'Retrying in ' + Math.round((retryWhen.getTime() - Date.now())/1000) + 's: ';
+    progressBarElement.style.backgroundColor = "#dc4f63";
+    progressBarMessageElement.innerHTML = `Uh-Oh, something went wrong! ${message}`;
+  }
+
 function onProgress(
     progressBarElement,
     progressBarMessageElement,
@@ -272,7 +279,7 @@ button.onclick = async function(event) {
     raiseForStatus(response);
     let { task_id } = await response.json();
     const progressUrl = `/celery-progress/${task_id}/`;
-    CeleryProgressBar.initProgressBar(progressUrl, {onProgress, onError, onSuccess, onTaskError});
+    CeleryProgressBar.initProgressBar(progressUrl, {onProgress, onError, onSuccess, onTaskError, onRetry});
   } catch (error) {
     CeleryProgressBar.onErrorDefault();
   }
