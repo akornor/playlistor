@@ -91,7 +91,7 @@ function onError(progressBarElement, progressBarMessageElement) {
 
 function onRetry(progressBarElement, progressBarMessageElement, excMessage, retryWhen) {
     retryWhen = new Date(retryWhen);
-    let message = 'Retrying in ' + Math.round((retryWhen.getTime() - Date.now())/1000) + 's: ';
+    let message = 'Retrying in ' + Math.round((retryWhen.getTime() - Date.now())/1000) + 's';
     progressBarElement.style.backgroundColor = "#dc4f63";
     progressBarMessageElement.innerHTML = `Uh-Oh, something went wrong! ${message}`;
   }
