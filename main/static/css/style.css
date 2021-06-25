@@ -213,7 +213,8 @@ a{
 
 @media (max-width: 768px) {
     #coffee_btn span{
-        display: none;
+        font-size: 13px;
+        text-align: center;
     }
 }
 
