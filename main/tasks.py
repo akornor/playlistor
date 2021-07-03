@@ -86,7 +86,9 @@ def generate_spotify_playlist(self, url):
         finally:
             progress_recorder.set_progress(i + 1, n)
     playlist = sp.user_playlist_create(
-        uid, playlist_title, description=f"Made with https://playlistor.io :)"
+        uid,
+        playlist_title,
+        description=f"Made with Playlistor (https://playlistor.io) :)",
     )
     playlist_id = playlist["id"]
     playlist_url = playlist["external_urls"]["spotify"]
@@ -176,7 +178,7 @@ def generate_applemusic_playlist(self, url, token):
         else:
             am.user_playlist_create(
                 name=playlist_title,
-                description=f"Made with https://playlistor.io :)",
+                description=f"Made with Playlistor (https://playlistor.io) :)",
                 track_ids=track_ids,
             )
 
