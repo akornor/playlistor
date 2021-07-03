@@ -168,7 +168,7 @@ def generate_applemusic_playlist(self, url, token):
         if len(track_ids) > N:
             playlist_data = am.user_playlist_create(
                 name=playlist_title,
-                description=f"Made with https://playlistor.io :)",
+                description=f"Made with Playlistor (https://playlistor.io) :)",
                 track_ids=track_ids[:N],
             )
             playlist_id = playlist_data["data"][0]["id"]
