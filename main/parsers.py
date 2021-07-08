@@ -78,6 +78,7 @@ class AppleMusicParser(BaseParser):
                 track_id = track["id"]
                 artists += (
                     track["attributes"]["artistName"]
+                    .replace("featuring", ",")  # Lil' Scrappy featuring Young Buck
                     .replace("&", ",")  # Rah Digga & Missy Elliot
                     .replace(" x ", ",")  # Chloe x Halle
                     .split(",")
