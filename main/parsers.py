@@ -1,6 +1,11 @@
 from collections import namedtuple
 import re
-from .utils import get_spotify_client, requests_retry_session, generate_auth_token
+from .utils import (
+    get_spotify_client,
+    requests_retry_session,
+    generate_auth_token,
+    sanitize_track_name,
+)
 
 Track = namedtuple("Track", ["id", "name", "artists"])
 
@@ -71,7 +76,6 @@ class AppleMusicParser(BaseParser):
             response.raise_for_status()
             track_items += response.json()["data"]
             has_next = response.json().get("next")
-        PAT = re.compile(r"\((.*?)\)|\[(.*?)\]")
         for track in track_items:
             try:
                 artists = []
@@ -83,13 +87,7 @@ class AppleMusicParser(BaseParser):
                     .replace(" x ", ",")  # Chloe x Halle
                     .split(",")
                 )
-                name = track["attributes"]["name"]
-                mo = PAT.search(name)
-                if mo:
-                    # Remove content in brackets as it tends to be too much noise for track resolution.
-                    # Free Trial (feat. Qari & Phoelix) [Explicit] -> Free Trial
-                    # This is a temporary fix until I properly understand the problem space to come up with a more general solution.
-                    name = PAT.sub("", name).strip()
+                name = sanitize_track_name(track["attributes"]["name"])
                 tracks.append(Track(id=track_id, name=name, artists=artists))
             except KeyError:
                 continue
@@ -130,17 +128,11 @@ class SpotifyParser(BaseParser):
             results = self.sp.next(results)
             items += results["items"]
             next = results.get("next")
-        PAT = re.compile(r"\((.*?)\)|\[(.*?)\]")
         for item in items:
             track = item["track"]
             if track is not None:
                 track_id = track["id"]
-                name = track["name"]
-                # This is pretty naive. But this is done to remove noisy parts of track name. For example, Loving Cup - (Live At The Beacon Theatre, New York / 2006) -> Loving Cup
-                name, *parts = name.partition("-")
-                mo = PAT.search(name)
-                if mo:
-                    name = PAT.sub("", name).strip()
+                name = sanitize_track_name(track["name"])
                 artists = [artist["name"] for artist in track["artists"]]
                 tracks.append(Track(id=track_id, name=name, artists=artists))
         return tracks
