@@ -85,7 +85,7 @@ function onSuccess(
 
 function onError(progressBarElement, progressBarMessageElement) {
     progressBarElement.style.backgroundColor = "#dc4f63";
-    progressBarMessageElement.innerHTML = "Uh-Oh, something went wrong!";
+    progressBarMessageElement.innerHTML = "Uh-Oh, something went wrong! DM <a href='twitter.com/playlistor_io'>@playlistor_io</a> on Twitter or email <a href='mailto:playlistor.io@gmail.com'>playlistor.io@gmail.com</a> for support.";
     resetButton();
   }
 
@@ -110,7 +110,7 @@ function onProgress(
 function onTaskError(progressBarElement, progressBarMessageElement, excMessage) {
         progressBarElement.style.backgroundColor = this.barColors.error;
         excMessage = excMessage || '';
-        progressBarMessageElement.textContent = "Uh-Oh, something went wrong!"
+        progressBarMessageElement.innerHTML = "Uh-Oh, something went wrong! DM <a href='twitter.com/playlistor_io'>@playlistor_io</a> on Twitter or email <a href='mailto:playlistor.io@gmail.com'>playlistor.io@gmail.com</a> for support.";
         resetButton();
     }
 
