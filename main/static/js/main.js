@@ -1,5 +1,7 @@
+const COOKIE_NAME = 'newsletter-modal'
+
 window.onload = function(event){
-  if (true && !localStorage.getItem("subscribed")){
+  if (!document.cookie.includes(COOKIE_NAME)){
       Swal.fire({
       title: 'Be the first to know',
       html:  `<p>Hi, I’m actively working on a new and improved version of <a href="/" style="color:#3085d6">Playlistor</a> with <b>exciting features</b> I can’t wait to share.
@@ -26,8 +28,6 @@ window.onload = function(event){
           if (!response.ok) {
             throw new Error(response.statusText)
           }
-          // set flag to indicate user has subscribed to newsletter
-          localStorage.setItem("subscribed", true)
           return response.json();
         }catch(e){
           Swal.showValidationMessage(
@@ -37,9 +37,12 @@ window.onload = function(event){
       },
       allowOutsideClick: () => !Swal.isLoading()
     }).then((result) => {
+      // set cookie
+      document.cookie = `${COOKIE_NAME}=1; max-age=604800; path=/`
+
       if (result.value.email) {
         Swal.fire({
-          title: 'Thanks for joining our newsletter.',
+          title: 'Thank you for joining our newsletter.',
         })
       }
     })
