@@ -69,7 +69,7 @@ def expand(request):
         response.raise_for_status()
         return JsonResponse({"url": response.url})
     except Exception:
-        return JsonResponse({"message": f"{url} not found."}, status=404)
+        return JsonResponse({"message": "Link not found."}, status=404)
 
 
 @require_POST
