@@ -53,9 +53,7 @@ def playlist(request):
     elif platform == "spotify":
         result = generate_spotify_playlist.delay(playlist)
     else:
-        return JsonResponse(
-            {"message": f"platform {platform} not supported"}, status=400
-        )
+        return JsonResponse({"message": f"Platform not supported"}, status=400)
     return JsonResponse({"task_id": result.task_id})
 
 
