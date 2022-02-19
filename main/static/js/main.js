@@ -226,26 +226,16 @@ button.onclick = async function(event) {
   displaySpinner();
   if (isSpotifyPlaylistURL(url) && MusicKit.getInstance().isAuthorized){
     let lastLoginDate = await localStorage.getItem("LAST_APPLE_MUSIC_LOGIN");
-    if (!lastLoginDate){
+    const today = new Date()
+    const MONTH_THRESHOLD = 1
+    if (!lastLoginDate || (monthDiff(new Date(lastLoginDate), today) > MONTH_THRESHOLD)){
       try{
         await MusicKit.getInstance().storekit.renewUserToken();
         await localStorage.setItem("LAST_APPLE_MUSIC_LOGIN", new Date.toISOString());
       }catch(e){
-        // do nothing
         console.log(e)
-      }
-    }else{
-      lastLoginDate = new Date(lastLoginDate);
-      const today = new Date();
-      const MONTH_THRESHOLD = 1
-      if (monthDiff(lastLoginDate, today) > MONTH_THRESHOLD){
-        try{
-          await MusicKit.getInstance().storekit.renewUserToken();
-          await localStorage.setItem("LAST_APPLE_MUSIC_LOGIN", new Date.toISOString());
-        }catch(e){
-          // do nothing
-          console.log(e)
-        }
+        // reset persisted apple music credentials.
+        await MusicKit.getInstance().storekit._reset()
       }
     }
   }
