@@ -234,7 +234,7 @@ button.onclick = async function(event) {
     if (!lastLoginDate || (monthDiff(new Date(lastLoginDate), today) > MONTH_THRESHOLD)){
       try{
         await MusicKit.getInstance().storekit.renewUserToken();
-        await localStorage.setItem("LAST_APPLE_MUSIC_LOGIN", new Date.toISOString());
+        await localStorage.setItem("LAST_APPLE_MUSIC_LOGIN", new Date().toISOString());
       }catch(e){
         console.log(e)
         // reset persisted apple music credentials.
