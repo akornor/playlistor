@@ -277,6 +277,8 @@ button.onclick = async function(event) {
     const progressUrl = `/celery-progress/${task_id}/`;
     CeleryProgressBar.initProgressBar(progressUrl, {onProgress, onError, onSuccess, onTaskError, onRetry});
   } catch (error) {
-    CeleryProgressBar.onErrorDefault();
+    const progressBarElement = $("#progress-bar")
+    const progressBarMessageElement = $("#progress-bar-message")
+    onError(progressBarElement, progressBarMessageElement)
   }
 };
