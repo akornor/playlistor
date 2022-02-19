@@ -231,7 +231,7 @@ button.onclick = async function(event) {
     let lastLoginDate = await localStorage.getItem("LAST_APPLE_MUSIC_LOGIN");
     const today = new Date()
     const MONTH_THRESHOLD = 1
-    if (!lastLoginDate || (monthDiff(new Date(lastLoginDate), today) > MONTH_THRESHOLD)){
+    if (!lastLoginDate || (monthDiff(today, new Date(lastLoginDate)) > MONTH_THRESHOLD)){
       try{
         await MusicKit.getInstance().storekit.renewUserToken();
         await localStorage.setItem("LAST_APPLE_MUSIC_LOGIN", new Date().toISOString());
