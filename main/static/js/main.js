@@ -206,6 +206,7 @@ async function expandURL(shortenedURL) {
 
 button.onclick = async function(event) {
   event.preventDefault();
+  const musicKit = MusicKit.getInstance();
   const playlist = $("#input_big").value.trim();
   if (playlist === "") {
     return;
@@ -227,24 +228,24 @@ button.onclick = async function(event) {
     return;
   }
   displaySpinner();
-  if (isSpotifyPlaylistURL(url) && MusicKit.getInstance().isAuthorized){
+  if (isSpotifyPlaylistURL(url) && musicKit.isAuthorized){
     let lastLoginDate = await localStorage.getItem("LAST_APPLE_MUSIC_LOGIN");
     const today = new Date()
     const MONTH_THRESHOLD = 1
     if (!lastLoginDate || (monthDiff(today, new Date(lastLoginDate)) > MONTH_THRESHOLD)){
       try{
-        await MusicKit.getInstance().storekit.renewUserToken();
+        await musicKit.storekit.renewUserToken();
         await localStorage.setItem("LAST_APPLE_MUSIC_LOGIN", new Date().toISOString());
       }catch(e){
         console.log(e)
         // reset persisted apple music credentials.
-        await MusicKit.getInstance().storekit._reset()
+        await musicKit.storekit._reset()
       }
     }
   }
   if (
     isSpotifyPlaylistURL(url) &&
-    !MusicKit.getInstance().isAuthorized
+    !musicKit.isAuthorized
   ) {
     resetButton();
     const result = await Swal.fire({
@@ -255,7 +256,7 @@ button.onclick = async function(event) {
       confirmButtonText: "SIGN IN."
     });
     if (result.value) {
-      await MusicKit.getInstance().authorize();
+      await musicKit.authorize();
       await localStorage.setItem("LAST_APPLE_MUSIC_LOGIN", new Date().toISOString())
     }
     return;
@@ -269,7 +270,7 @@ button.onclick = async function(event) {
       }),
       headers: {
         "Content-Type": "application/json",
-        "Music-User-Token": `${MusicKit.getInstance().musicUserToken}`
+        "Music-User-Token": `${musicKit.musicUserToken}`
       }
     });
     raiseForStatus(response);
