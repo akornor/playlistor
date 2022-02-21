@@ -274,7 +274,7 @@ button.onclick = async function(event) {
       }
     });
     raiseForStatus(response);
-    let { task_id } = await response.json();
+    const { task_id } = await response.json();
     const progressUrl = `/celery-progress/${task_id}/`;
     CeleryProgressBar.initProgressBar(progressUrl, {onProgress, onError, onSuccess, onTaskError, onRetry});
   } catch (error) {
