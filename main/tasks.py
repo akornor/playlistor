@@ -184,7 +184,7 @@ def generate_applemusic_playlist(self, url, token):
 
     except requests.exceptions.HTTPError as e:
         response = e.response
-        if response.status_code in [500]:
+        if response.status_code >= 500:
             if len(tracks_to_save) > 0:
                 save_or_update_tracks(tracks_to_save)
             raise self.retry(exc=e, countdown=30)
