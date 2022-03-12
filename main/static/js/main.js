@@ -58,15 +58,17 @@ function onSuccess(
     progressBarMessageElement,
     result
   ) {
+    console.log(result)
+    const { playlist_url, destination, missed_tracks, number_of_tracks } = result;
     progressBarElement.style.backgroundColor = "#76ce60";
-    if (is_valid_url(result)){
-      progressBarMessageElement.innerHTML = `<a target="_blank" href="${result}">${result}</a>`
+    if (playlist_url){
+      progressBarMessageElement.innerHTML = `<a target="_blank" href="${playlist_url}">${playlist_url}</a>`
 
       // Extract into functions to be cleaner.
       const clipboardButton = document.createElement('button');
       clipboardButton.innerHTML = "Copy to clipboard"
       clipboardButton.setAttribute('class', 'clipboard-btn');
-      clipboardButton.setAttribute('data-clipboard-text', result)
+      clipboardButton.setAttribute('data-clipboard-text', playlist_url)
       new ClipboardJS('.clipboard-btn');
       const i = document.createElement('i');
       i.setAttribute('class', 'fas fa-clipboard-list');
@@ -83,9 +85,19 @@ function onSuccess(
           tooltip.style.visibility = 'hidden';
         }, 1000);
       }
-    }else {
-      progressBarMessageElement.innerHTML = result;
+    }else if (!playlist_url && destination === 'apple-music'){
+      progressBarMessageElement.innerHTML = 'Check your recently created playlists on Apple Music.';
     }
+
+    if (missed_tracks && number_of_tracks) {
+      const span = document.createElement('span')
+      span.style.fontSize = '0.9em'
+      span.style.fontStyle = 'italic'
+      span.style.paddingBottom = '10px'
+      span.innerHTML = `Successfully matched ${ missed_tracks.length === 0 ? 'all' : number_of_tracks - missed_tracks.length + ' out of ' + number_of_tracks} tracks on playlist.`
+      progressBarElement.appendChild(span)
+    }
+
     resetButton();
   }
 
@@ -114,7 +126,7 @@ function onProgress(
   }
 
 function onTaskError(progressBarElement, progressBarMessageElement, excMessage) {
-        progressBarElement.style.backgroundColor = this.barColors.error;
+        progressBarElement.style.backgroundColor = "#dc4f63";
         excMessage = excMessage || '';
         progressBarMessageElement.innerHTML = "Uh-Oh, something went wrong! DM <a href='twitter.com/playlistor_io'>@playlistor_io</a> on Twitter or email <a href='mailto:playlistor.io@gmail.com'>playlistor.io@gmail.com</a> for support.";
         resetButton();

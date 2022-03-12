@@ -48,7 +48,11 @@ def generate_spotify_playlist(self, url):
     logger.info(f"Generating spotify playlist for apple music playlist:{url}")
     if not settings.DEBUG:
         if url in cache:
-            return cache.get(url)
+            return {
+                "playlist_url": cache.get(url),
+                "destination": "spotify",
+                "source": "apple-music",
+            }
     progress_recorder = ProgressRecorder(self)
     sp = get_spotify_client()
     uid = sp.current_user()["id"]
@@ -111,7 +115,13 @@ def generate_spotify_playlist(self, url):
     cache.set(url, playlist_url, timeout=3600)
     counters.incr_playlist_counter()
     logger.info(f"Missed {len(missed_tracks)} in {n} track(s): {missed_tracks}")
-    return playlist_url
+    return {
+        "playlist_url": playlist_url,
+        "number_of_tracks": n,
+        "missed_tracks": missed_tracks,
+        "source": "apple-music",
+        "destination": "spotify",
+    }
 
 
 @shared_task(bind=True)
@@ -194,4 +204,10 @@ def generate_applemusic_playlist(self, url, token):
     if len(tracks_to_save) > 0:
         save_or_update_tracks(tracks_to_save)
     logger.info(f"Missed {len(missed_tracks)} in {n} track(s): {missed_tracks}")
-    return "Check your recently created playlists on Apple Music."
+    return {
+        "playlist_url": None,
+        "number_of_tracks": n,
+        "missed_tracks": missed_tracks,
+        "source": "spotify",
+        "destination": "apple-music",
+    }
