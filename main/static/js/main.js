@@ -58,7 +58,6 @@ function onSuccess(
     progressBarMessageElement,
     result
   ) {
-    console.log(result)
     const { playlist_url, destination, missed_tracks, number_of_tracks } = result;
     progressBarElement.style.backgroundColor = "#76ce60";
     if (playlist_url){
