@@ -89,12 +89,17 @@ function onSuccess(
     }
 
     if (missed_tracks && number_of_tracks) {
-      const span = document.createElement('span')
+      const matchedTracksInfo = document.createElement('span')
+      span.setAttribute('id', 'matched-tracks-info')
       span.style.fontSize = '0.9em'
       span.style.fontStyle = 'italic'
       span.style.paddingBottom = '10px'
       span.innerHTML = `Successfully matched ${ missed_tracks.length === 0 ? 'all' : number_of_tracks - missed_tracks.length + ' out of ' + number_of_tracks} tracks on playlist.`
-      progressBarElement.appendChild(span)
+      const oldMatchedTracksInfo = document.getElementById('matched-tracks-info')
+      if (oldMatchedTracksInfo) {
+        progressBarElement.removeChild(oldMatchedTracksInfo)
+      }
+      progressBarElement.appendChild(matchedTracksInfo)
     }
 
     resetButton();
