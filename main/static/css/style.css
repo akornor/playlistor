@@ -144,6 +144,16 @@ a{
     align-items: center;
 }
 
+.footer {
+    display: flex;
+    color: white;
+    flex-direction: column;
+    row-gap: 30px;
+    justify-content: center;
+    align-items: center;
+    font-family: var(--font-family-titles);
+}
+
 .shadow_custom{
     box-shadow: 3px 5px 20px 0px rgba(0,0,0,0.25);
 }
