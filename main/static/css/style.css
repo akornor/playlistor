@@ -567,3 +567,7 @@ footer .wrapper .flex .headings, .twitter{
 .tooltip:hover .tooltiptext {
   visibility: visible;
 }
+
+.social-icons {
+    font-size: 45px;
+}
