@@ -90,11 +90,11 @@ function onSuccess(
 
     if (missed_tracks && number_of_tracks) {
       const matchedTracksInfo = document.createElement('span')
-      span.setAttribute('id', 'matched-tracks-info')
-      span.style.fontSize = '0.9em'
-      span.style.fontStyle = 'italic'
-      span.style.paddingBottom = '10px'
-      span.innerHTML = `Successfully matched ${ missed_tracks.length === 0 ? 'all' : number_of_tracks - missed_tracks.length + ' out of ' + number_of_tracks} tracks on playlist.`
+      matchedTracksInfo.setAttribute('id', 'matched-tracks-info')
+      matchedTracksInfo.style.fontSize = '0.9em'
+      matchedTracksInfo.style.fontStyle = 'italic'
+      matchedTracksInfo.style.paddingBottom = '10px'
+      matchedTracksInfo.innerHTML = `Successfully matched ${ missed_tracks.length === 0 ? 'all' : number_of_tracks - missed_tracks.length + ' out of ' + number_of_tracks} tracks on playlist.`
       const oldMatchedTracksInfo = document.getElementById('matched-tracks-info')
       if (oldMatchedTracksInfo) {
         progressBarElement.removeChild(oldMatchedTracksInfo)
