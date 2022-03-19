@@ -1,5 +1,7 @@
 import re
 import datetime
+import functools
+import subprocess
 from urllib.parse import urlsplit
 import jwt
 import requests
@@ -116,3 +118,11 @@ def sanitize_track_name(name):
     # This is pretty naive. But this is done to remove noisy parts of track name. For example, Loving Cup - (Live At The Beacon Theatre, New York / 2006) -> Loving Cup
     name, *parts = name.partition("-")
     return name
+
+
+@functools.lru_cache
+def get_version():
+    version = subprocess.check_output(
+        ["git", "rev-parse", "--short", "HEAD"], universal_newlines=True
+    ).strip()
+    return version
