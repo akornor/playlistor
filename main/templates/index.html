@@ -138,7 +138,7 @@
             </div>
         </div>
     </footer>
-    <script type="text/javascript">
+    <script>
         document.addEventListener('musickitloaded', function() {
             // MusicKit global is now defined
             MusicKit.configure({
@@ -151,13 +151,13 @@
         });
     </script>
     <script src="https://js-cdn.music.apple.com/musickit/v1/musickit.js"></script>
-    <script src="{% static 'js/vendor/sweetalert.min.js' %}" type="text/javascript"></script>
-    <script src="{% static 'celery_progress/celery_progress.js' %}" type="text/javascript"></script>
-    <script src="{% static 'js/vendor/countUp.min.js' %}" type="text/javascript"></script>
+    <script src="{% static 'js/vendor/sweetalert.min.js' %}"></script>
+    <script src="{% static 'celery_progress/celery_progress.js' %}"></script>
+    <script src="{% static 'js/vendor/countUp.min.js' %}"></script>
     <script src="{% static 'js/vendor/tilt.min.js' %}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js"></script>
-    <script src="{% static 'js/main.js' %}?v17" type="text/javascript"></script>
-    <script type="text/javascript">
+    <script src="{% static 'js/main.js' %}?v17"></script>
+    <script>
         const counter = new CountUp("counter", 0, {{ count }} ).start();
     </script>
 </body>
