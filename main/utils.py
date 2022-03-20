@@ -120,7 +120,7 @@ def sanitize_track_name(name):
     return name
 
 
-@functools.lru_cache(max_size=128)
+@functools.lru_cache(maxsize=128)
 def get_version():
     version = subprocess.check_output(
         ["git", "rev-parse", "--short", "HEAD"], universal_newlines=True
