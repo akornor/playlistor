@@ -67,23 +67,19 @@ def generate_spotify_playlist(self, url):
     missed_tracks = []
     for i, track in enumerate(tracks):
         try:
-            t = get_track(apple_music_id=track.id)
-            if t is not None:
-                track_uris.append(f"spotify:track:{t.spotify_id}")
-            else:
-                # Reduce number of artists in query to improve search accuracy
-                query = f"{track.name} {' '.join(track.artists if len(track.artists) <= 2 else track.artists[:2])}"
-                results = sp.search(query, limit=1)
-                track_id = results["tracks"]["items"][0]["id"]
-                track_uris.append(f"spotify:track:{track_id}")
-                tracks_to_save.append(
-                    Track(
-                        name=track.name,
-                        artists=",".join(track.artists),
-                        apple_music_id=track.id,
-                        spotify_id=track_id,
-                    )
+            # Reduce number of artists in query to improve search accuracy
+            query = f"{track.name} {' '.join(track.artists if len(track.artists) <= 2 else track.artists[:2])}"
+            results = sp.search(query, limit=1)
+            track_id = results["tracks"]["items"][0]["id"]
+            track_uris.append(f"spotify:track:{track_id}")
+            tracks_to_save.append(
+                Track(
+                    name=track.name,
+                    artists=",".join(track.artists),
+                    apple_music_id=track.id,
+                    spotify_id=track_id,
                 )
+            )
         except:
             missed_tracks.append(track)
             continue
@@ -152,22 +148,18 @@ def generate_applemusic_playlist(self, url, token):
     am.access_token = token
     for i, track in enumerate(tracks):
         try:
-            t = get_track(spotify_id=track.id)
-            if t is not None:
-                track_ids.append(t.apple_music_id)
-            else:
-                # use single artist as it's observed to improve search accuracy.
-                query = f"{track.name} {track.artists[0]}"
-                song = am.search(query=query, limit=1)["results"]["songs"]["data"][0]
-                track_ids.append(song["id"])
-                tracks_to_save.append(
-                    Track(
-                        name=track.name,
-                        artists=",".join(track.artists),
-                        apple_music_id=song["id"],
-                        spotify_id=track.id,
-                    )
+            # use single artist as it's observed to improve search accuracy.
+            query = f"{track.name} {track.artists[0]}"
+            song = am.search(query=query, limit=1)["results"]["songs"]["data"][0]
+            track_ids.append(song["id"])
+            tracks_to_save.append(
+                Track(
+                    name=track.name,
+                    artists=",".join(track.artists),
+                    apple_music_id=song["id"],
+                    spotify_id=track.id,
                 )
+            )
         except:
             missed_tracks.append(track)
             continue
