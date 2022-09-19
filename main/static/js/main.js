@@ -60,6 +60,9 @@ function onSuccess(
   ) {
     const { playlist_url, destination, missed_tracks, number_of_tracks } = result;
     progressBarElement.style.backgroundColor = "#76ce60";
+    // reset messaging elements
+     $("#matched-tracks-info")?.remove()
+     progressBarMessageElement.innerHTML = ''
     if (playlist_url){
       progressBarMessageElement.innerHTML = `<a target="_blank" href="${playlist_url}">${playlist_url}</a>`
 
@@ -107,6 +110,8 @@ function onSuccess(
 
 function onError(progressBarElement, progressBarMessageElement) {
     progressBarElement.style.backgroundColor = "#dc4f63";
+    $("#matched-tracks-info")?.remove()
+    progressBarMessageElement.innerHTML = ''
     progressBarMessageElement.innerHTML = "Uh-Oh, something went wrong! DM <a href='twitter.com/playlistor_io'>@playlistor_io</a> on Twitter or email <a href='mailto:playlistor.io@gmail.com'>playlistor.io@gmail.com</a> for support.";
     resetButton();
   }
@@ -115,6 +120,8 @@ function onRetry(progressBarElement, progressBarMessageElement, excMessage, retr
     retryWhen = new Date(retryWhen);
     let message = 'Retrying in ' + Math.round((retryWhen.getTime() - Date.now())/1000) + 's';
     progressBarElement.style.backgroundColor = "#dc4f63";
+    $("#matched-tracks-info")?.remove()
+    progressBarMessageElement.innerHTML = ''
     progressBarMessageElement.innerHTML = `Uh-Oh, something went wrong! ${message}`;
   }
 
@@ -123,6 +130,8 @@ function onProgress(
     progressBarMessageElement,
     progress
   ) {
+    $("#matched-tracks-info")?.remove()
+    progressBarMessageElement.innerHTML = ''
     progressBarElement.style.backgroundColor = "#68a9ef";
     progressBarElement.style.width = progress.percent + "%";
     progressBarMessageElement.innerHTML =
@@ -132,6 +141,8 @@ function onProgress(
 function onTaskError(progressBarElement, progressBarMessageElement, excMessage) {
         progressBarElement.style.backgroundColor = "#dc4f63";
         excMessage = excMessage || '';
+        $("#matched-tracks-info")?.remove()
+        progressBarMessageElement.innerHTML = ''
         progressBarMessageElement.innerHTML = "Uh-Oh, something went wrong! DM <a href='twitter.com/playlistor_io'>@playlistor_io</a> on Twitter or email <a href='mailto:playlistor.io@gmail.com'>playlistor.io@gmail.com</a> for support.";
         resetButton();
     }
