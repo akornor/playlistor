@@ -138,6 +138,13 @@ a{
     margin-right: auto;
 }
 
+@media (max-width: 550px) {
+   .wrapper {
+    width: 95%;
+    margin: auto;
+   }
+}
+
 .flex{
     display: flex;
     align-self: center;
