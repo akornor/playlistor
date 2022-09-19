@@ -89,9 +89,9 @@
                 {% for playlist in playlists %}
                 <div class="card" data-tilt data-tilt-perspective="1400">
                     {% if playlist.artwork_url %}
-                    <img src="{{ playlist.artwork_url }}" alt="album art">
+                    <img src="{% static 'img/350-placeholder.png' %}" data-echo="{{ playlist.artwork_url }}" alt="album art">
                     {% else %}
-                    <img src="{% static 'img/placeholder03.jpg' %}" alt="album art">
+                    <img src="{% static 'img/350-placeholder.png' %}" data-echo="{% static 'img/placeholder03.jpg' %}" alt="album art">
                     {% endif %}
                     <h3 class="playlist_title">
                         {{ playlist.name }}
@@ -153,6 +153,16 @@
     <script src="{% static 'js/main.js' %}?v18"></script>
     <script>
         const counter = new CountUp("counter", 0, {{ count }} ).start();
+    </script>
+    <script src="{% static 'js/vendor/echo.min.js' %}"></script>
+    <script>
+        echo.init({
+        offset: 100,
+        throttle: 250,
+        unload: false,
+        callback: function (element, op) {
+          console.log(element, 'has been', op + 'ed')
+        }})
     </script>
 </body>
 
