@@ -1,6 +1,6 @@
 celery==4.4.5
 https://github.com/akornor/celery-progress/archive/ae0d2aaad9768b63f5c9233dc2f76a2da06443a5.zip
-Django==2.2.27
+Django==2.2.28
 redis==3.4.1
 requests
 spotipy==2.16.1
