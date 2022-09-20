@@ -16,9 +16,9 @@ billiard==3.6.4.0 \
     --hash=sha256:299de5a8da28a783d51b197d496bef4f1595dd023a93a4f59dde1886ae905547 \
     --hash=sha256:87103ea78fa6ab4d5c751c4909bcff74617d985de7fa8b672cf8618afd5a875b
     # via celery
-celery==5.2.2 \
-    --hash=sha256:2844eb040e915398623a43253a8e1016723442ece6b0751a3c416d8a2b34216f \
-    --hash=sha256:5a68a351076cfac4f678fa5ffd898105c28825a2224902da006970005196d061
+celery==5.2.7 \
+    --hash=sha256:138420c020cd58d6707e6257b6beda91fd39af7afde5d36c6334d175302c0e14 \
+    --hash=sha256:fafbd82934d30f8a004f81e8f7a062e31413a23d444be8ee3326553915958c6d
     # via -r requirements/common.in
 celery-progress @ https://github.com/akornor/celery-progress/archive/ae0d2aaad9768b63f5c9233dc2f76a2da06443a5.zip \
     --hash=sha256:d0552fa649f6f73128efa280fe2c1c0e8a21c42330d2ab1807a35a49f4ec1033
@@ -282,6 +282,5 @@ setuptools==65.3.0 \
     --hash=sha256:2e24e0bec025f035a2e72cdd1961119f557d78ad331bb00ff82efb2ab8da8e82 \
     --hash=sha256:7732871f4f7fa58fb6bdcaeadb0161b2bd046c85905dbaa066bdcbcc81953b57
     # via
-    #   celery
     #   gunicorn
     #   jsonschema
