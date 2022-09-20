@@ -62,7 +62,7 @@ class AppleMusicClient:
             "iat": int(time_now.strftime("%s")),
         }
         token = jwt.encode(payload, private_key, algorithm="ES256", headers=headers)
-        return token.decode()
+        return token
 
     def _request_method(self, method):
         return {
@@ -106,8 +106,7 @@ class AppleMusicClient:
         self.headers = self._get_auth_headers()
 
     def next(self, resource, limit=None):
-        """https://developer.apple.com/library/content/documentation/NetworkingInternetWeb/Conceptual/AppleMusicWebServicesReference/RelationshipsandPagination.html#//apple_ref/doc/uid/TP40017625-CH135-SW1
-        """
+        """https://developer.apple.com/library/content/documentation/NetworkingInternetWeb/Conceptual/AppleMusicWebServicesReference/RelationshipsandPagination.html#//apple_ref/doc/uid/TP40017625-CH135-SW1"""
         if not (resource and resource.get("next")):
             return None
         params = {}
@@ -118,8 +117,7 @@ class AppleMusicClient:
         )
 
     def _build_track(self, track_id, track_type=TRACK_TYPE_SONGS):
-        """https://developer.apple.com/documentation/applemusicapi/libraryplaylistrequesttrack
-        """
+        """https://developer.apple.com/documentation/applemusicapi/libraryplaylistrequesttrack"""
         return {"id": track_id, "type": TRACK_TYPE_SONGS}
 
     def _build_tracks(self, track_ids, track_type=TRACK_TYPE_SONGS):
@@ -130,8 +128,7 @@ class AppleMusicClient:
     def search(
         self, query, limit=None, offset=None, storefront="us", types=TRACK_TYPE_SONGS
     ):
-        """https://developer.apple.com/library/content/documentation/NetworkingInternetWeb/Conceptual/AppleMusicWebServicesReference/Searchforresources.html#//apple_ref/doc/uid/TP40017625-CH58-SW1
-        """
+        """https://developer.apple.com/library/content/documentation/NetworkingInternetWeb/Conceptual/AppleMusicWebServicesReference/Searchforresources.html#//apple_ref/doc/uid/TP40017625-CH58-SW1"""
         if not query:
             return
         params = {"term": query}
@@ -146,8 +143,7 @@ class AppleMusicClient:
         )
 
     def get_song(self, id, storefront="us", include=None):
-        """https://developer.apple.com/documentation/applemusicapi/get_a_catalog_song
-        """
+        """https://developer.apple.com/documentation/applemusicapi/get_a_catalog_song"""
         params = {}
         if include:
             params["include"] = include
@@ -158,8 +154,7 @@ class AppleMusicClient:
         )
 
     def get_songs(self, ids, storefront="us", include=None):
-        """https://developer.apple.com/documentation/applemusicapi/get_multiple_catalog_songs_by_id
-        """
+        """https://developer.apple.com/documentation/applemusicapi/get_multiple_catalog_songs_by_id"""
         params = {"ids": ",".join(ids)}
         if include:
             params["include"] = include
@@ -168,8 +163,7 @@ class AppleMusicClient:
         )
 
     def get_songs_by_isrc(self, isrc, storefront="us", include=None):
-        """https://developer.apple.com/documentation/applemusicapi/get_multiple_catalog_songs_by_isrc
-        """
+        """https://developer.apple.com/documentation/applemusicapi/get_multiple_catalog_songs_by_isrc"""
         params = {"filter[isrc]": isrc}
         if include:
             params["include"] = include
@@ -178,8 +172,7 @@ class AppleMusicClient:
         )
 
     def get_playlist(self, id, storefront="us", include=None):
-        """https://developer.apple.com/library/content/documentation/NetworkingInternetWeb/Conceptual/AppleMusicWebServicesReference/GetaSinglePlaylist.html#//apple_ref/doc/uid/TP40017625-CH20-SW1
-        """
+        """https://developer.apple.com/library/content/documentation/NetworkingInternetWeb/Conceptual/AppleMusicWebServicesReference/GetaSinglePlaylist.html#//apple_ref/doc/uid/TP40017625-CH20-SW1"""
         params = {}
         if include:
             params["include"] = include
@@ -190,8 +183,7 @@ class AppleMusicClient:
         )
 
     def get_playlists(self, ids, storefront="us", include=None):
-        """https://developer.apple.com/library/content/documentation/NetworkingInternetWeb/Conceptual/AppleMusicWebServicesReference/GetMultiplePlaylists.html#//apple_ref/doc/uid/TP40017625-CH21-SW1
-        """
+        """https://developer.apple.com/library/content/documentation/NetworkingInternetWeb/Conceptual/AppleMusicWebServicesReference/GetMultiplePlaylists.html#//apple_ref/doc/uid/TP40017625-CH21-SW1"""
         params = {"ids": ",".join(ids)}
         if include:
             params["include"] = include
@@ -200,8 +192,7 @@ class AppleMusicClient:
         )
 
     def get_genre(self, id, storefront="us", include=None):
-        """https://developer.apple.com/library/content/documentation/NetworkingInternetWeb/Conceptual/AppleMusicWebServicesReference/GetaSingleGenres.html#//apple_ref/doc/uid/TP40017625-CH16-SW1
-        """
+        """https://developer.apple.com/library/content/documentation/NetworkingInternetWeb/Conceptual/AppleMusicWebServicesReference/GetaSingleGenres.html#//apple_ref/doc/uid/TP40017625-CH16-SW1"""
         params = {}
         if include:
             params["include"] = include
@@ -212,8 +203,7 @@ class AppleMusicClient:
         )
 
     def get_genres(self, ids, storefront="us", include=None):
-        """https://developer.apple.com/library/content/documentation/NetworkingInternetWeb/Conceptual/AppleMusicWebServicesReference/GetMultipleGenres.html#//apple_ref/doc/uid/TP40017625-CH17-SW1
-        """
+        """https://developer.apple.com/library/content/documentation/NetworkingInternetWeb/Conceptual/AppleMusicWebServicesReference/GetMultipleGenres.html#//apple_ref/doc/uid/TP40017625-CH17-SW1"""
         params = {"ids": ",".join(ids)}
         if include:
             params["include"] = include
@@ -279,8 +269,7 @@ class AppleMusicClient:
     #     )
 
     def user_playlist_add_tracks(self, id, track_ids):
-        """https://developer.apple.com/documentation/applemusicapi/add_tracks_to_library_playlist
-        """
+        """https://developer.apple.com/documentation/applemusicapi/add_tracks_to_library_playlist"""
         tracks = self._build_tracks(track_ids)
         payload = {"data": tracks}
         return self._make_request(
@@ -290,8 +279,7 @@ class AppleMusicClient:
         )
 
     def user_playlist_remove_tracks(self, id, track_ids):
-        """https://developer.apple.com/library/content/documentation/NetworkingInternetWeb/Conceptual/AppleMusicWebServicesReference/DeleteTrackfromLibraryPlaylist.html#//apple_ref/doc/uid/TP40017625-CH251-SW1
-        """
+        """https://developer.apple.com/library/content/documentation/NetworkingInternetWeb/Conceptual/AppleMusicWebServicesReference/DeleteTrackfromLibraryPlaylist.html#//apple_ref/doc/uid/TP40017625-CH251-SW1"""
         params = {
             "ids[library-songs]": [str(track_id) for track_id in track_ids],
             "mode": "all",
@@ -301,8 +289,7 @@ class AppleMusicClient:
         )
 
     def user_playlist(self, id, include=None):
-        """https://developer.apple.com/documentation/applemusicapi/get_a_library_playlist
-        """
+        """https://developer.apple.com/documentation/applemusicapi/get_a_library_playlist"""
         params = {}
         if include:
             params["include"] = include
@@ -339,8 +326,7 @@ class AppleMusicClient:
         )
 
     def user_heavy_rotation(self, limit=None, offset=None):
-        """https://developer.apple.com/documentation/applemusicapi/get_heavy_rotation_content
-        """
+        """https://developer.apple.com/documentation/applemusicapi/get_heavy_rotation_content"""
         params = {}
         if limit:
             params["limit"] = limit
@@ -371,8 +357,7 @@ class AppleMusicClient:
         )
 
     def user_recent_added(self, limit=None, offset=None):
-        """https://developer.apple.com/library/content/documentation/NetworkingInternetWeb/Conceptual/AppleMusicWebServicesReference/GetRecentlyAdded.html#//apple_ref/doc/uid/TP40017625-CH226-SW1
-        """
+        """https://developer.apple.com/library/content/documentation/NetworkingInternetWeb/Conceptual/AppleMusicWebServicesReference/GetRecentlyAdded.html#//apple_ref/doc/uid/TP40017625-CH226-SW1"""
         params = {}
         if limit:
             params["limit"] = limit
@@ -383,8 +368,7 @@ class AppleMusicClient:
         )
 
     def user_songs(self, limit=None, include=None):
-        """https://developer.apple.com/library/content/documentation/NetworkingInternetWeb/Conceptual/AppleMusicWebServicesReference/GetAllLibrarySongs.html#//apple_ref/doc/uid/TP40017625-CH217-SW1
-        """
+        """https://developer.apple.com/library/content/documentation/NetworkingInternetWeb/Conceptual/AppleMusicWebServicesReference/GetAllLibrarySongs.html#//apple_ref/doc/uid/TP40017625-CH217-SW1"""
         params = {}
         if limit:
             params["limit"] = limit

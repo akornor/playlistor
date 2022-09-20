@@ -2,12 +2,11 @@ celery==4.4.5
 https://github.com/akornor/celery-progress/archive/ae0d2aaad9768b63f5c9233dc2f76a2da06443a5.zip
 Django==2.2.27
 redis==3.4.1
-requests==2.22.0
+requests
 spotipy==2.16.1
-sentry-sdk==1.5.8
+sentry-sdk
 whitenoise==5.2.0
-PyJWT==1.7.1
-cryptography==3.3.2
+PyJWT[crypto]
 django-redis-cache==2.1.0
 django-bulk-update-or-create==0.2.0
 jsonschema==3.2.0

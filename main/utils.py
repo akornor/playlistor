@@ -68,7 +68,7 @@ def generate_auth_token() -> str:
     token = jwt.encode(
         payload, settings.APPLE_PRIVATE_KEY, algorithm="ES256", headers=headers
     )
-    return token.decode()
+    return token
 
 
 def strip_qs(url):
