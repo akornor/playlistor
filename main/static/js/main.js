@@ -108,7 +108,7 @@ function onSuccess(
     resetButton();
   }
 
-function onError(progressBarElement, progressBarMessageElement) {
+function onError(progressBarElement, progressBarMessageElement, excMessage) {
     progressBarElement.style.backgroundColor = "#dc4f63";
     $("#matched-tracks-info")?.remove()
     progressBarMessageElement.innerHTML = ''
@@ -143,7 +143,7 @@ function onTaskError(progressBarElement, progressBarMessageElement, excMessage) 
         excMessage = excMessage || '';
         $("#matched-tracks-info")?.remove()
         progressBarMessageElement.innerHTML = ''
-        progressBarMessageElement.innerHTML = "Uh-Oh, something went wrong! DM <a href='twitter.com/playlistor_io'>@playlistor_io</a> on Twitter or email <a href='mailto:playlistor.io@gmail.com'>playlistor.io@gmail.com</a> for support.";
+        progressBarMessageElement.innerHTML = excMessage.startsWith('404') ? "Playlist not found! Kindly double check playlist url." :"Uh-Oh, something went wrong! DM <a href='twitter.com/playlistor_io'>@playlistor_io</a> on Twitter or email <a href='mailto:playlistor.io@gmail.com'>playlistor.io@gmail.com</a> for support.";
         resetButton();
     }
 
