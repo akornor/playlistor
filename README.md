@@ -10,9 +10,12 @@ self-hosted apple music to spotify playlist convertor
 For simplicity, you'll need [docker](docker.com) and [docker-compose](https://docs.docker.com/compose/) to run playlistor in development. Create `.env` file and set the appropriate environment variables. For example:
 ```
 	REDIS_URL=redis://redis:6379
-	REDIRECT_URI=http://localhost:8000/callback
+	SPOTIFY_REDIRECT_URI=http://localhost:8000/callback
 	SPOTIFY_CLIENT_ID=Loremipsumdolorsitamet
 	SPOTIFY_CLIENT_SECRET=Loremipsumdolorsitamet
+	APPLE_KEY_ID=Loremipsumdolorsitamet
+	APPLE_APPLE_TEAM_ID=Loremipsumdolorsitamet
+	APPLE_PRIVATE_KEY=Loremipsumdolorsitamet
 ```
 Then run `docker-compose up` to get things running.
 
