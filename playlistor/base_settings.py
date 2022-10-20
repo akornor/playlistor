@@ -118,7 +118,9 @@ SPOTIFY_CLIENT_ID = get_secret("SPOTIFY_CLIENT_ID")
 SPOTIFY_CLIENT_SECRET = get_secret("SPOTIFY_CLIENT_SECRET")
 APPLE_KEY_ID = get_secret("APPLE_KEY_ID")
 APPLE_TEAM_ID = get_secret("APPLE_TEAM_ID")
-APPLE_PRIVATE_KEY = get_from_file_if_exists(os.path.join(BASE_DIR, "private.pem"))
+APPLE_PRIVATE_KEY = get_secret("APPLE_PRIVATE_KEY") or get_from_file_if_exists(
+    os.path.join(BASE_DIR, "private.pem")
+)
 
 CELERY_BROKER_URL = get_secret("REDIS_URL")
 
