@@ -34,7 +34,7 @@ class AppleMusicParser(BaseParser):
         self.session = session = requests_retry_session()
         token = generate_auth_token()
         self.headers = headers = {"Authorization": f"Bearer {token}"}
-        storefront = "us"
+        storefront = mo.group("storefront")
         playlist_id = mo.group("playlist_id")
         self.BASE_URL = BASE_URL = "https://api.music.apple.com"
         response = session.get(
