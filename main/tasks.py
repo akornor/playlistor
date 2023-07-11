@@ -21,14 +21,6 @@ from .counters import Counters
 
 logger = get_task_logger(__name__)
 
-
-def get_track(**kwargs):
-    try:
-        return Track.objects.get(**kwargs)
-    except Track.DoesNotExist:
-        return None
-
-
 counters = Counters()
 
 
