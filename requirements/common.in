@@ -10,4 +10,4 @@ PyJWT[crypto]
 django-redis-cache==2.1.0
 django-bulk-update-or-create==0.2.0
 jsonschema==3.2.0
-gevent[dnspython]==21.1.2
+gevent[dnspython]==23.9.1
