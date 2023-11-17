@@ -20,8 +20,9 @@ celery==5.2.7 \
     --hash=sha256:138420c020cd58d6707e6257b6beda91fd39af7afde5d36c6334d175302c0e14 \
     --hash=sha256:fafbd82934d30f8a004f81e8f7a062e31413a23d444be8ee3326553915958c6d
     # via -r requirements/common.in
-celery-progress @ https://github.com/akornor/celery-progress/archive/ae0d2aaad9768b63f5c9233dc2f76a2da06443a5.zip \
-    --hash=sha256:d0552fa649f6f73128efa280fe2c1c0e8a21c42330d2ab1807a35a49f4ec1033
+celery-progress==0.3 \
+    --hash=sha256:9128e8d412548c9848a2a2994ee1f02f36cb2c8e7e6b03cf653f98908ffc0b7b \
+    --hash=sha256:f24c844cfd6419376fd69a852b4a56167fc026a16db93eba793551f120f1f599
     # via -r requirements/common.in
 certifi==2023.7.22 \
     --hash=sha256:539cc1d13202e33ca466e88b2807e29f4c13049d6d87031a3c110744495cb082 \
@@ -349,9 +350,9 @@ jsonschema==3.2.0 \
     --hash=sha256:4e5b3cf8216f577bee9ce139cbe72eca3ea4f292ec60928ff24758ce626cd163 \
     --hash=sha256:c8a85b28d377cc7737e46e2d9f2b4f44ee3c0e1deac6bf46ddefc7187d30797a
     # via -r requirements/common.in
-kombu==5.3.3 \
-    --hash=sha256:1491df826cfc5178c80f3e89dd6dfba68e484ef334db81070eb5cb8094b31167 \
-    --hash=sha256:6cd5c5d5ef77538434b8f81f3e265c414269418645dbb47dbf130a8a05c3e357
+kombu==5.3.4 \
+    --hash=sha256:0bb2e278644d11dea6272c17974a3dbb9688a949f3bb60aeb5b791329c44fadc \
+    --hash=sha256:63bb093fc9bb80cfb3a0972336a5cec1fa7ac5f9ef7e8237c6bf8dda9469313e
     # via celery
 prompt-toolkit==3.0.41 \
     --hash=sha256:941367d97fc815548822aa26c2a269fdc4eb21e9ec05fc5d447cf09bad5d75f0 \
