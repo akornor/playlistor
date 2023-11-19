@@ -112,7 +112,11 @@ function onError(progressBarElement, progressBarMessageElement, excMessage) {
     progressBarElement.style.backgroundColor = "#dc4f63";
     $("#matched-tracks-info")?.remove()
     progressBarMessageElement.innerHTML = ''
-    progressBarMessageElement.innerHTML = "Uh-Oh, something went wrong! DM <a href='twitter.com/playlistor_io'>@playlistor_io</a> on Twitter or email <a href='mailto:playlistor.io@gmail.com'>playlistor.io@gmail.com</a> for support.";
+    if (excMessage.includes('404')) {
+      progressBarMessageElement.innerHTML = "Playlist not found! It's likely playlist is private."
+    }else {
+      progressBarMessageElement.innerHTML = "Uh-Oh, something went wrong! DM <a href='twitter.com/playlistor_io'>@playlistor_io</a> on Twitter or email <a href='mailto:playlistor.io@gmail.com'>playlistor.io@gmail.com</a> for support.";
+    }
     resetButton();
   }
 
@@ -143,7 +147,11 @@ function onTaskError(progressBarElement, progressBarMessageElement, excMessage) 
         excMessage = excMessage || '';
         $("#matched-tracks-info")?.remove()
         progressBarMessageElement.innerHTML = ''
-        progressBarMessageElement.innerHTML = excMessage.startsWith('404') ? "Playlist not found! Kindly double check playlist url." :"Uh-Oh, something went wrong! DM <a href='twitter.com/playlistor_io'>@playlistor_io</a> on Twitter or email <a href='mailto:playlistor.io@gmail.com'>playlistor.io@gmail.com</a> for support.";
+        if (excMessage.includes('404')) {
+          progressBarMessageElement.innerHTML = "Playlist not found! It's likely playlist is private 🔒."
+        }else {
+          progressBarMessageElement.innerHTML = "Uh-Oh, something went wrong! DM <a href='twitter.com/playlistor_io'>@playlistor_io</a> on Twitter or email <a href='mailto:playlistor.io@gmail.com'>playlistor.io@gmail.com</a> for support.";
+        }
         resetButton();
     }
 
@@ -259,7 +267,7 @@ button.onclick = async function(event) {
     let lastLoginDate = await localStorage.getItem("LAST_APPLE_MUSIC_LOGIN");
     const today = new Date()
     const MONTH_THRESHOLD = 1
-    if (!lastLoginDate || (monthDiff(today, new Date(lastLoginDate)) > MONTH_THRESHOLD)){
+    if (!lastLoginDate || (monthDiff(new Date(lastLoginDate), today) > MONTH_THRESHOLD)){
       try{
         await musicKit.storekit.renewUserToken();
         await localStorage.setItem("LAST_APPLE_MUSIC_LOGIN", new Date().toISOString());
