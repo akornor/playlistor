@@ -86,7 +86,7 @@
             </h3>
             <div id="card-wrapper">
                 {% for playlist in playlists %}
-                <div class="card" data-tilt data-tilt-perspective="1400">
+                <div class="card">
                     {% if playlist.artwork_url %}
                     <img src="{% static 'img/350-placeholder.png' %}" data-echo="{{ playlist.artwork_url }}" alt="album art">
                     {% else %}
@@ -147,9 +147,8 @@
     <script src="{% static 'js/vendor/sweetalert.min.js' %}"></script>
     <script src="{% static 'celery_progress/celery_progress.js' %}"></script>
     <script src="{% static 'js/vendor/countUp.min.js' %}"></script>
-    <script src="{% static 'js/vendor/tilt.min.js' %}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js"></script>
-    <script src="{% static 'js/main.js' %}?v18"></script>
+    <script src="{% static 'js/main.js' %}"></script>
     <script>
         const counter = new CountUp("counter", 0, {{ count }} ).start();
     </script>
