@@ -109,3 +109,6 @@ token.json
 
 #apple music private key
 private.pem
+
+# redis dump
+dump.rdb
