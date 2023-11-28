@@ -4,6 +4,10 @@
 #
 #    pip-compile --allow-unsafe --generate-hashes requirements/pip.in
 #
+wheel==0.42.0 \
+    --hash=sha256:177f9c9b0d45c47873b619f5b650346d632cdc35fb5e4d25058e09c9e581433d \
+    --hash=sha256:c45be39f7882c9d34243236f2d63cbd58039e360f85d0913425fbd7ceea617a8
+    # via -r requirements/pip.in
 
 # The following packages are considered to be unsafe in a requirements file:
 pip==23.3.1 \
