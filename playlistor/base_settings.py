@@ -125,3 +125,5 @@ APPLE_PRIVATE_KEY = get_secret("APPLE_PRIVATE_KEY") or get_from_file_if_exists(
 CELERY_BROKER_URL = get_secret("REDIS_URL")
 
 CELERY_RESULT_BACKEND = get_secret("REDIS_URL")
+
+DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
