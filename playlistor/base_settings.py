@@ -125,15 +125,3 @@ APPLE_PRIVATE_KEY = get_secret("APPLE_PRIVATE_KEY") or get_from_file_if_exists(
 CELERY_BROKER_URL = get_secret("REDIS_URL")
 
 CELERY_RESULT_BACKEND = get_secret("REDIS_URL")
-
-CACHES = {
-    "default": {
-        "BACKEND": "redis_cache.RedisCache",
-        "LOCATION": REDIS_URL,
-        "OPTIONS": {
-            "PICKLE_VERSION": 2,
-            "CONNECTION_POOL_CLASS": "redis.ConnectionPool",
-            "CONNECTION_POOL_CLASS_KWARGS": {"max_connections": 1},
-        },
-    }
-}

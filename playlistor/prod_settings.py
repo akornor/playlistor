@@ -18,3 +18,10 @@ DEBUG = False
 SECURE_SSL_REDIRECT = True
 
 ALLOWED_HOSTS = ['www.playlistor.io', 'playlistor.io']
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": REDIS_URL
+    }
+}
