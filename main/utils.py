@@ -9,7 +9,7 @@ import redis
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from spotipy import Spotify
-from main import oauth
+from main import oauth_manager
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
 from .client import AppleMusicClient
@@ -37,8 +37,7 @@ def requests_retry_session(
 
 
 def get_spotify_client():
-    token = oauth.get_cached_token()["access_token"]
-    return Spotify(auth=token)
+    return Spotify(oauth_manager=oauth_manager)
 
 
 def get_applemusic_client():

@@ -6,7 +6,7 @@ from django.views.decorators.http import require_POST
 from django.urls import reverse
 from jsonschema import validate
 from jsonschema.exceptions import ValidationError
-from main import oauth
+from main import oauth_manager
 from .tasks import generate_spotify_playlist, generate_applemusic_playlist
 from .decorators import login_required
 from .utils import get_redis_client, requests_retry_session
@@ -14,14 +14,14 @@ from .models import Playlist, Subscriber
 
 
 def login(request):
-    authorize_url = oauth.get_authorize_url()
+    authorize_url = oauth_manager.get_authorize_url()
     return redirect(authorize_url)
 
 
 def callback(request):
     code = request.GET.get("code")
     if code is not None:
-        oauth.get_access_token(code)
+        oauth_manager.get_access_token(code)
         return redirect(reverse("home"))
     else:
         return redirect(reverse("login"))
