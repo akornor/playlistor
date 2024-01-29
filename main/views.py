@@ -88,4 +88,6 @@ def index(request):
     playlists = Playlist.objects.filter(
         spotify_url__isnull=False, applemusic_url__isnull=False
     ).order_by("-created_at")[:3]
-    return render(request, "index.html", {"playlists": playlists, "count": count})
+    response = render(request, "index.html", {"playlists": playlists, "count": count})
+    response["Referrer-Policy"] = "origin-when-cross-origin"
+    return response

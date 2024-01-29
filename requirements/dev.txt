@@ -8,6 +8,10 @@ amqp==5.2.0 \
     --hash=sha256:827cb12fb0baa892aad844fd95258143bce4027fdac4fccddbc43330fd281637 \
     --hash=sha256:a1ecff425ad063ad42a486c902807d1482311481c8ad95a72694b2975e75f7fd
     # via kombu
+asgiref==3.7.2 \
+    --hash=sha256:89b2ef2247e3b562a16eef663bc0e2e703ec6468e2fa8a5cd61cd449786d4f6e \
+    --hash=sha256:9e0ce3aa93a819ba5b45120216b23878cf6e8525eb3848653452b4192b92afed
+    # via django
 attrs==23.2.0 \
     --hash=sha256:935dc3b529c262f6cf76e50877d35a4bd3c1de194fd41f47a2b7ae8f19971f30 \
     --hash=sha256:99b87a485a5820b23b879f04c2305b44b951b502fd64be915879d77a7e8fc6f1
@@ -235,9 +239,9 @@ cryptography==42.0.1 \
     --hash=sha256:ed1b2130f5456a09a134cc505a17fc2830a1a48ed53efd37dcc904a23d7b82fa \
     --hash=sha256:fd33f53809bb363cf126bebe7a99d97735988d9b0131a2be59fbf83e1259a5b7
     # via pyjwt
-django==2.2.28 \
-    --hash=sha256:0200b657afbf1bc08003845ddda053c7641b9b24951e52acd51f6abda33a7413 \
-    --hash=sha256:365429d07c1336eb42ba15aa79f45e1c13a0b04d5c21569e7d596696418a6a45
+django==5.0.1 \
+    --hash=sha256:8c8659665bc6e3a44fefe1ab0a291e5a3fb3979f9a8230be29de975e57e8f854 \
+    --hash=sha256:f47a37a90b9bbe2c8ec360235192c7fddfdc832206fcf618bb849b39256affc1
     # via
     #   -r requirements/common.in
     #   django-bulk-update-or-create
@@ -421,10 +425,6 @@ python-dateutil==2.8.2 \
     --hash=sha256:0123cacc1627ae19ddf3c27a5de5bd67ee4586fbdd6440d9748f8abb483d3e86 \
     --hash=sha256:961d03dc3453ebbc59dbdea9e4e11c5651520a876d0f4db161e8674aae935da9
     # via celery
-pytz==2023.4 \
-    --hash=sha256:31d4583c4ed539cd037956140d695e42c033a19e984bfce9964a3f7d59bc2b40 \
-    --hash=sha256:f90ef520d95e7c46951105338d918664ebfd6f1d995bd7d153127ce90efafa6a
-    # via django
 redis==5.0.1 \
     --hash=sha256:0dab495cd5753069d3bc650a0dde8a8f9edde16fc5691b689a566eda58100d0f \
     --hash=sha256:ed4802971884ae19d640775ba3b03aa2e7bd5e8fb8dfaed2decce4d0fc48391f
