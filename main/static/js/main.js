@@ -108,13 +108,20 @@ function onSuccess(
     resetButton();
   }
 
-function onError(progressBarElement, progressBarMessageElement, excMessage) {
+async function onError(progressBarElement, progressBarMessageElement, excMessage) {
     progressBarElement.style.backgroundColor = "#dc4f63";
     $("#matched-tracks-info")?.remove()
     progressBarMessageElement.innerHTML = ''
     if (excMessage.includes('404')) {
       progressBarMessageElement.innerHTML = "Playlist not found! It's likely playlist is private."
-    }else {
+    } else if(excMessage.includes('403') && MusicKit.getInstance().isAuthorized) {
+      try{
+        await MusicKit.getInstance().storekit._reset()
+        progressBarMessageElement.innerHTML = "Something went wrong. Please try again :)"
+      }catch(e) {
+        console.log(e)
+      }
+    } else {
       progressBarMessageElement.innerHTML = "Uh-Oh, something went wrong! DM <a href='twitter.com/playlistor_io'>@playlistor_io</a> on Twitter or email <a href='mailto:playlistor.io@gmail.com'>playlistor.io@gmail.com</a> for support.";
     }
     resetButton();
@@ -142,14 +149,22 @@ function onProgress(
       progress.current + " of " + progress.total + " songs processed.";
   }
 
-function onTaskError(progressBarElement, progressBarMessageElement, excMessage) {
+async function onTaskError(progressBarElement, progressBarMessageElement, excMessage) {
         progressBarElement.style.backgroundColor = "#dc4f63";
         excMessage = excMessage || '';
         $("#matched-tracks-info")?.remove()
         progressBarMessageElement.innerHTML = ''
         if (excMessage.includes('404')) {
           progressBarMessageElement.innerHTML = "Playlist not found! It's likely playlist is private 🔒."
-        }else {
+        } else if (excMessage.includes('403') && MusicKit.getInstance().isAuthorized) {
+          try{
+            await MusicKit.getInstance().storekit._reset()
+            progressBarMessageElement.innerHTML = "Something went wrong. Please try again :)"
+          }catch(e) {
+            console.log(e)
+          }
+        }
+        else {
           progressBarMessageElement.innerHTML = "Uh-Oh, something went wrong! DM <a href='twitter.com/playlistor_io'>@playlistor_io</a> on Twitter or email <a href='mailto:playlistor.io@gmail.com'>playlistor.io@gmail.com</a> for support.";
         }
         resetButton();
