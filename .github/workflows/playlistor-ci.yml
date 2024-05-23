@@ -8,8 +8,12 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
+    env:
+      # this will take the entire vars context configured in the repository > environments
+      # setting and convert it to JSON so we can automatically assign all the values to the
+      # runner's environment
+      VARS_CONTEXT: ${{ toJson(vars) }}
     strategy:
       max-parallel: 4
       matrix:
