@@ -76,6 +76,9 @@ def strip_qs(url):
 
 
 def check_config():
+    credentials = ['APPLE_KEY_ID', 'APPLE_TEAM_ID', 'APPLE_PRIVATE_KEY', 'SPOTIFY_CLIENT_ID', 'SPOTIFY_CLIENT_SECRET', 'SPOTIFY_REDIRECT_URI', 'REDIS_URL']
+    for cred in credentials:
+
     if not settings.APPLE_KEY_ID:
         raise ImproperlyConfigured(
             "APPLE_KEY_ID setting has not been properly defined."
@@ -103,11 +106,8 @@ def check_config():
     if not settings.REDIS_URL:
         raise ImproperlyConfigured("REDIS_URL has not been properly defined.")
 
-
-PAT = re.compile(r"\((.+)\)|\[(.+)\]")
-
-
 def sanitize_track_name(name):
+    PAT = re.compile(r"\((.+)\)|\[(.+)\]")
     # Remove content in brackets as it tends to be too much noise for track resolution.
     # Free Trial (feat. Qari & Phoelix) [Explicit] -> Free Trial
     # This is a temporary fix until I properly understand the problem space to come up with a more general solution.

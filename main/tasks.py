@@ -8,7 +8,7 @@ from django.core.cache import cache
 from django.conf import settings
 from django.db import IntegrityError
 from spotipy import SpotifyException
-from .parsers import AppleMusicParser, SpotifyParser
+from .parsers import get_apple_music_playlist_data, get_spotify_playlist_data, SPOTIFY_PLAYLIST_URL_PAT, APPLE_MUSIC_PLAYLIST_URL_PAT
 from .models import Playlist, Track
 from .utils import (
     grouper,
@@ -38,20 +38,14 @@ def generate_spotify_playlist(self, url):
 
     url = strip_qs(url)
     logger.info(f"Generating spotify equivalent of apple music playlist:{url}")
-    if not settings.DEBUG:
-        if url in cache:
-            return {
-                "playlist_url": cache.get(url),
-                "destination": "spotify",
-                "source": "apple-music",
-            }
     progress_recorder = ProgressRecorder(self)
     sp = get_spotify_client()
     uid = sp.current_user()["id"]
-    data = AppleMusicParser(url).extract_data()
-    playlist_title = data["playlist_title"]
+    playlist_id = APPLE_MUSIC_PLAYLIST_URL_PAT.match(url).group('playlist_id')
+    data = get_apple_music_playlist_data(playlist_id)
+    playlist_name = data["playlist_name"]
     tracks = data["tracks"]
-    creator = data["playlist_creator"]
+    creator = data["curator"]
     artwork_url = data["playlist_artwork_url"]
     n = len(tracks)
     track_uris = []
@@ -79,7 +73,7 @@ def generate_spotify_playlist(self, url):
             progress_recorder.set_progress(i + 1, n)
     playlist = sp.user_playlist_create(
         uid,
-        playlist_title,
+        playlist_name,
         description=f"Made with Playlistor (https://playlistor.io) :)",
     )
     playlist_id = playlist["id"]
@@ -92,7 +86,7 @@ def generate_spotify_playlist(self, url):
         sp.playlist_add_items(playlist_id, track_uris)
     # Store playlist info
     Playlist.objects.create(
-        name=playlist_title,
+        name=playlist_name,
         artwork_url=artwork_url,
         spotify_url=playlist_url,
         applemusic_url=url,
@@ -127,11 +121,12 @@ def generate_applemusic_playlist(self, url, token):
     url = strip_qs(url)
     logger.info(f"Generating apple music equivalent of spotify playlist:{url}")
     progress_recorder = ProgressRecorder(self)
-    data = SpotifyParser(url).extract_data()
+    playlist_id = SPOTIFY_PLAYLIST_URL_PAT.match(url).group('playlist_id')
+    data = get_spotify_playlist_data(playlist_id)
     tracks = data["tracks"]
     # For some reason Spotify playlists can have an empty string as playlist name.
-    playlist_title = data["playlist_title"] or "Untitled"
-    creator = data["playlist_creator"]
+    playlist_name = data["playlist_name"] or "Untitled"
+    creator = data["curator"]
     tracks_to_save = []
     track_ids = []
     missed_tracks = []
@@ -161,7 +156,7 @@ def generate_applemusic_playlist(self, url, token):
         N = 100
         if len(track_ids) > N:
             playlist_data = am.user_playlist_create(
-                name=playlist_title,
+                name=playlist_name,
                 description=f"Made with Playlistor (https://playlistor.io) :)",
                 track_ids=track_ids[:N],
             )
@@ -171,7 +166,7 @@ def generate_applemusic_playlist(self, url, token):
                 am.user_playlist_add_tracks(playlist_id, chunk)
         else:
             am.user_playlist_create(
-                name=playlist_title,
+                name=playlist_name,
                 description=f"Made with Playlistor (https://playlistor.io) :)",
                 track_ids=track_ids,
             )
