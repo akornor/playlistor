@@ -10,10 +10,16 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      # this will take the entire vars context configured in the repository > environments
-      # setting and convert it to JSON so we can automatically assign all the values to the
-      # runner's environment
-      VARS_CONTEXT: ${{ toJson(vars) }}
+      SPOTIPY_CLIENT_ID: ${{ secrets.SPOTIPY_CLIENT_ID }}
+      SPOTIPY_CLIENT_SECRET: ${{ secrets.SPOTIPY_CLIENT_SECRET }}
+      SPOTIPY_REDIRECT_URI: ${{ secrets.SPOTIPY_REDIRECT_URI }}
+      APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+      APPLE_KEY_ID: ${{ secrets.APPLE_KEY_ID }}
+      APPLE_PRIVATE_KEY: ${{ secrets.APPLE_PRIVATE_KEY }}
+      SPOTIFY_CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID }}
+      SPOTIFY_CLIENT_SECRET: ${{ secrets.SPOTIFY_CLIENT_SECRET }}
+      SPOTIFY_REDIRECT_URI: ${{ secrets.SPOTIFY_REDIRECT_URI }}
+      REDIS_URL: ${{ secrets.REDIS_URL }}
     strategy:
       max-parallel: 4
       matrix:
