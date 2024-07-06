@@ -37,7 +37,7 @@ def generate_spotify_playlist(self, url):
             return
 
     url = strip_qs(url)
-    logger.info(f"Generating spotify playlist for apple music playlist:{url}")
+    logger.info(f"Generating spotify equivalent of apple music playlist:{url}")
     if not settings.DEBUG:
         if url in cache:
             return {
@@ -125,7 +125,7 @@ def generate_applemusic_playlist(self, url, token):
             return
 
     url = strip_qs(url)
-    logger.info(f"Generating apple music playlist for spotify playlist:{url}")
+    logger.info(f"Generating apple music equivalent of spotify playlist:{url}")
     progress_recorder = ProgressRecorder(self)
     data = SpotifyParser(url).extract_data()
     tracks = data["tracks"]
