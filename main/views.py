@@ -1,6 +1,5 @@
 import json
 
-import requests
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse

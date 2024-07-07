@@ -1,15 +1,9 @@
-import json
-
 import requests
 from celery import shared_task
 from celery.utils.log import get_task_logger
 from celery_progress.backend import ProgressRecorder
-from django.conf import settings
 from django.core.cache import cache
 from django.db import IntegrityError
-from spotipy import SpotifyException
-
-from playlistor.celery import app
 
 from .counters import Counters
 from .models import Playlist, Track
@@ -19,13 +13,7 @@ from .parsers import (
     get_apple_music_playlist_data,
     get_spotify_playlist_data,
 )
-from .utils import (
-    get_applemusic_client,
-    get_redis_client,
-    get_spotify_client,
-    grouper,
-    strip_qs,
-)
+from .utils import get_applemusic_client, get_spotify_client, grouper, strip_qs
 
 logger = get_task_logger(__name__)
 
