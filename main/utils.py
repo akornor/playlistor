@@ -1,17 +1,20 @@
-import re
 import datetime
 import functools
+import re
 import subprocess
 from urllib.parse import urlsplit
+
 import jwt
-import requests
 import redis
+import requests
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
-from spotipy import Spotify
-from main import oauth_manager
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
+from spotipy import Spotify
+
+from main import oauth_manager
+
 from .client import AppleMusicClient
 
 
@@ -76,9 +79,6 @@ def strip_qs(url):
 
 
 def check_config():
-    credentials = ['APPLE_KEY_ID', 'APPLE_TEAM_ID', 'APPLE_PRIVATE_KEY', 'SPOTIFY_CLIENT_ID', 'SPOTIFY_CLIENT_SECRET', 'SPOTIFY_REDIRECT_URI', 'REDIS_URL']
-    for cred in credentials:
-
     if not settings.APPLE_KEY_ID:
         raise ImproperlyConfigured(
             "APPLE_KEY_ID setting has not been properly defined."
@@ -105,6 +105,7 @@ def check_config():
         )
     if not settings.REDIS_URL:
         raise ImproperlyConfigured("REDIS_URL has not been properly defined.")
+
 
 def sanitize_track_name(name):
     PAT = re.compile(r"\((.+)\)|\[(.+)\]")

@@ -1,4 +1,5 @@
 from django.conf import settings
+
 from .utils import generate_auth_token, get_version
 
 

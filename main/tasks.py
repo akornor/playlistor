@@ -1,23 +1,31 @@
 import json
+
 import requests
-from playlistor.celery import app
 from celery import shared_task
 from celery.utils.log import get_task_logger
 from celery_progress.backend import ProgressRecorder
-from django.core.cache import cache
 from django.conf import settings
+from django.core.cache import cache
 from django.db import IntegrityError
 from spotipy import SpotifyException
-from .parsers import get_apple_music_playlist_data, get_spotify_playlist_data, SPOTIFY_PLAYLIST_URL_PAT, APPLE_MUSIC_PLAYLIST_URL_PAT
+
+from playlistor.celery import app
+
+from .counters import Counters
 from .models import Playlist, Track
+from .parsers import (
+    APPLE_MUSIC_PLAYLIST_URL_PAT,
+    SPOTIFY_PLAYLIST_URL_PAT,
+    get_apple_music_playlist_data,
+    get_spotify_playlist_data,
+)
 from .utils import (
-    grouper,
+    get_applemusic_client,
     get_redis_client,
     get_spotify_client,
-    get_applemusic_client,
+    grouper,
     strip_qs,
 )
-from .counters import Counters
 
 logger = get_task_logger(__name__)
 
@@ -41,7 +49,7 @@ def generate_spotify_playlist(self, url):
     progress_recorder = ProgressRecorder(self)
     sp = get_spotify_client()
     uid = sp.current_user()["id"]
-    playlist_id = APPLE_MUSIC_PLAYLIST_URL_PAT.match(url).group('playlist_id')
+    playlist_id = APPLE_MUSIC_PLAYLIST_URL_PAT.match(url).group("playlist_id")
     data = get_apple_music_playlist_data(playlist_id)
     playlist_name = data["playlist_name"]
     tracks = data["tracks"]
@@ -121,7 +129,7 @@ def generate_applemusic_playlist(self, url, token):
     url = strip_qs(url)
     logger.info(f"Generating apple music equivalent of spotify playlist:{url}")
     progress_recorder = ProgressRecorder(self)
-    playlist_id = SPOTIFY_PLAYLIST_URL_PAT.match(url).group('playlist_id')
+    playlist_id = SPOTIFY_PLAYLIST_URL_PAT.match(url).group("playlist_id")
     data = get_spotify_playlist_data(playlist_id)
     tracks = data["tracks"]
     # For some reason Spotify playlists can have an empty string as playlist name.

@@ -7,17 +7,24 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Playlist',
+            name="Playlist",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=200)),
-                ('spotify_url', models.URLField()),
-                ('applemusic_url', models.URLField()),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=200)),
+                ("spotify_url", models.URLField()),
+                ("applemusic_url", models.URLField()),
             ],
         ),
     ]

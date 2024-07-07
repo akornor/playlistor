@@ -1,6 +1,7 @@
 import datetime
-import jwt
 import json
+
+import jwt
 import requests
 
 BASE_URL = "https://api.music.apple.com"

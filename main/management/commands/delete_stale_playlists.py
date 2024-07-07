@@ -1,5 +1,6 @@
-from main.utils import get_spotify_client
 from django.core.management.base import BaseCommand
+
+from main.utils import get_spotify_client
 
 
 class Command(BaseCommand):

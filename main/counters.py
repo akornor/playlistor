@@ -1,7 +1,7 @@
 from django.utils.functional import cached_property
 from redis.exceptions import ConnectionError, ResponseError
-from .utils import get_redis_client
 
+from .utils import get_redis_client
 
 PLAYLIST_COUNTER_KEY = "counter:playlists"
 
