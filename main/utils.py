@@ -8,7 +8,7 @@ import jwt
 import redis
 import requests
 from django.conf import settings
-from django.core.exceptions import ImproperlyConfigured
+from django.core.exceptions import ImproperlyConfigured, ValidationError
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
 from spotipy import Spotify
@@ -16,6 +16,13 @@ from spotipy import Spotify
 from main import oauth_manager
 
 from .client import AppleMusicClient
+
+SPOTIFY_PLAYLIST_URL_PAT = re.compile(
+    r"http(s)?:\/\/open.spotify.com/(user\/.+\/)?playlist/(?P<playlist_id>[^\s?]+)"
+)
+APPLE_MUSIC_PLAYLIST_URL_PAT = re.compile(
+    r"https:\/\/(embed.)?music\.apple\.com\/(?P<storefront>.{2})\/playlist(\/.+)?\/(?P<playlist_id>[^\s?]+)"
+)
 
 
 def requests_retry_session(
@@ -126,3 +133,18 @@ def get_version():
         ["git", "rev-parse", "--short", "HEAD"], universal_newlines=True
     ).strip()
     return version
+
+
+def validate_playlist_url(pattern, url, platform):
+    mo = pattern.match(url)
+    if not mo:
+        raise ValidationError(f"Invalid {platform} playlist url")
+    return url
+
+
+def validate_apple_music_playlist_url(url):
+    validate_playlist_url(APPLE_MUSIC_PLAYLIST_URL_PAT, url, "Apple Music")
+
+
+def validate_spotify_playlist_url(url):
+    validate_playlist_url(SPOTIFY_PLAYLIST_URL_PAT, url, "Spotify")

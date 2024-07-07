@@ -1,18 +1,24 @@
 import json
 
+from django.core.exceptions import ValidationError as DjangoValidationError
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views.decorators.http import require_POST
 from jsonschema import validate
-from jsonschema.exceptions import ValidationError
+from jsonschema.exceptions import ValidationError as JsonSchemaValitadionError
 
 from main import oauth_manager
 
 from .decorators import login_required
 from .models import Playlist, Subscriber
 from .tasks import generate_applemusic_playlist, generate_spotify_playlist
-from .utils import get_redis_client, requests_retry_session
+from .utils import (
+    get_redis_client,
+    requests_retry_session,
+    validate_apple_music_playlist_url,
+    validate_spotify_playlist_url,
+)
 
 
 def login(request):
@@ -45,17 +51,22 @@ def playlist(request):
     }
     try:
         validate(data, schema=schema)
-    except ValidationError as e:
-        return JsonResponse({"error": True, "message": e.message}, status=400)
-    playlist = data.get("playlist")
-    platform = data.get("platform")
-    if platform == "apple-music":
-        token = request.headers.get("Music-User-Token")
-        result = generate_applemusic_playlist.delay(playlist, token)
-    elif platform == "spotify":
-        result = generate_spotify_playlist.delay(playlist)
-    else:
-        return JsonResponse({"message": f"Platform not supported"}, status=400)
+    except JsonSchemaValitadionError as e:
+        return JsonResponse({"message": e.message}, status=400)
+    playlist = data["playlist"]
+    platform = data["platform"]
+    try:
+        if platform == "apple-music":
+            validate_apple_music_playlist_url(playlist)
+            token = request.headers.get("Music-User-Token")
+            result = generate_applemusic_playlist.delay(playlist, token)
+        elif platform == "spotify":
+            validate_spotify_playlist_url(playlist)
+            result = generate_spotify_playlist.delay(playlist)
+        else:
+            return JsonResponse({"message": "Platform not supported"}, status=400)
+    except DjangoValidationError as e:
+        return JsonResponse({"message": e.message}, status=400)
     return JsonResponse({"task_id": result.task_id})
 
 
