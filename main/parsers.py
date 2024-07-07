@@ -1,5 +1,4 @@
 import re
-from collections import namedtuple
 from dataclasses import dataclass
 from functools import wraps
 from typing import List
@@ -9,7 +8,6 @@ from django.core.cache import cache
 
 from .utils import (
     generate_auth_token,
-    get_applemusic_client,
     get_spotify_client,
     requests_retry_session,
     sanitize_track_name,

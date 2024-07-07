@@ -1,10 +1,6 @@
-import json
-
 from django.db import migrations
 from django.db.backends.sqlite3.schema import DatabaseSchemaEditor
 from django.db.migrations.state import StateApps
-
-from main.utils import get_redis_client
 
 
 def move_playlists_to_database(apps: StateApps, schema_editor: DatabaseSchemaEditor):
