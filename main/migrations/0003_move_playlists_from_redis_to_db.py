@@ -19,14 +19,16 @@ def move_playlists_to_database(apps: StateApps, schema_editor: DatabaseSchemaEdi
     #     # redis_client.delete('playlists')
     #     redis_client.incrby('counter:playlists', n)
     pass
-    
+
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('main', '0002_playlist_created_at'),
+        ("main", "0002_playlist_created_at"),
     ]
 
     operations = [
-        migrations.RunPython(move_playlists_to_database, reverse_code=migrations.RunPython.noop),
+        migrations.RunPython(
+            move_playlists_to_database, reverse_code=migrations.RunPython.noop
+        ),
     ]

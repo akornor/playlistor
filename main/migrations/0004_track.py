@@ -6,20 +6,28 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('main', '0003_move_playlists_from_redis_to_db'),
+        ("main", "0003_move_playlists_from_redis_to_db"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Track',
+            name="Track",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=255, null=True)),
-                ('artist', models.CharField(max_length=255, null=True)),
-                ('featuring', models.CharField(max_length=255, null=True)),
-                ('spotify_id', models.CharField(max_length=255, null=True)),
-                ('apple_music_id', models.CharField(max_length=255, null=True)),
-                ('isrc', models.CharField(max_length=255, null=True)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=255, null=True)),
+                ("artist", models.CharField(max_length=255, null=True)),
+                ("featuring", models.CharField(max_length=255, null=True)),
+                ("spotify_id", models.CharField(max_length=255, null=True)),
+                ("apple_music_id", models.CharField(max_length=255, null=True)),
+                ("isrc", models.CharField(max_length=255, null=True)),
             ],
         ),
     ]

@@ -1,5 +1,5 @@
-from django.db import models
 from bulk_update_or_create import BulkUpdateOrCreateQuerySet
+from django.db import models
 
 
 class Playlist(models.Model):

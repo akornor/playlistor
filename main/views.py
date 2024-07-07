@@ -1,16 +1,19 @@
 import json
+
 import requests
-from django.shortcuts import render, redirect
 from django.http import JsonResponse
-from django.views.decorators.http import require_POST
+from django.shortcuts import redirect, render
 from django.urls import reverse
+from django.views.decorators.http import require_POST
 from jsonschema import validate
 from jsonschema.exceptions import ValidationError
+
 from main import oauth_manager
-from .tasks import generate_spotify_playlist, generate_applemusic_playlist
+
 from .decorators import login_required
-from .utils import get_redis_client, requests_retry_session
 from .models import Playlist, Subscriber
+from .tasks import generate_applemusic_playlist, generate_spotify_playlist
+from .utils import get_redis_client, requests_retry_session
 
 
 def login(request):

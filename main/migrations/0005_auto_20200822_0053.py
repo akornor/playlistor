@@ -6,12 +6,15 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('main', '0004_track'),
+        ("main", "0004_track"),
     ]
 
     operations = [
         migrations.AddConstraint(
-            model_name='track',
-            constraint=models.UniqueConstraint(fields=('spotify_id', 'apple_music_id'), name='unique_spotify_id_apple_music_id'),
+            model_name="track",
+            constraint=models.UniqueConstraint(
+                fields=("spotify_id", "apple_music_id"),
+                name="unique_spotify_id_apple_music_id",
+            ),
         ),
     ]
