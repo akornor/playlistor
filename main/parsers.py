@@ -1,19 +1,20 @@
 import re
 from collections import namedtuple
-from urllib.parse import urljoin
 from dataclasses import dataclass
 from functools import wraps
 from typing import List
+from urllib.parse import urljoin
 
 from django.core.cache import cache
 
 from .utils import (
+    generate_auth_token,
+    get_applemusic_client,
     get_spotify_client,
     requests_retry_session,
-    generate_auth_token,
     sanitize_track_name,
-    get_applemusic_client
 )
+
 
 @dataclass(frozen=True)
 class Track:
@@ -24,7 +25,6 @@ class Track:
     duration_ms: int
     isrc: str
     release_date: str
-
 
 
 SPOTIFY_PLAYLIST_URL_PAT = re.compile(
@@ -47,16 +47,21 @@ def cache_with_key(keyfunc, timeout):
             value = func(*args, **kwargs)
             cache.set(key, value, timeout=timeout)
             return value
+
         return func_with_caching
+
     return decorator
+
 
 def spotify_playlist_cache_key(playlist_id):
     return f"playlists:spotify:{playlist_id}"
 
+
 def apple_music_playlist_cache_key(playlist_id):
     return f"playlists:apple_music:{playlist_id}"
 
-@cache_with_key(spotify_playlist_cache_key, timeout=3600)
+
+@cache_with_key(spotify_playlist_cache_key, timeout=600)
 def get_spotify_playlist_data(playlist_id):
     sp = get_spotify_client()
     playlist = sp.playlist(playlist_id=playlist_id)
@@ -83,17 +88,28 @@ def get_spotify_playlist_data(playlist_id):
             isrc = track["external_ids"]["isrc"]
             artists = [artist["name"] for artist in track["artists"]]
             release_date = track["album"]["release_date"]
-            playlist_tracks.append(Track(id=track["id"], name=name, sanitized_name=sanitized_name, artists=artists, duration_ms=duration_ms, isrc=isrc, release_date=release_date))
+            playlist_tracks.append(
+                Track(
+                    id=track["id"],
+                    name=name,
+                    sanitized_name=sanitized_name,
+                    artists=artists,
+                    duration_ms=duration_ms,
+                    isrc=isrc,
+                    release_date=release_date,
+                )
+            )
     return {
         "playlist_name": playlist_name,
         "curator": curator,
         "tracks": playlist_tracks,
         "description": description,
         "snapshot_id": snapshot_id,
-        "url": url
+        "url": url,
     }
 
-@cache_with_key(apple_music_playlist_cache_key, timeout=3600)
+
+@cache_with_key(apple_music_playlist_cache_key, timeout=600)
 def get_apple_music_playlist_data(playlist_id):
     def _get_playlist_artwork_url(data):
         artwork_url = data.get("artwork", {}).get("url")
@@ -102,7 +118,8 @@ def get_apple_music_playlist_data(playlist_id):
         w, h = data["artwork"]["width"], data["artwork"]["height"]
         artwork_url = artwork_url.replace("{w}", str(w))
         artwork_url = artwork_url.replace("{h}", str(h))
-        return artwork_url  
+        return artwork_url
+
     session = requests_retry_session()
     auth_token = generate_auth_token()
     headers = {"Authorization": f"Bearer {auth_token}"}
@@ -144,12 +161,22 @@ def get_apple_music_playlist_data(playlist_id):
         isrc = track_attrs.get("isrc")
         duration_ms = track_attrs.get("durationInMillis")
         release_date = track_attrs.get("releaseDate")
-        tracks.append(Track(id=track["id"], name=name, artists=artists, sanitized_name=sanitized_name, duration_ms=duration_ms, isrc=isrc, release_date=release_date))
+        tracks.append(
+            Track(
+                id=track["id"],
+                name=name,
+                artists=artists,
+                sanitized_name=sanitized_name,
+                duration_ms=duration_ms,
+                isrc=isrc,
+                release_date=release_date,
+            )
+        )
     return {
         "playlist_name": playlist_name,
         "curator": playlist_curator,
         "tracks": tracks,
         "description": description,
         "playlist_artwork_url": playlist_artwork_url,
-        "url": url
+        "url": url,
     }
