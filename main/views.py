@@ -57,16 +57,16 @@ def playlist(request):
     platform = data["platform"]
     try:
         if platform == "apple-music":
-            validate_apple_music_playlist_url(playlist)
+            validate_spotify_playlist_url(playlist)
             token = request.headers.get("Music-User-Token")
             result = generate_applemusic_playlist.delay(playlist, token)
         elif platform == "spotify":
-            validate_spotify_playlist_url(playlist)
+            validate_apple_music_playlist_url(playlist)
             result = generate_spotify_playlist.delay(playlist)
         else:
             return JsonResponse({"message": "Platform not supported"}, status=400)
     except DjangoValidationError as e:
-        return JsonResponse({"message": e.message}, status=400)
+        return JsonResponse({"message": e.message[0]}, status=400)
     return JsonResponse({"task_id": result.task_id})
 
 
