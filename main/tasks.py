@@ -5,6 +5,8 @@ from celery_progress.backend import ProgressRecorder
 from django.core.cache import cache
 from django.db import IntegrityError
 
+from playlistor.celery import app  # noqa
+
 from .counters import Counters
 from .models import Playlist, Track
 from .parsers import (
