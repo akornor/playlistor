@@ -1,3 +1,5 @@
+from dataclasses import asdict
+
 import requests
 from celery import shared_task
 from celery.utils.log import get_task_logger
@@ -65,7 +67,7 @@ def generate_spotify_playlist(self, url):
                 )
             )
         except:
-            missed_tracks.append(track)
+            missed_tracks.append(asdict(track))
             continue
         finally:
             progress_recorder.set_progress(i + 1, n)
@@ -94,7 +96,7 @@ def generate_spotify_playlist(self, url):
         save_or_update_tracks(tracks_to_save)
     cache.set(url, playlist_url, timeout=3600)
     counters.incr_playlist_counter()
-    logger.info(f"Missed {len(missed_tracks)} in {n} track(s): {missed_tracks}")
+    logger.info(f"Missed {len(missed_tracks)} in {n} track(s)")
     return {
         "playlist_url": playlist_url,
         "number_of_tracks": n,
@@ -146,7 +148,7 @@ def generate_applemusic_playlist(self, url, token):
                 )
             )
         except:
-            missed_tracks.append(track)
+            missed_tracks.append(asdict(track))
             continue
         finally:
             progress_recorder.set_progress(i + 1, n)
@@ -180,7 +182,7 @@ def generate_applemusic_playlist(self, url, token):
     counters.incr_playlist_counter()
     if len(tracks_to_save) > 0:
         save_or_update_tracks(tracks_to_save)
-    logger.info(f"Missed {len(missed_tracks)} in {n} track(s): {missed_tracks}")
+    logger.info(f"Missed {len(missed_tracks)} in {n} track(s)")
     return {
         "playlist_url": None,
         "number_of_tracks": n,
