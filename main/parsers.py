@@ -129,7 +129,7 @@ def get_apple_music_playlist_data(playlist_id):
     )
     response.raise_for_status()
     playlist_data = response.json()["data"][0]
-    playlist_attrs = playlist["attributes"]
+    playlist_attrs = playlist_data["attributes"]
     playlist_name = playlist_attrs["name"]
     playlist_curator = playlist_attrs.get("curatorName")
     playlist_artwork_url = _get_playlist_artwork_url(playlist_attrs)
