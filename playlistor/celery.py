@@ -8,7 +8,12 @@ from django.conf import settings
 # set the default Django settings module for the 'celery' program.
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "playlistor.dev_settings")
 
-app = Celery("playlistor", broker=settings.REDIS_URL, backend=settings.REDIS_URL)
+app = Celery(
+    "playlistor",
+    broker=settings.REDIS_URL,
+    backend=settings.REDIS_URL,
+    broker_connection_retry_on_startup=True,
+)
 
 # Using a string here means the worker doesn't have to serialize
 # the configuration object to child processes.
