@@ -83,7 +83,7 @@ def get_spotify_playlist_data(playlist_id):
             name = track["name"]
             sanitized_name = sanitize_track_name(name)
             duration_ms = track["duration_ms"]
-            isrc = track["external_ids"]["isrc"]
+            isrc = track.get("external_ids", {}).get("isrc")
             artists = [artist["name"] for artist in track["artists"]]
             release_date = track["album"]["release_date"]
             playlist_tracks.append(
