@@ -23,6 +23,7 @@ class Track:
     duration_ms: int
     isrc: str
     release_date: str
+    position: int
 
 
 SPOTIFY_PLAYLIST_URL_PAT = re.compile(
@@ -77,7 +78,7 @@ def get_spotify_playlist_data(playlist_id):
         track_results = sp.next(track_results)
         items.extend(track_results["items"])
         has_next = track_results.get("next")
-    for item in items:
+    for i, item in enumerate(items):
         track = item["track"]
         if track is not None:
             name = track["name"]
@@ -95,6 +96,7 @@ def get_spotify_playlist_data(playlist_id):
                     duration_ms=duration_ms,
                     isrc=isrc,
                     release_date=release_date,
+                    position=i,
                 )
             )
     return {
@@ -144,7 +146,7 @@ def get_apple_music_playlist_data(playlist_id):
         data = response.json()
         track_items.extend(data["data"])
         next_url = data.get("next")
-    for track in track_items:
+    for i, track in enumerate(track_items):
         track_attrs = track["attributes"]
         artists = []
         artists.extend(
@@ -168,6 +170,7 @@ def get_apple_music_playlist_data(playlist_id):
                 duration_ms=duration_ms,
                 isrc=isrc,
                 release_date=release_date,
+                position=position,
             )
         )
     return {
