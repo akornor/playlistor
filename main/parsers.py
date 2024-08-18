@@ -170,7 +170,7 @@ def get_apple_music_playlist_data(playlist_id):
                 duration_ms=duration_ms,
                 isrc=isrc,
                 release_date=release_date,
-                position=position,
+                position=i,
             )
         )
     return {
