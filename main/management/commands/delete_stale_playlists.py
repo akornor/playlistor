@@ -4,14 +4,20 @@ from main.utils import get_spotify_client
 
 
 class Command(BaseCommand):
+
+    def add_arguments(self, parser):
+        parser.add_argument("-n", type=int, default=500)
+        # make offset required ?
+        parser.add_argument("--offset", type=int, default=4000)
+
     def handle(self, *args, **options):
         sp = get_spotify_client()
-        # number of playlists -- we should make this configurable at some point in the future
-        N = 500
+        N = options["n"]
+        offset = options["offset"]
         playlists = []
         while N > 0:
             playlists.extend(
-                sp.current_user_playlists(offset=4000 + N, limit=50)["items"]
+                sp.current_user_playlists(offset=offset + N, limit=50)["items"]
             )
             N -= 50
         for playlist in playlists:
