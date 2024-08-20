@@ -147,32 +147,33 @@ def get_apple_music_playlist_data(playlist_id):
         track_items.extend(data["data"])
         next_url = data.get("next")
     for i, track in enumerate(track_items):
-        track_attrs = track["attributes"]
-        artists = []
-        artists.extend(
-            track_attrs["artistName"]
-            .replace("featuring", ",")  # Lil' Scrappy featuring Young Buck
-            .replace("&", ",")  # Rah Digga & Missy Elliot
-            .replace(" x ", ",")  # Chloe x Halle
-            .split(",")
-        )
-        name = track_attrs.get("name")
-        sanitized_name = sanitize_track_name(name)
-        isrc = track_attrs.get("isrc")
-        duration_ms = track_attrs.get("durationInMillis")
-        release_date = track_attrs.get("releaseDate")
-        tracks.append(
-            Track(
-                id=track["id"],
-                name=name,
-                artists=artists,
-                sanitized_name=sanitized_name,
-                duration_ms=duration_ms,
-                isrc=isrc,
-                release_date=release_date,
-                position=i,
+        track_attrs = track.get("attributes")
+        if track_attrs is not None:
+            artists = []
+            artists.extend(
+                track_attrs["artistName"]
+                .replace("featuring", ",")  # Lil' Scrappy featuring Young Buck
+                .replace("&", ",")  # Rah Digga & Missy Elliot
+                .replace(" x ", ",")  # Chloe x Halle
+                .split(",")
             )
-        )
+            name = track_attrs.get("name")
+            sanitized_name = sanitize_track_name(name)
+            isrc = track_attrs.get("isrc")
+            duration_ms = track_attrs.get("durationInMillis")
+            release_date = track_attrs.get("releaseDate")
+            tracks.append(
+                Track(
+                    id=track["id"],
+                    name=name,
+                    artists=artists,
+                    sanitized_name=sanitized_name,
+                    duration_ms=duration_ms,
+                    isrc=isrc,
+                    release_date=release_date,
+                    position=i,
+                )
+            )
     return {
         "playlist_name": playlist_name,
         "curator": playlist_curator,
