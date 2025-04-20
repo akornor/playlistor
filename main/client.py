@@ -54,16 +54,16 @@ class AppleMusicClient:
 
     def _generate_developer_token(self, team_id, key_id, private_key):
         # see https://developer.apple.com/documentation/applemusicapi/getting_keys_and_creating_tokens
-        time_now = datetime.datetime.now()
-        time_expired = time_now + datetime.timedelta(hours=12)
-        headers = {"alg": "ES256", "kid": key_id}
-        payload = {
-            "iss": team_id,
-            "exp": int(time_expired.strftime("%s")),
-            "iat": int(time_now.strftime("%s")),
-        }
-        token = jwt.encode(payload, private_key, algorithm="ES256", headers=headers)
-        return token
+        # time_now = datetime.datetime.now()
+        # time_expired = time_now + datetime.timedelta(hours=12)
+        # headers = {"alg": "ES256", "kid": key_id}
+        # payload = {
+        #     "iss": team_id,
+        #     "exp": int(time_expired.strftime("%s")),
+        #     "iat": int(time_now.strftime("%s")),
+        # }
+        # token = jwt.encode(payload, private_key, algorithm="ES256", headers=headers)
+        return "eyJhbGciOiJFUzI1NiIsImtpZCI6IkREOUw0NzlaOEMiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJBREI5SFg3OVJUIiwiZXhwIjoxNzQ0NzM2OTk3LCJpYXQiOjE3NDQ2OTM3OTd9.UzSv8whT2UKe2L5iXhLwwNLd9MkwoGdbcPEQvIzk3NkqdfjvZ7H8BmuWVVJgRUtv0FhTOSgUk41HRpo5ZP5EBw"
 
     def _request_method(self, method):
         return {

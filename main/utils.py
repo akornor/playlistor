@@ -66,18 +66,8 @@ def get_redis_client():
 
 def generate_auth_token() -> str:
     # see https://developer.apple.com/documentation/applemusicapi/getting_keys_and_creating_tokens
-    time_now = datetime.datetime.now()
-    time_expired = time_now + datetime.timedelta(hours=12)
-    headers = {"alg": "ES256", "kid": settings.APPLE_KEY_ID}
-    payload = {
-        "iss": settings.APPLE_TEAM_ID,
-        "exp": int(time_expired.strftime("%s")),
-        "iat": int(time_now.strftime("%s")),
-    }
-    token = jwt.encode(
-        payload, settings.APPLE_PRIVATE_KEY, algorithm="ES256", headers=headers
-    )
-    return token
+
+    return "Al58wnohwlrPfnCK5u2Kq1J++1arL/P2m7zs4fknZjiA5J5Ct95OKNOjbMWYFBHIUed/ttVrX1SymV2TT4nJploDh6H63qkb3COUSA89PIRecX1aqUnnJFOjzkD6AVJvd7puRMPnj4fR9buHduGI9BTFN3zQ4b1Zh9KkOxF8U6heofaEL7QfMdmNz4JNpVAhDxZ7yqBXOYSUS6nUP+oMhPKHELY2jZJqwjDvmsReGtpjxQ09zA=="
 
 
 def strip_qs(url):

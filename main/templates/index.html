@@ -70,6 +70,9 @@
             <!-- Search bar -->
             <div id="input_container" class="flex shadow_custom">
                 <input type="search" placeholder="Enter Apple Music or Spotify playlist url." id="input_big">
+                <label for="invert_order" style="margin-left: 10px;">
+                    <input type="checkbox" id="invert_order"> Invert Playlist Order
+                </label>
                 <button class="big-button-text" id="submit_btn">Convert</button>
             </div>
         </div>
@@ -139,7 +142,7 @@
         document.addEventListener('musickitloaded', function() {
             // MusicKit global is now defined
             MusicKit.configure({
-                developerToken: "{{ APPLE_DEVELOPER_TOKEN }}",
+                developerToken: "eyJhbGciOiJFUzI1NiIsImtpZCI6IkREOUw0NzlaOEMiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJBREI5SFg3OVJUIiwiZXhwIjoxNzQ0NzM2OTk3LCJpYXQiOjE3NDQ2OTM3OTd9.UzSv8whT2UKe2L5iXhLwwNLd9MkwoGdbcPEQvIzk3NkqdfjvZ7H8BmuWVVJgRUtv0FhTOSgUk41HRpo5ZP5EBw",
                 app: {
                     name: 'Playlistor',
                     build: '{{ VERSION }}'

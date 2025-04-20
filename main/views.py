@@ -47,6 +47,7 @@ def playlist(request):
         "properties": {
             "playlist": {"type": "string"},
             "platform": {"enum": ["spotify", "apple-music"]},
+            "invert_order": {"type": "boolean"},
         },
     }
     try:
@@ -55,11 +56,12 @@ def playlist(request):
         return JsonResponse({"message": e.message}, status=400)
     playlist = data["playlist"]
     platform = data["platform"]
+    invert_order = data["invert_order"]
     try:
         if platform == "apple-music":
             validate_spotify_playlist_url(playlist)
             token = request.headers.get("Music-User-Token")
-            result = generate_applemusic_playlist.delay(playlist, token)
+            result = generate_applemusic_playlist.delay(playlist, token, invert_order)
         elif platform == "spotify":
             validate_apple_music_playlist_url(playlist)
             result = generate_spotify_playlist.delay(playlist)

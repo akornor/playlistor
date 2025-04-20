@@ -107,7 +107,7 @@ def generate_spotify_playlist(self, url):
 
 
 @shared_task(bind=True)
-def generate_applemusic_playlist(self, url, token):
+def generate_applemusic_playlist(self, url, token, invert_order=False):
     def save_or_update_tracks(tracks):
         try:
             Track.objects.bulk_update_or_create(
@@ -124,6 +124,8 @@ def generate_applemusic_playlist(self, url, token):
     playlist_id = SPOTIFY_PLAYLIST_URL_PAT.match(url).group("playlist_id")
     data = get_spotify_playlist_data(playlist_id)
     tracks = data["tracks"]
+    if invert_order:
+        tracks = data["tracks"][::-1]
     # For some reason Spotify playlists can have an empty string as playlist name.
     playlist_name = data["playlist_name"] or "Untitled"
     creator = data["curator"]

@@ -255,6 +255,7 @@ async function expandURL(shortenedURL) {
 }
 
 button.onclick = async function(event) {
+  const invertOrder = document.getElementById("invert_order").checked;
   event.preventDefault();
   const musicKit = MusicKit.getInstance();
   const playlist = $("#input_big").value.trim();
@@ -316,7 +317,8 @@ button.onclick = async function(event) {
       method: "POST",
       body: JSON.stringify({
         playlist: url,
-        platform: getDestinationPlatform(url)
+        platform: getDestinationPlatform(url),
+        invert_order: invertOrder
       }),
       headers: {
         "Content-Type": "application/json",

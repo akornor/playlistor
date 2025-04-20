@@ -7,7 +7,7 @@ services:
       - "6379:6379"
   web:
     build: .
-    command: bash -c " ./manage.py migrate --noinput && ./manage.py runserver 0.0.0.0:8000"
+    command: bash -c "python ./manage.py migrate --noinput && python ./manage.py runserver 0.0.0.0:8000"
     volumes:
       - .:/app
     ports:
@@ -18,7 +18,7 @@ services:
       - redis
   celery:
     build: .
-    command: bash -c "./manage.py runworker"
+    command: bash -c "python ./manage.py runworker"
     volumes:
       - .:/app
     env_file:
