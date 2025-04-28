@@ -14,7 +14,7 @@ For simplicity, you'll need [docker](docker.com) and [docker-compose](https://do
 	SPOTIFY_CLIENT_ID=Loremipsumdolorsitamet
 	SPOTIFY_CLIENT_SECRET=Loremipsumdolorsitamet
 	APPLE_KEY_ID=Loremipsumdolorsitamet
-	APPLE_APPLE_TEAM_ID=Loremipsumdolorsitamet
+	APPLE_TEAM_ID=Loremipsumdolorsitamet
 	APPLE_PRIVATE_KEY=Loremipsumdolorsitamet
 ```
 Then run `docker-compose up` to get things running.
