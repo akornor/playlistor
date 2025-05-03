@@ -1,4 +1,5 @@
 import sentry_sdk
+from request.exceptions import HTTPError
 from sentry_sdk.integrations.celery import CeleryIntegration
 from sentry_sdk.integrations.django import DjangoIntegration
 from sentry_sdk.integrations.redis import RedisIntegration
@@ -11,8 +12,10 @@ def before_send(event, hint):
     if "exc_info" in hint:
         exc_type, exc_value, tb = hint["exc_info"]
 
-        if isinstance(exc_value, SpotifyException):
-            if hasattr(exc_value, "http_status") and exc_value.http_status == 404:
+        if isinstance(exc_value, (SpotifyException, HTTPError)):
+            if (hasattr(exc_value, "http_status") and exc_value.http_status == 404) or (
+                hasattr(exc_value, "response") and exc_value.response.status_code == 404
+            ):
                 return None
 
     return event
