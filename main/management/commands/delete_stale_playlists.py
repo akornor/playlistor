@@ -22,4 +22,6 @@ class Command(BaseCommand):
             N -= 50
         for playlist in playlists:
             sp.current_user_unfollow_playlist(playlist["id"])
-        self.stdout.write(self.style.SUCCESS("Successfully deleted playlists."))
+        self.stdout.write(
+            self.style.SUCCESS(f"Successfully deleted {len(playlists)} playlists.")
+        )
