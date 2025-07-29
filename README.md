@@ -1,7 +1,5 @@
 ## Playlistor
-self-hosted apple music to spotify playlist convertor
-
-[![CircleCI](https://circleci.com/gh/akornor/playlistor/tree/master.svg?style=svg)](https://circleci.com/gh/akornor/playlistor/tree/master)
+Simply transfer playlists between Apple Music and Spotify.
 
 ## Demo
 ![Demo](demo.gif)
