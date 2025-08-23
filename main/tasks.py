@@ -1,3 +1,4 @@
+import re
 from dataclasses import asdict
 
 import requests
@@ -9,10 +10,6 @@ from playlistor.celery import app  # noqa
 
 from .counters import Counters
 from .matching import are_tracks_same, track_similarity
-from .parsers import (
-    APPLE_MUSIC_PLAYLIST_URL_PAT,
-    SPOTIFY_PLAYLIST_URL_PAT,
-)
 from .services import AppleMusicService, SpotifyService
 from .utils import (
     strip_qs,
@@ -21,6 +18,13 @@ from .utils import (
 logger = get_task_logger(__name__)
 
 counters = Counters()
+
+SPOTIFY_PLAYLIST_URL_PAT = re.compile(
+    r"http(s)?:\/\/open.spotify.com/(user\/.+\/)?playlist/(?P<playlist_id>[^\s?]+)"
+)
+APPLE_MUSIC_PLAYLIST_URL_PAT = re.compile(
+    r"https:\/\/(embed.)?music\.apple\.com\/(?P<storefront>.{2})\/playlist(\/.+)?\/(?P<playlist_id>[^\s?]+)"
+)
 
 
 @shared_task(bind=True)
