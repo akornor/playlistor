@@ -42,53 +42,6 @@ class Track:
         """Convert to dictionary, useful for serialization"""
         return asdict(self)
 
-    @classmethod
-    def from_spotify_data(
-        cls, spotify_track: dict, position: Optional[int] = None
-    ) -> "Track":
-        """Create Track from Spotify API response"""
-        return cls(
-            id=spotify_track["id"],
-            name=spotify_track["name"],
-            artists=[artist["name"] for artist in spotify_track["artists"]],
-            album=spotify_track["album"]["name"],
-            duration_ms=spotify_track["duration_ms"],
-            isrc=spotify_track.get("external_ids", {}).get("isrc"),
-            release_date=spotify_track["album"]["release_date"],
-            position=position,
-        )
-
-    @classmethod
-    def from_apple_music_data(
-        cls, apple_track: dict, position: Optional[int] = None
-    ) -> "Track":
-        """Create Track from Apple Music API response"""
-        attrs = apple_track["attributes"]
-
-        # Parse artist names
-        artists = []
-        artist_name = attrs.get("artistName", "")
-        if artist_name:
-            artists = [
-                artist.strip()
-                for artist in artist_name.replace("featuring", ",")
-                .replace("&", ",")
-                .replace(" x ", ",")
-                .split(",")
-                if artist.strip()
-            ]
-
-        return cls(
-            id=apple_track["id"],
-            name=attrs.get("name"),
-            artists=artists,
-            album=attrs.get("albumName"),
-            duration_ms=attrs.get("durationInMillis"),
-            isrc=attrs.get("isrc"),
-            release_date=attrs.get("releaseDate"),
-            position=position,
-        )
-
 
 @dataclass
 class Playlist:
