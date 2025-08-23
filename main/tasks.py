@@ -82,13 +82,11 @@ def generate_spotify_playlist(self, url):
             progress_recorder.set_progress(i + 1, n)
 
     # Create Spotify playlist
-    # destination_playlist_id = destination_service.create_playlist(
-    #     name=source_playlist.name,
-    #     description=f"Made with Playlistor (https://playlistor.io) :)",
-    #     track_ids=track_ids
-    # )
-
-    destination_playlist_id = "0jDsrf34K5Ga1y1ueHmq1l"
+    destination_playlist_id = destination_service.create_playlist(
+        name=source_playlist.name,
+        description=f"Made with Playlistor (https://playlistor.io) :)",
+        track_ids=track_ids,
+    )
 
     # Get playlist URL
     playlist_url = f"https://open.spotify.com/playlist/{destination_playlist_id}"
