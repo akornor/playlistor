@@ -11,9 +11,7 @@ from playlistor.celery import app  # noqa
 from .counters import Counters
 from .matching import are_tracks_same, track_similarity
 from .services import AppleMusicService, SpotifyService
-from .utils import (
-    strip_qs,
-)
+from .utils import parse_track_info, strip_qs
 
 logger = get_task_logger(__name__)
 
@@ -27,13 +25,80 @@ APPLE_MUSIC_PLAYLIST_URL_PAT = re.compile(
 )
 
 
+def search_with_isrc(service, track):
+    if track.isrc:
+        return service.search_track(f"isrc:{track.isrc}", limit=10)
+    return []
+
+
+def search_with_full_metadata(service, track):
+    clean_title = parse_track_info(track.name)["title"]
+    return service.search_track(f"track:{clean_title} artist:{track.artists}", limit=10)
+
+
+def search_with_primary_artist(service, track):
+    clean_title = parse_track_info(track.name)["title"]
+    if track.artists:
+        return service.search_track(f"{clean_title} {track.artists[0]}", limit=10)
+    return service.search_track(clean_title, limit=10)
+
+
+def search_with_fuzzy_name(service, track):
+    clean_title = parse_track_info(track.name)["title"]
+    return service.search_track(clean_title, limit=20)
+
+
+def find_best_match(source_track, search_results):
+    if not search_results:
+        return None
+
+    matches = sorted(
+        search_results,
+        key=lambda result_track: track_similarity(source_track, result_track),
+        reverse=True,
+    )
+    return matches[0] if matches else None
+
+
+def search_with_quality_fallbacks(service, source_track):
+    search_strategies = [
+        ("ISRC", search_with_isrc),
+        ("Full metadata", search_with_full_metadata),
+        ("Primary artist", search_with_primary_artist),
+        ("Fuzzy name", search_with_fuzzy_name),
+    ]
+
+    for strategy_name, strategy_func in search_strategies:
+        results = strategy_func(service, source_track)
+        if not results:
+            continue
+
+        best_match = find_best_match(source_track, results)
+
+        if best_match and are_tracks_same(source_track, best_match):
+            logger.info(
+                f"Found good match using {strategy_name} strategy for '{source_track.name}'"
+            )
+            return best_match
+
+        if best_match:
+            similarity = track_similarity(source_track, best_match)
+            logger.info(
+                f"{strategy_name} strategy: best similarity {similarity:.3f} (below threshold) for '{source_track.name}'"
+            )
+
+    logger.info(
+        f"No quality matches found across all strategies for '{source_track.name}'"
+    )
+    return None
+
+
 @shared_task(bind=True)
 def generate_spotify_playlist(self, url):
     url = strip_qs(url)
     logger.info(f"Generating spotify equivalent of apple music playlist:{url}")
     progress_recorder = ProgressRecorder(self)
 
-    # Use services for consistent Track objects
     source_service = AppleMusicService()
     destination_service = SpotifyService()
 
@@ -47,29 +112,11 @@ def generate_spotify_playlist(self, url):
 
     for i, source_track in enumerate(source_playlist.tracks):
         try:
-            # Search for matching tracks using Spotify service
-            if source_track.isrc is not None:
-                query = f"isrc:{source_track.isrc}"
-            else:
-                query = f"track:{source_track.name} artist:{source_track.artists}"
-            search_results = destination_service.search_track(query, limit=10)
-            if not search_results:
-                logger.info(
-                    f"Couldn't find a match for {source_track.name}. Skipping...."
-                )
-                missed_tracks.append(asdict(source_track))
-                continue
-
-            # Find the best matching track using similarity algorithm
-            matches = sorted(
-                search_results,
-                key=lambda result_track: track_similarity(source_track, result_track),
-                reverse=True,
+            best_match = search_with_quality_fallbacks(
+                destination_service, source_track
             )
-            best_match = matches[0] if matches else None
 
-            # Only use the match if it meets the similarity threshold
-            if best_match and are_tracks_same(source_track, best_match):
+            if best_match:
                 track_ids.append(best_match.id)
             else:
                 missed_tracks.append(asdict(source_track))
@@ -81,14 +128,12 @@ def generate_spotify_playlist(self, url):
         finally:
             progress_recorder.set_progress(i + 1, n)
 
-    # Create Spotify playlist
     destination_playlist_id = destination_service.create_playlist(
         name=source_playlist.name,
         description=f"Made with Playlistor (https://playlistor.io) :)",
         track_ids=track_ids,
     )
 
-    # Get playlist URL
     playlist_url = f"https://open.spotify.com/playlist/{destination_playlist_id}"
 
     counters.incr_playlist_counter()
@@ -119,25 +164,12 @@ def generate_applemusic_playlist(self, url, access_token):
     n = len(source_playlist.tracks)
     for i, source_track in enumerate(source_playlist.tracks):
         try:
-            # use single artist as it's observed to improve search accuracy.
-            query = f"{source_track.name} {source_track.artists[0]}"
-            search_results = destination_service.search_track(query)
-            if not search_results:
-                logger.info(
-                    f"Couldn't find a match for {source_track.name}. Skipping...."
-                )
-                missed_tracks.append(asdict(source_track))
-                continue
-            # Find the best matching track using similarity algorithm
-            matches = sorted(
-                search_results,
-                key=lambda result_track: track_similarity(source_track, result_track),
-                reverse=True,
+            # Use functional fallback search approach
+            best_match = search_with_quality_fallbacks(
+                destination_service, source_track
             )
-            best_match = matches[0] if matches else None
 
-            # Only use the match if it meets the similarity threshold
-            if best_match and are_tracks_same(source_track, best_match):
+            if best_match:
                 track_ids.append(best_match.id)
             else:
                 missed_tracks.append(asdict(source_track))
@@ -148,7 +180,6 @@ def generate_applemusic_playlist(self, url, access_token):
         finally:
             progress_recorder.set_progress(i + 1, n)
     try:
-        # Create Spotify playlist
         destination_playlist_id = destination_service.create_playlist(
             name=source_playlist.name,
             description=f"Made with Playlistor (https://playlistor.io) :)",
