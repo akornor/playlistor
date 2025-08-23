@@ -133,6 +133,39 @@ def sanitize_track_name(name):
     return name
 
 
+def parse_track_info(track_title):
+    """
+    Parse a track title into main title and featured artists.
+
+    Returns:
+        dict: Contains 'title' and 'featured_artists' keys
+    """
+    match = re.search(
+        r"[\(\[](?:feat\.?|featuring|ft\.?|with)\s+([^\)\]]+)[\)\]]",
+        track_title,
+        re.IGNORECASE,
+    )
+
+    featured_artists = []
+    if match:
+        artists_string = match.group(1)
+        featured_artists = [
+            artist.strip()
+            for artist in re.split(r"\s*[,&,+]\s*", artists_string)
+            if artist.strip()
+        ]
+
+    # Extract clean title
+    clean_title = re.sub(
+        r"\s*[\(\[](?:feat\.?|featuring|ft\.?|with)\s+[^\)\]]*[\)\]]",
+        "",
+        track_title,
+        flags=re.IGNORECASE,
+    ).strip()
+
+    return {"title": clean_title, "featured_artists": featured_artists}
+
+
 @functools.lru_cache(maxsize=128)
 def get_version():
     version = subprocess.check_output(
