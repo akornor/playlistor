@@ -1,5 +1,6 @@
 import datetime
 import functools
+import itertools
 import re
 import subprocess
 from urllib.parse import urlsplit
@@ -57,7 +58,12 @@ def get_applemusic_client():
 
 
 def grouper(n, iterable):
-    return [iterable[i : i + n] for i in range(0, len(iterable), n)]
+    iterator = iter(iterable)
+    while True:
+        chunk = list(itertools.islice(iterator, n))
+        if not chunk:
+            break
+        yield chunk
 
 
 def get_redis_client():
