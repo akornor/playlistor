@@ -4,22 +4,17 @@ import requests
 from celery import shared_task
 from celery.utils.log import get_task_logger
 from celery_progress.backend import ProgressRecorder
-from django.db import IntegrityError
 
 from playlistor.celery import app  # noqa
 
 from .counters import Counters
 from .matching import are_tracks_same, track_similarity
-from .models import Track
 from .parsers import (
     APPLE_MUSIC_PLAYLIST_URL_PAT,
     SPOTIFY_PLAYLIST_URL_PAT,
-    get_spotify_playlist_data,
 )
 from .services import AppleMusicService, SpotifyService
 from .utils import (
-    get_applemusic_client,
-    grouper,
     strip_qs,
 )
 
@@ -39,10 +34,10 @@ def generate_spotify_playlist(self, url):
     destination_service = SpotifyService()
 
     playlist_id = APPLE_MUSIC_PLAYLIST_URL_PAT.match(url).group("playlist_id")
-    source_playlist = source_service.get_playlist(playlist_id)
+    storefront = APPLE_MUSIC_PLAYLIST_URL_PAT.match(url).group("storefront")
+    source_playlist = source_service.get_playlist(playlist_id, storefront=storefront)
 
     track_ids = []
-    tracks_to_save = []
     missed_tracks = []
     n = len(source_playlist.tracks)
 
@@ -107,81 +102,64 @@ def generate_spotify_playlist(self, url):
 
 
 @shared_task(bind=True)
-def generate_applemusic_playlist(self, url, token):
-    def save_or_update_tracks(tracks):
-        try:
-            Track.objects.bulk_update_or_create(
-                tracks,
-                ["name", "artists", "apple_music_id", "spotify_id"],
-                match_field="apple_music_id",
-            )
-        except IntegrityError as e:
-            return
-
+def generate_applemusic_playlist(self, url, access_token):
     url = strip_qs(url)
     logger.info(f"Generating apple music equivalent of spotify playlist:{url}")
     progress_recorder = ProgressRecorder(self)
     playlist_id = SPOTIFY_PLAYLIST_URL_PAT.match(url).group("playlist_id")
-    data = get_spotify_playlist_data(playlist_id)
-    tracks = data["tracks"]
-    # For some reason Spotify playlists can have an empty string as playlist name.
-    playlist_name = data["playlist_name"] or "Untitled"
-    creator = data["curator"]
-    tracks_to_save = []
+    source_service = SpotifyService()
+    destination_service = AppleMusicService(access_token=access_token)
+
+    source_playlist = source_service.get_playlist(playlist_id)
+
     track_ids = []
     missed_tracks = []
-    n = len(tracks)
-    am = get_applemusic_client()
-    am.access_token = token
-    for i, track in enumerate(tracks):
+    n = len(source_playlist.tracks)
+    for i, source_track in enumerate(source_playlist.tracks):
         try:
             # use single artist as it's observed to improve search accuracy.
-            query = f"{track.name} {track.artists[0]}"
-            song = am.search(query=query, limit=1)["results"]["songs"]["data"][0]
-            track_ids.append(song["id"])
-            tracks_to_save.append(
-                Track(
-                    name=track.name,
-                    artists=",".join(track.artists),
-                    apple_music_id=song["id"],
-                    spotify_id=track.id,
+            query = f"{source_track.name} {source_track.artists[0]}"
+            search_results = destination_service.search_track(query)
+            if not search_results:
+                logger.info(
+                    f"Couldn't find a match for {source_track.name}. Skipping...."
                 )
+                missed_tracks.append(asdict(source_track))
+                continue
+            # Find the best matching track using similarity algorithm
+            matches = sorted(
+                search_results,
+                key=lambda result_track: track_similarity(source_track, result_track),
+                reverse=True,
             )
-        except:
-            missed_tracks.append(asdict(track))
+            best_match = matches[0] if matches else None
+
+            # Only use the match if it meets the similarity threshold
+            if best_match and are_tracks_same(source_track, best_match):
+                track_ids.append(best_match.id)
+            else:
+                missed_tracks.append(asdict(source_track))
+        except Exception as e:
+            logger.error(f"Error processing track {source_track.name}: {e}")
+            missed_tracks.append(asdict(source_track))
             continue
         finally:
             progress_recorder.set_progress(i + 1, n)
     try:
-        N = 100
-        if len(track_ids) > N:
-            playlist_data = am.user_playlist_create(
-                name=playlist_name,
-                description=f"Made with Playlistor (https://playlistor.io) :)",
-                track_ids=track_ids[:N],
-            )
-            playlist_id = playlist_data["data"][0]["id"]
-            track_ids = track_ids[N:]
-            for chunk in grouper(N, track_ids):
-                am.user_playlist_add_tracks(playlist_id, chunk)
-        else:
-            am.user_playlist_create(
-                name=playlist_name,
-                description=f"Made with Playlistor (https://playlistor.io) :)",
-                track_ids=track_ids,
-            )
+        # Create Spotify playlist
+        destination_playlist_id = destination_service.create_playlist(
+            name=source_playlist.name,
+            description=f"Made with Playlistor (https://playlistor.io) :)",
+            track_ids=track_ids,
+        )
 
     except requests.exceptions.HTTPError as e:
         response = e.response
         if response.status_code >= 500:
-            if len(tracks_to_save) > 0:
-                save_or_update_tracks(tracks_to_save)
             raise self.retry(exc=e, countdown=30)
         else:
             raise e
     counters.incr_playlist_counter()
-    if len(tracks_to_save) > 0:
-        save_or_update_tracks(tracks_to_save)
     logger.info(f"Missed {len(missed_tracks)} in {n} track(s)")
     return {
         "playlist_url": None,
