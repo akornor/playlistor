@@ -111,9 +111,7 @@ class AppleMusicService(StreamingService):
             url=playlist_attrs.get("url"),
         )
 
-    def search_track(self, track: Track, limit: int = 10) -> List[Track]:
-        """Search for a track in Apple Music"""
-        query = f"{track.name} {track.artists[0] if track.artists else ''}"
+    def search_track(self, query: str, limit: int = 10) -> List[Track]:
         results = self.client.search(query=query, limit=limit)
 
         if not results or "results" not in results or "songs" not in results["results"]:
@@ -149,12 +147,6 @@ class AppleMusicService(StreamingService):
     def create_playlist(
         self, name: str, description: str = None, track_ids: List[str] = None
     ) -> str:
-        """Create a new Apple Music playlist"""
-        if not description:
-            description = f"Made with Playlistor (https://playlistor.io) :)"
-
-        track_ids = track_ids or []
-
         if len(track_ids) > 100:
             # Create playlist with first 100 tracks
             playlist_data = self.client.user_playlist_create(
