@@ -5,6 +5,7 @@ from celery import shared_task
 from celery.utils.log import get_task_logger
 from celery_progress.backend import ProgressRecorder
 
+from main.models import Playlist
 from playlistor.celery import app  # noqa
 
 from .counters import Counters
