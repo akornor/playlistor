@@ -31,13 +31,6 @@ class Track:
         """Return album as list for compatibility with similarity functions"""
         return [self.album] if self.album else []
 
-    @property
-    def sanitized_name(self) -> str:
-        """Sanitized track name for search purposes"""
-        from .utils import sanitize_track_name
-
-        return sanitize_track_name(self.name)
-
     def to_dict(self) -> dict:
         """Convert to dictionary, useful for serialization"""
         return asdict(self)
@@ -70,25 +63,3 @@ class Playlist:
             "artwork_url": self.artwork_url,
             "url": self.url,
         }
-
-
-def parse_artist_names(artist_string: str) -> List[str]:
-    """
-    Parse artist string into list of individual artist names.
-    Handles common separators like 'featuring', '&', ' x '.
-    """
-    if not artist_string:
-        return []
-
-    artists = []
-    for artist in (
-        artist_string.replace("featuring", ",")
-        .replace("&", ",")
-        .replace(" x ", ",")
-        .split(",")
-    ):
-        clean_artist = artist.strip()
-        if clean_artist:
-            artists.append(clean_artist)
-
-    return artists
