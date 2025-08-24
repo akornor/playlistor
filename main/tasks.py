@@ -1,5 +1,4 @@
 import re
-from dataclasses import asdict
 
 import requests
 from celery import shared_task
@@ -119,10 +118,10 @@ def generate_spotify_playlist(self, url):
             if best_match:
                 track_ids.append(best_match.id)
             else:
-                missed_tracks.append(asdict(source_track))
+                missed_tracks.append(source_track.to_dict())
 
         except Exception as e:
-            missed_tracks.append(asdict(source_track))
+            missed_tracks.append(source_track.to_dict())
             logger.error(f"Error processing track {source_track.name}: {e}")
             continue
         finally:
@@ -172,10 +171,10 @@ def generate_applemusic_playlist(self, url, access_token):
             if best_match:
                 track_ids.append(best_match.id)
             else:
-                missed_tracks.append(asdict(source_track))
+                missed_tracks.append(source_track.to_dict())
         except Exception as e:
             logger.error(f"Error processing track {source_track.name}: {e}")
-            missed_tracks.append(asdict(source_track))
+            missed_tracks.append(source_track.to_dict())
             continue
         finally:
             progress_recorder.set_progress(i + 1, n)
