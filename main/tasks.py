@@ -11,7 +11,7 @@ from playlistor.celery import app  # noqa
 from .counters import Counters
 from .matching import are_tracks_same, track_similarity
 from .services import AppleMusicService, SpotifyService
-from .utils import parse_track_info, strip_qs
+from .utils import parse_track_name, strip_qs
 
 logger = get_task_logger(__name__)
 
@@ -32,20 +32,20 @@ def search_with_isrc(service, track):
 
 
 def search_with_full_metadata(service, track):
-    clean_title = parse_track_info(track.name)["title"]
-    return service.search_track(f"track:{clean_title} artist:{track.artists}", limit=10)
+    clean_name = parse_track_name(track.name)["track_name"]
+    return service.search_track(f"track:{clean_name} artist:{track.artists}", limit=10)
 
 
 def search_with_primary_artist(service, track):
-    clean_title = parse_track_info(track.name)["title"]
+    clean_name = parse_track_name(track.name)["track_name"]
     if track.artists:
-        return service.search_track(f"{clean_title} {track.artists[0]}", limit=10)
-    return service.search_track(clean_title, limit=10)
+        return service.search_track(f"{clean_name} {track.artists[0]}", limit=10)
+    return service.search_track(clean_name, limit=10)
 
 
 def search_with_fuzzy_name(service, track):
-    clean_title = parse_track_info(track.name)["title"]
-    return service.search_track(clean_title, limit=20)
+    clean_name = parse_track_name(track.name)["track_name"]
+    return service.search_track(clean_name, limit=20)
 
 
 def find_best_match(source_track, search_results):
