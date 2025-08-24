@@ -141,7 +141,7 @@ def generate_spotify_playlist(self, url):
         name=source_playlist.name,
         artwork_url=source_playlist.artwork_url,
         spotify_url=playlist_url,
-        applemusic_url=source_playlist.url,
+        applemusic_url=url,
         creator=source_playlist.creator,
     )
     return {
