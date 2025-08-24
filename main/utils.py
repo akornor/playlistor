@@ -120,19 +120,6 @@ def check_config():
         raise ImproperlyConfigured("REDIS_URL has not been properly defined.")
 
 
-def sanitize_track_name(name):
-    PAT = re.compile(r"\((.+)\)|\[(.+)\]")
-    # Remove content in brackets as it tends to be too much noise for track resolution.
-    # Free Trial (feat. Qari & Phoelix) [Explicit] -> Free Trial
-    # This is a temporary fix until I properly understand the problem space to come up with a more general solution.
-    mo = PAT.search(name)
-    if mo:
-        name = PAT.sub("", name).strip()
-    # This is pretty naive. But this is done to remove noisy parts of track name. For example, Loving Cup - (Live At The Beacon Theatre, New York / 2006) -> Loving Cup
-    name, *parts = name.partition("-")
-    return name
-
-
 def parse_track_name(track_name):
     """
     Parse a track title into main title and featured artists.
