@@ -1,6 +1,9 @@
 from abc import ABC, abstractmethod
+from functools import wraps
 from typing import List, Optional
 from urllib.parse import urljoin
+
+from django.core.cache import cache
 
 from .data_models import Playlist, Track
 from .utils import (
@@ -10,6 +13,30 @@ from .utils import (
     grouper,
     requests_retry_session,
 )
+
+
+def cache_with_key(keyfunc, timeout):
+    def decorator(func):
+        @wraps(func)
+        def func_with_caching(*args, **kwargs):
+            key = keyfunc(*args, **kwargs)
+            try:
+                value = cache.get(key)
+            except:
+                return func(*args, **kwargs)
+            if value is not None:
+                return value
+            value = func(*args, **kwargs)
+            cache.set(key, value, timeout=timeout)
+            return value
+
+        return func_with_caching
+
+    return decorator
+
+
+def spotify_search_track_cache_key(query, limit):
+    return f"spotify:search:track:{query}:{limit}"
 
 
 class StreamingService(ABC):
@@ -24,14 +51,14 @@ class StreamingService(ABC):
         """Search for a track and return matching results"""
 
     @abstractmethod
+    def search_track_by_isrc(self, isrc: str, limit: int = 10) -> List[Track]:
+        """Search for a track by isrc"""
+
+    @abstractmethod
     def create_playlist(
         self, name: str, description: str = None, track_ids: List[str] = None
     ) -> str:
         """Create a new playlist and return its ID"""
-
-    @abstractmethod
-    def search_track_by_isrc(self, isrc: str, limit: int = 10) -> List[Track]:
-        """Search for a track by isrc"""
 
 
 class AppleMusicService(StreamingService):
@@ -184,6 +211,7 @@ class SpotifyService(StreamingService):
             url=playlist["external_urls"]["spotify"],
         )
 
+    # @cache_with_key(spotify_search_track_cache_key, timeout=600)
     def search_track(self, query: str, limit: int = 10) -> List[Track]:
         results = self.client.search(query, limit=limit, type="track")["tracks"][
             "items"
