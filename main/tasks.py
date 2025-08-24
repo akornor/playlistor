@@ -137,7 +137,13 @@ def generate_spotify_playlist(self, url):
 
     counters.incr_playlist_counter()
     logger.info(f"Missed {len(missed_tracks)} in {n} track(s)")
-
+    Playlist.objects.create(
+        name=source_playlist.name,
+        artwork_url=source_playlist.artwork_url,
+        spotify_url=playlist_url,
+        applemusic_url=source_playlist.url,
+        creator=source_playlist.creator,
+    )
     return {
         "playlist_url": playlist_url,
         "number_of_tracks": n,
