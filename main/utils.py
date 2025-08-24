@@ -133,7 +133,7 @@ def sanitize_track_name(name):
     return name
 
 
-def parse_track_info(track_title):
+def parse_track_name(track_name):
     """
     Parse a track title into main title and featured artists.
 
@@ -142,7 +142,7 @@ def parse_track_info(track_title):
     """
     match = re.search(
         r"[\(\[](?:feat\.?|featuring|ft\.?|with)\s+([^\)\]]+)[\)\]]",
-        track_title,
+        track_name,
         re.IGNORECASE,
     )
 
@@ -156,14 +156,14 @@ def parse_track_info(track_title):
         ]
 
     # Extract clean title
-    clean_title = re.sub(
+    clean_name = re.sub(
         r"\s*[\(\[](?:feat\.?|featuring|ft\.?|with)\s+[^\)\]]*[\)\]]",
         "",
-        track_title,
+        track_name,
         flags=re.IGNORECASE,
     ).strip()
 
-    return {"title": clean_title, "featured_artists": featured_artists}
+    return {"track_name": clean_name, "featured_artists": featured_artists}
 
 
 @functools.lru_cache(maxsize=128)
