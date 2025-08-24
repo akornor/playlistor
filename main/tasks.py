@@ -27,7 +27,7 @@ APPLE_MUSIC_PLAYLIST_URL_PAT = re.compile(
 
 def search_with_isrc(service, track):
     if track.isrc:
-        return service.search_track(f"isrc:{track.isrc}", limit=10)
+        return service.search_track_by_isrc(track.isrc, limit=10)
     return []
 
 

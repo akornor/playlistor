@@ -29,6 +29,10 @@ class StreamingService(ABC):
     ) -> str:
         """Create a new playlist and return its ID"""
 
+    @abstractmethod
+    def search_track_by_isrc(self, isrc: str, limit: int = 10) -> List[Track]:
+        """Search for a track by isrc"""
+
 
 class AppleMusicService(StreamingService):
     """Apple Music streaming service implementation"""
@@ -74,32 +78,7 @@ class AppleMusicService(StreamingService):
             data = response.json()
             track_items.extend(data["data"])
             next_url = data.get("next")
-
-        for i, track in enumerate(track_items):
-            track_attrs = track.get("attributes")
-            if track_attrs is not None:
-                artists = []
-                artist_name = track_attrs.get("artistName", "")
-                artists.extend(
-                    artist_name.replace("featuring", ",")
-                    .replace("&", ",")
-                    .replace(" x ", ",")
-                    .split(",")
-                )
-                artists = [artist.strip() for artist in artists if artist.strip()]
-
-                tracks.append(
-                    Track(
-                        id=track["id"],
-                        name=track_attrs.get("name"),
-                        artists=artists,
-                        album=track_attrs.get("albumName"),
-                        duration_ms=track_attrs.get("durationInMillis"),
-                        isrc=track_attrs.get("isrc"),
-                        release_date=track_attrs.get("releaseDate"),
-                        position=i,
-                    )
-                )
+        tracks = [self.raw_to_track(raw) for raw in track_items]
 
         return Playlist(
             id=playlist_id,
@@ -117,32 +96,14 @@ class AppleMusicService(StreamingService):
         if not results or "results" not in results or "songs" not in results["results"]:
             return []
 
-        tracks = []
-        for song in results["results"]["songs"].get("data", []):
-            attrs = song["attributes"]
-            artists = []
-            artist_name = attrs.get("artistName", "")
-            artists.extend(
-                artist_name.replace("featuring", ",")
-                .replace("&", ",")
-                .replace(" x ", ",")
-                .split(",")
-            )
-            artists = [artist.strip() for artist in artists if artist.strip()]
+        return [
+            self.raw_to_track(raw)
+            for raw in results["results"]["songs"].get("data", [])
+        ]
 
-            tracks.append(
-                Track(
-                    id=song["id"],
-                    name=attrs.get("name"),
-                    artists=artists,
-                    album=attrs.get("albumName"),
-                    duration_ms=attrs.get("durationInMillis"),
-                    isrc=attrs.get("isrc"),
-                    release_date=attrs.get("releaseDate"),
-                )
-            )
-
-        return tracks
+    def search_track_by_isrc(self, isrc: str, limit: int = 10) -> List[Track]:
+        results = self.client.get_songs_by_isrc([isrc])
+        return [self.raw_to_track(raw) for raw in results.get("data", [])]
 
     def create_playlist(
         self, name: str, description: str = None, track_ids: List[str] = None
@@ -165,6 +126,28 @@ class AppleMusicService(StreamingService):
                 name=name, description=description, track_ids=track_ids
             )
             return playlist_data["data"][0]["id"]
+
+    def raw_to_track(self, raw: dict) -> Track:
+        attrs = raw["attributes"]
+        artists = []
+        artist_name = attrs.get("artistName", "")
+        artists.extend(
+            artist_name.replace("featuring", ",")
+            .replace("&", ",")
+            .replace(" x ", ",")
+            .split(",")
+        )
+        artists = [artist.strip() for artist in artists if artist.strip()]
+
+        return Track(
+            id=raw["id"],
+            name=attrs.get("name"),
+            artists=artists,
+            album=attrs.get("albumName"),
+            duration_ms=attrs.get("durationInMillis"),
+            isrc=attrs.get("isrc"),
+            release_date=attrs.get("releaseDate"),
+        )
 
 
 class SpotifyService(StreamingService):
@@ -206,6 +189,10 @@ class SpotifyService(StreamingService):
             "items"
         ]
         return [self.raw_to_track(track) for track in results]
+
+    def search_track_by_isrc(self, isrc: str, limit: int = 10) -> List[Track]:
+        query = f"isrc:{isrc}"
+        return self.search_track(query)
 
     def create_playlist(
         self, name: str, description: str = None, track_ids: List[str] = None
