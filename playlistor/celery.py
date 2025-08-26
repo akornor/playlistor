@@ -1,4 +1,6 @@
-from __future__ import absolute_import, unicode_literals
+from gevent import monkey
+
+monkey.patch_all()
 
 import os
 
