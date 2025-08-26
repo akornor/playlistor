@@ -2,6 +2,7 @@ import re
 
 import requests
 from celery import shared_task
+from celery.signals import worker_ready
 from celery.utils.log import get_task_logger
 from celery_progress.backend import ProgressRecorder
 
@@ -91,6 +92,20 @@ def search_with_quality_fallbacks(service, source_track):
         f"No quality matches found across all strategies for '{source_track.name}'"
     )
     return None
+
+
+@worker_ready.connect
+def worker_ready_handler(sender=None, **kwargs):
+    logger.info("Celery worker started with gevent monkey patching")
+
+    # Verify patching worked
+    import socket
+
+    logger.info(f"Socket module: {socket.socket}")
+    if hasattr(socket.socket, "_gevent_monkey_patch"):
+        logger.info("Gevent monkey patching successful")
+    else:
+        logger.warning("Gevent monkey patching may not be working")
 
 
 @shared_task(bind=True)
