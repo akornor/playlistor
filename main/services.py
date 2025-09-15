@@ -149,8 +149,8 @@ class AppleMusicService(StreamingService):
             release_date=attrs.get("releaseDate"),
         )
 
-        def __str__(self):
-            return "apple-music"
+    def __str__(self):
+        return "apple-music"
 
 
 class SpotifyService(StreamingService):
