@@ -1,9 +1,6 @@
 from abc import ABC, abstractmethod
-from functools import wraps
 from typing import List, Optional
 from urllib.parse import urljoin
-
-from django.core.cache import cache
 
 from .data_models import Playlist, Track
 from .utils import (
@@ -13,30 +10,6 @@ from .utils import (
     grouper,
     requests_retry_session,
 )
-
-
-def cache_with_key(keyfunc, timeout):
-    def decorator(func):
-        @wraps(func)
-        def func_with_caching(*args, **kwargs):
-            key = keyfunc(*args, **kwargs)
-            try:
-                value = cache.get(key)
-            except:
-                return func(*args, **kwargs)
-            if value is not None:
-                return value
-            value = func(*args, **kwargs)
-            cache.set(key, value, timeout=timeout)
-            return value
-
-        return func_with_caching
-
-    return decorator
-
-
-def spotify_search_track_cache_key(query, limit):
-    return f"spotify:search:track:{query}:{limit}"
 
 
 class StreamingService(ABC):
@@ -176,6 +149,9 @@ class AppleMusicService(StreamingService):
             release_date=attrs.get("releaseDate"),
         )
 
+        def __str__(self):
+            return "apple-music"
+
 
 class SpotifyService(StreamingService):
 
@@ -211,7 +187,6 @@ class SpotifyService(StreamingService):
             url=playlist["external_urls"]["spotify"],
         )
 
-    # @cache_with_key(spotify_search_track_cache_key, timeout=600)
     def search_track(self, query: str, limit: int = 10) -> List[Track]:
         results = self.client.search(query, limit=limit, type="track")["tracks"][
             "items"
@@ -254,3 +229,6 @@ class SpotifyService(StreamingService):
             isrc=raw.get("external_ids", {}).get("isrc"),
             release_date=raw["album"]["release_date"],
         )
+
+    def __str__(self):
+        return "spotify"

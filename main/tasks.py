@@ -6,6 +6,7 @@ from celery.signals import worker_ready
 from celery.utils.log import get_task_logger
 from celery_progress.backend import ProgressRecorder
 
+from main.cache import cache_with_key
 from main.models import Playlist
 from playlistor.celery import app  # noqa
 
@@ -26,6 +27,12 @@ APPLE_MUSIC_PLAYLIST_URL_PAT = re.compile(
 )
 
 
+def search_isrc_cache_key(service, track):
+    if track.isrc is not None:
+        return f"{service}:search:isrc:{track.isrc}"
+
+
+@cache_with_key(search_isrc_cache_key, timeout=1000)
 def search_with_isrc(service, track):
     if track.isrc:
         return service.search_track_by_isrc(track.isrc, limit=10)
