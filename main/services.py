@@ -16,15 +16,19 @@ class StreamingService(ABC):
     """Base class for streaming service implementations"""
 
     @abstractmethod
-    def get_playlist(self, playlist_id: str) -> Playlist:
+    def get_playlist(self, playlist_id: str, storefront: str = None) -> Playlist:
         """Fetch playlist data and return as unified Playlist object"""
 
     @abstractmethod
-    def search_track(self, query: str, limit: int = 10) -> List[Track]:
+    def search_track(
+        self, query: str, limit: int = 10, storefront: str = None
+    ) -> List[Track]:
         """Search for a track and return matching results"""
 
     @abstractmethod
-    def search_track_by_isrc(self, isrc: str, limit: int = 10) -> List[Track]:
+    def search_track_by_isrc(
+        self, isrc: str, limit: int = 10, storefront: str = None
+    ) -> List[Track]:
         """Search for a track by isrc"""
 
     @abstractmethod
@@ -90,8 +94,10 @@ class AppleMusicService(StreamingService):
             url=playlist_attrs.get("url"),
         )
 
-    def search_track(self, query: str, limit: int = 10) -> List[Track]:
-        results = self.client.search(query=query, limit=limit)
+    def search_track(
+        self, query: str, limit: int = 10, storefront: str = "us"
+    ) -> List[Track]:
+        results = self.client.search(query=query, limit=limit, storefront=storefront)
 
         if not results or "results" not in results or "songs" not in results["results"]:
             return []
@@ -101,8 +107,10 @@ class AppleMusicService(StreamingService):
             for raw in results["results"]["songs"].get("data", [])
         ]
 
-    def search_track_by_isrc(self, isrc: str, limit: int = 10) -> List[Track]:
-        results = self.client.get_songs_by_isrc([isrc])
+    def search_track_by_isrc(
+        self, isrc: str, limit: int = 10, storefront: str = "us"
+    ) -> List[Track]:
+        results = self.client.get_songs_by_isrc([isrc], storefront=storefront)
         return [self.raw_to_track(raw) for raw in results.get("data", [])]
 
     def create_playlist(
@@ -158,7 +166,7 @@ class SpotifyService(StreamingService):
     def __init__(self):
         self.client = get_spotify_client()
 
-    def get_playlist(self, playlist_id: str) -> Playlist:
+    def get_playlist(self, playlist_id: str, storefront: str = None) -> Playlist:
         playlist = self.client.playlist(playlist_id=playlist_id)
 
         # Get all tracks with pagination
@@ -187,15 +195,19 @@ class SpotifyService(StreamingService):
             url=playlist["external_urls"]["spotify"],
         )
 
-    def search_track(self, query: str, limit: int = 10) -> List[Track]:
+    def search_track(
+        self, query: str, limit: int = 10, storefront: str = None
+    ) -> List[Track]:
         results = self.client.search(query, limit=limit, type="track")["tracks"][
             "items"
         ]
         return [self.raw_to_track(track) for track in results]
 
-    def search_track_by_isrc(self, isrc: str, limit: int = 10) -> List[Track]:
+    def search_track_by_isrc(
+        self, isrc: str, limit: int = 10, storefront: str = None
+    ) -> List[Track]:
         query = f"isrc:{isrc}"
-        return self.search_track(query)
+        return self.search_track(query, limit)
 
     def create_playlist(
         self, name: str, description: str = None, track_ids: List[str] = None
