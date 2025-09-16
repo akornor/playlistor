@@ -26,33 +26,37 @@ APPLE_MUSIC_PLAYLIST_URL_PAT = re.compile(
 )
 
 
-def search_isrc_cache_key(service, track):
+def search_isrc_cache_key(service, track, storefront=None):
     if track.isrc is not None:
         return f"{service}:search:isrc:{track.isrc}"
 
 
-@cache_with_key(search_isrc_cache_key, timeout=3600 * 24)
-def search_with_isrc(service, track):
+@cache_with_key(search_isrc_cache_key, timeout=3600 * 24 * 4)
+def search_with_isrc(service, track, storefront=None):
     if track.isrc:
-        return service.search_track_by_isrc(track.isrc, limit=10)
+        return service.search_track_by_isrc(track.isrc, limit=10, storefront=storefront)
     return []
 
 
-def search_with_full_metadata(service, track):
+def search_with_full_metadata(service, track, storefront=None):
     clean_name = parse_track_name(track.name)["track_name"]
-    return service.search_track(f"track:{clean_name} artist:{track.artists}", limit=10)
+    return service.search_track(
+        f"track:{clean_name} artist:{track.artists}", limit=10, storefront=storefront
+    )
 
 
-def search_with_primary_artist(service, track):
+def search_with_primary_artist(service, track, storefront=None):
     clean_name = parse_track_name(track.name)["track_name"]
     if track.artists:
-        return service.search_track(f"{clean_name} {track.artists[0]}", limit=10)
-    return service.search_track(clean_name, limit=10)
+        return service.search_track(
+            f"{clean_name} {track.artists[0]}", limit=10, storefront=storefront
+        )
+    return service.search_track(clean_name, limit=10, storefront=storefront)
 
 
-def search_with_fuzzy_name(service, track):
+def search_with_fuzzy_name(service, track, storefront=None):
     clean_name = parse_track_name(track.name)["track_name"]
-    return service.search_track(clean_name, limit=20)
+    return service.search_track(clean_name, limit=20, storefront=storefront)
 
 
 def find_best_match(source_track, search_results):
@@ -67,7 +71,7 @@ def find_best_match(source_track, search_results):
     return matches[0] if matches else None
 
 
-def search_with_quality_fallbacks(service, source_track):
+def search_with_quality_fallbacks(service, source_track, storefront=None):
     search_strategies = [
         ("ISRC", search_with_isrc),
         ("Full metadata", search_with_full_metadata),
@@ -76,7 +80,7 @@ def search_with_quality_fallbacks(service, source_track):
     ]
 
     for strategy_name, strategy_func in search_strategies:
-        results = strategy_func(service, source_track)
+        results = strategy_func(service, source_track, storefront=storefront)
         if not results:
             continue
 
@@ -120,7 +124,7 @@ def generate_spotify_playlist(self, url):
     for i, source_track in enumerate(source_playlist.tracks):
         try:
             best_match = search_with_quality_fallbacks(
-                destination_service, source_track
+                destination_service, source_track, storefront=storefront
             )
 
             if best_match:
