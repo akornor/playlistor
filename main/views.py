@@ -1,7 +1,7 @@
 import json
 
 from django.core.exceptions import ValidationError as DjangoValidationError
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views.decorators.http import require_POST
@@ -92,6 +92,11 @@ def add_subscriber(request):
         return JsonResponse({"email": subscriber.email}, status=201)
     except Exception:
         return JsonResponse({}, status=400)
+
+
+def ads_txt(request):
+    content = "google.com, pub-3322094653674275, DIRECT, f08c47fec0942fa0"
+    return HttpResponse(content, content_type="text/plain")
 
 
 @login_required(login_url="/login")
