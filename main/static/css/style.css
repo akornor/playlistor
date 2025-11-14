@@ -574,6 +574,11 @@ footer .wrapper .flex .headings, .twitter{
   visibility: visible;
 }
 
+/* Responsive Ad Sizes */
+.playlistor_bottom_sticky { width: 320px; height: 100px; }
+@media(min-width: 500px) { .playlistor_bottom_sticky { width: 468px; height: 60px; } }
+@media(min-width: 800px) { .playlistor_bottom_sticky { width: 728px; height: 90px; } }
+
 /* Bottom Ad Container */
 .bottom-ad-container {
   position: fixed;
@@ -582,17 +587,34 @@ footer .wrapper .flex .headings, .twitter{
   transform: translateX(-50%);
   background-color: #ffffff;
   box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-  width: 820px;
+  padding: 15px;
+  width: 100%;
   max-width: 95vw;
-  height: 190px;
+  height: auto;
+  min-height: 80px;
   z-index: 1000;
   transition: bottom 0.5s ease-in-out;
   overflow: hidden;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 20px;
+  gap: 15px;
+}
+
+@media(min-width: 500px) {
+  .bottom-ad-container {
+    padding: 20px;
+    gap: 15px;
+    max-width: 592px;
+  }
+}
+
+@media(min-width: 800px) {
+  .bottom-ad-container {
+    padding: 20px;
+    gap: 20px;
+    max-width: 848px;
+  }
 }
 
 .bottom-ad-container.show {
@@ -601,8 +623,6 @@ footer .wrapper .flex .headings, .twitter{
 
 .bottom-ad-container > div:first-child {
   flex-shrink: 0;
-  max-width: 700px;
-  width: 100%;
   overflow: hidden;
   box-sizing: border-box;
 }
@@ -613,15 +633,26 @@ footer .wrapper .flex .headings, .twitter{
 
 .bottom-ad-container ins.adsbygoogle {
   display: block !important;
-  max-width: 100% !important;
 }
 
 .bottom-ad-container > div:last-child {
   border-left: 1px solid #e0e0e0;
-  padding-left: 20px;
+  padding-left: 15px;
   display: flex;
   align-items: center;
   flex-shrink: 0;
+}
+
+@media(min-width: 500px) {
+  .bottom-ad-container > div:last-child {
+    padding-left: 15px;
+  }
+}
+
+@media(min-width: 800px) {
+  .bottom-ad-container > div:last-child {
+    padding-left: 20px;
+  }
 }
 
 .close-ad-btn {
@@ -629,9 +660,9 @@ footer .wrapper .flex .headings, .twitter{
   border: 2px solid rgba(255, 255, 255, 0.3);
   border-radius: 50%;
   cursor: pointer;
-  padding: 8px;
-  width: 40px;
-  height: 40px;
+  padding: 10px;
+  width: 44px;
+  height: 44px;
   display: grid;
   place-items: center;
   flex-shrink: 0;
@@ -648,51 +679,16 @@ footer .wrapper .flex .headings, .twitter{
   transition: background-color 0.2s ease;
 }
 
-@media (max-width: 860px) {
+@media (max-width: 499px) {
   .bottom-ad-container {
-    width: 95%;
-    max-width: 95vw;
-    padding: 15px;
-    height: auto;
-    min-height: 130px;
-    gap: 15px;
-  }
-
-  .bottom-ad-container > div:first-child {
-    max-width: 100%;
-  }
-
-  .bottom-ad-container > div:last-child {
-    padding-left: 15px;
-  }
-
-  .close-ad-btn {
-    width: 44px;
-    height: 44px;
-    padding: 10px;
-  }
-}
-
-@media (max-width: 768px) {
-  .bottom-ad-container {
-    width: 100%;
-    left: 0;
-    transform: none;
-    padding: 15px;
-    gap: 15px;
     flex-direction: column;
-    height: auto;
-    min-height: 200px;
-    border-radius: 0;
-    box-sizing: border-box;
+    padding: 15px;
   }
 
   .bottom-ad-container > div:first-child {
     width: 100%;
-    max-width: 100%;
     display: flex;
     justify-content: center;
-    overflow: hidden;
   }
 
   .bottom-ad-container > div:last-child {
@@ -702,17 +698,6 @@ footer .wrapper .flex .headings, .twitter{
     padding-top: 15px;
     width: 100%;
     justify-content: center;
-  }
-
-  .bottom-ad-container .adsbygoogle {
-    max-width: 100% !important;
-    width: auto !important;
-    height: auto !important;
-  }
-
-  .bottom-ad-container ins {
-    max-width: 100% !important;
-    overflow: hidden !important;
   }
 
   .close-ad-btn {
