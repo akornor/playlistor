@@ -85,13 +85,26 @@
 
     {% if not DEBUG %}
     <div id="bottom-ad-container" class="bottom-ad-container">
-        <<!-- ins class="adsbygoogle"
-             style="display:inline-block;width:400px;height:100px"
-             data-ad-client="ca-pub-3322094653674275"
-             data-ad-slot="4519312702"></ins>
-        <script>
-             (adsbygoogle = window.adsbygoogle || []).push({});
-        </script> -->
+        <div>
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-3322094653674275"
+                 data-ad-slot="4519312702"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+            <script>
+                 (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+        </div>
+        <div>
+            <button id="close-ad-btn" class="close-ad-btn">
+                <svg version="1.0" viewBox="0 0 1280 1280" xmlns="http://www.w3.org/2000/svg">
+                    <g transform="translate(0 1280) scale(.1 -.1)">
+                        <path d="m1545 12784c-85-19-167-51-243-95-69-41-1089-1049-1157-1144-101-141-140-263-140-440 0-169 36-293 125-427 29-43 705-726 2149-2170l2106-2108-2111-2112c-1356-1358-2124-2133-2147-2169-88-137-121-249-121-419-1-181 37-302 139-445 68-95 1088-1103 1157-1144 273-159 604-143 853 42 22 17 986 976 2143 2131l2102 2101 2103-2101c1156-1155 2120-2114 2142-2131 69-51 130-82 224-113 208-70 431-44 629 71 69 41 1089 1049 1157 1144 101 141 140 263 140 440 0 166-36 290-121 422-25 39-746 767-2148 2171l-2111 2112 2107 2108c2207 2208 2162 2161 2219 2303 75 187 77 392 4 572-53 132-74 157-615 700-289 291-552 548-585 572-141 101-263 140-440 140-166 0-289-35-420-120-41-26-724-702-2172-2149l-2113-2111-2112 2111c-1454 1452-2132 2123-2173 2150-64 41-149 78-230 101-79 22-258 26-340 7z"></path>
+                    </g>
+                </svg>
+            </button>
+        </div>
     </div>
     {% endif %}
 
@@ -198,6 +211,7 @@
             }, 2000);
 
             // Close button handler
+            const closeBtn = document.getElementById('close-ad-btn');
             closeBtn.addEventListener('click', function() {
                 adContainer.classList.remove('show');
             });
