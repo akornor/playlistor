@@ -99,6 +99,14 @@ def ads_txt(request):
     return HttpResponse(content, content_type="text/plain")
 
 
+def robots_txt(request):
+    content = """User-agent: *
+Allow: /
+
+Sitemap: https://playlistor.io/sitemap.xml"""
+    return HttpResponse(content, content_type="text/plain")
+
+
 @login_required(login_url="/login")
 def index(request):
     redis_client = get_redis_client()
