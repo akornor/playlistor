@@ -107,6 +107,18 @@ Sitemap: https://playlistor.io/sitemap.xml"""
     return HttpResponse(content, content_type="text/plain")
 
 
+def sitemap_xml(request):
+    content = """<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+        <loc>https://playlistor.io/</loc>
+        <changefreq>weekly</changefreq>
+        <priority>1.0</priority>
+    </url>
+</urlset>"""
+    return HttpResponse(content, content_type="application/xml")
+
+
 @login_required(login_url="/login")
 def index(request):
     redis_client = get_redis_client()
