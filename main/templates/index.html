@@ -85,7 +85,6 @@
 
     {% if not DEBUG %}
     <div id="bottom-ad-container" class="bottom-ad-container">
-        <button id="close-ad" class="close-ad-btn">&times;</button>
         <ins class="adsbygoogle"
              style="display:inline-block;width:400px;height:100px"
              data-ad-client="ca-pub-3322094653674275"
@@ -193,20 +192,14 @@
         // Bottom ad functionality
         (function() {
             const adContainer = document.getElementById('bottom-ad-container');
-            const closeBtn = document.getElementById('close-ad');
 
-            // Check if ad was dismissed
-            if (!localStorage.getItem('adDismissed')) {
-                // Show ad after 2 seconds
-                setTimeout(function() {
-                    adContainer.classList.add('show');
-                }, 2000);
-            }
+            setTimeout(function() {
+                adContainer.classList.add('show');
+            }, 2000);
 
             // Close button handler
             closeBtn.addEventListener('click', function() {
                 adContainer.classList.remove('show');
-                localStorage.setItem('adDismissed', 'true');
             });
         })();
     </script>
