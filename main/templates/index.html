@@ -83,10 +83,11 @@
         </div>
     </section>
 
-    <!-- AdSense Banner Ad -->
+    <!-- AdSense Bottom Container -->
     {% if not DEBUG %}
-    <section class="ad-section" style="margin-top:15px;padding: 20px 0;">
-        <div class="wrapper" style="text-align: center;">
+    <div id="bottom-ad-container" class="bottom-ad-container">
+        <button id="close-ad" class="close-ad-btn">&times;</button>
+        <div class="ad-content">
             <!-- homepage-banner-middle -->
             <ins class="adsbygoogle"
                  style="display:block"
@@ -98,7 +99,7 @@
                  (adsbygoogle = window.adsbygoogle || []).push({});
             </script>
         </div>
-    </section>
+    </div>
     {% endif %}
 
     <section id="card-body">
@@ -193,6 +194,29 @@
           console.log(element, 'has been', op + 'ed')
         }})
     </script>
+    {% if not DEBUG %}
+    <script>
+        // Bottom ad functionality
+        (function() {
+            const adContainer = document.getElementById('bottom-ad-container');
+            const closeBtn = document.getElementById('close-ad');
+
+            // Check if ad was dismissed
+            if (!localStorage.getItem('adDismissed')) {
+                // Show ad after 2 seconds
+                setTimeout(function() {
+                    adContainer.classList.add('show');
+                }, 2000);
+            }
+
+            // Close button handler
+            closeBtn.addEventListener('click', function() {
+                adContainer.classList.remove('show');
+                localStorage.setItem('adDismissed', 'true');
+            });
+        })();
+    </script>
+    {% endif %}
 </body>
 
 </html>
