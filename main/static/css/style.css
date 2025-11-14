@@ -578,18 +578,27 @@ footer .wrapper .flex .headings, .twitter{
 .bottom-ad-container {
   position: fixed;
   bottom: -300px;
-  left: 0;
-  right: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 768px;
+  width: 95%;
   background-color: #ffffff;
   box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
   padding: 30px 20px;
-  min-height: 200px;
   z-index: 1000;
   transition: bottom 0.5s ease-in-out;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .bottom-ad-container.show {
   bottom: 0;
+}
+
+.bottom-ad-container ins.adsbygoogle {
+  max-width: 100%;
+  overflow: hidden;
 }
 
 .close-ad-btn {
@@ -608,15 +617,11 @@ footer .wrapper .flex .headings, .twitter{
   color: #000;
 }
 
-.ad-content {
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
 @media (max-width: 768px) {
   .bottom-ad-container {
     padding: 15px;
     padding-top: 50px;
+    max-width: 100%;
   }
 
   .close-ad-btn {
