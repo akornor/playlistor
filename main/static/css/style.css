@@ -35,6 +35,19 @@
   font-display: swap;
 }
 
+/* Font Awesome font-display override */
+@font-face {
+  font-family: 'Font Awesome 5 Pro';
+  font-display: swap;
+  src: local('Font Awesome 5 Pro');
+}
+
+@font-face {
+  font-family: 'Font Awesome 5 Brands';
+  font-display: swap;
+  src: local('Font Awesome 5 Brands');
+}
+
 :root {
  /* --color-grey-light: #f9f9f9;
   --color-grey-medium: #d8d8d8;
