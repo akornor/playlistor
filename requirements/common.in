@@ -3,7 +3,7 @@ celery-progress
 Django==5.2.*
 redis
 requests
-spotipy==2.25.1
+spotipy==2.25.2
 sentry-sdk
 whitenoise==5.2.0
 PyJWT[crypto]

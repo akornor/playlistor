@@ -16,9 +16,9 @@ attrs==25.4.0 \
     --hash=sha256:16d5969b87f0859ef33a48b35d55ac1be6e42ae49d5e853b597db70c35c57e11 \
     --hash=sha256:adcf7e2a1fb3b36ac48d97835bb6d8ade15b8dcce26aba8bf1d14847b57a3373
     # via jsonschema
-billiard==4.2.3 \
-    --hash=sha256:96486f0885afc38219d02d5f0ccd5bec8226a414b834ab244008cbb0025b8dcb \
-    --hash=sha256:989e9b688e3abf153f307b68a1328dfacfb954e30a4f920005654e276c69236b
+billiard==4.2.4 \
+    --hash=sha256:525b42bdec68d2b983347ac312f892db930858495db601b5836ac24e6477cde5 \
+    --hash=sha256:55f542c371209e03cd5862299b74e52e4fbcba8250ba611ad94276b369b6a85f
     # via celery
 celery==5.5.3 \
     --hash=sha256:0b5761a07057acee94694464ca482416b959568904c9dfa41ce8413a7d65d525 \
@@ -311,9 +311,9 @@ cryptography==46.0.3 \
     --hash=sha256:ef639cb3372f69ec44915fafcd6698b6cc78fbe0c2ea41be867f6ed612811963 \
     --hash=sha256:f260d0d41e9b4da1ed1e0f1ce571f97fe370b152ab18778e9e8f67d6af432018
     # via pyjwt
-django==5.2.8 \
-    --hash=sha256:23254866a5bb9a2cfa6004e8b809ec6246eba4b58a7589bc2772f1bcc8456c7f \
-    --hash=sha256:37e687f7bd73ddf043e2b6b97cfe02fcbb11f2dbb3adccc6a2b18c6daa054d7f
+django==5.2.9 \
+    --hash=sha256:16b5ccfc5e8c27e6c0561af551d2ea32852d7352c67d452ae3e76b4f6b2ca495 \
+    --hash=sha256:3a4ea88a70370557ab1930b332fd2887a9f48654261cdffda663fef5976bb00a
     # via
     #   -r requirements/common.in
     #   django-bulk-update-or-create
@@ -514,9 +514,9 @@ requests==2.32.5 \
     # via
     #   -r requirements/common.in
     #   spotipy
-sentry-sdk==2.46.0 \
-    --hash=sha256:4eeeb60198074dff8d066ea153fa6f241fef1668c10900ea53a4200abc8da9b1 \
-    --hash=sha256:91821a23460725734b7741523021601593f35731808afc0bb2ba46c27b8acd91
+sentry-sdk==2.47.0 \
+    --hash=sha256:8218891d5e41b4ea8d61d2aed62ed10c80e39d9f2959d6f939efbf056857e050 \
+    --hash=sha256:d72f8c61025b7d1d9e52510d03a6247b280094a327dd900d987717a4fce93412
     # via -r requirements/common.in
 six==1.17.0 \
     --hash=sha256:4721f391ed90541fddacab5acf947aa0d3dc7d27b2e1e8eda2be8970586c3274 \
@@ -524,13 +524,13 @@ six==1.17.0 \
     # via
     #   jsonschema
     #   python-dateutil
-spotipy==2.25.1 \
-    --hash=sha256:18f47d9a0594ced8001b3baa5a4160ea6dcf570abbdad371971f475a81892844 \
-    --hash=sha256:607d3c43722b7e217a7e6c82f17258b798b92a512017d60c06323d62ae814cd7
+spotipy==2.25.2 \
+    --hash=sha256:5ed45c044156ca5518997e2502b1f2c1e7336407cb1fb8fe112d144b4d5282c8 \
+    --hash=sha256:694bc9734d94171716257bf18eea9f1cb2ff8c581e59c74464137433830cf890
     # via -r requirements/common.in
-sqlparse==0.5.3 \
-    --hash=sha256:09f67787f56a0b16ecdbde1bfc7f5d9c3371ca683cfeaa8e6ff60b4807ec9272 \
-    --hash=sha256:cf2196ed3418f3ba5de6af7e82c694a9fbdbfecccdfc72e281548517081f16ca
+sqlparse==0.5.4 \
+    --hash=sha256:4396a7d3cf1cd679c1be976cf3dc6e0a51d0111e87787e7a8d780e7d5a998f9e \
+    --hash=sha256:99a9f0314977b76d776a0fcb8554de91b9bb8a18560631d6bc48721d07023dcb
     # via django
 strsimpy==0.2.1 \
     --hash=sha256:0842eb57f7af86c882a59a1bc8721ec2580a267e563fd0503ced2972040372c9 \
