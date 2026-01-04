@@ -48,7 +48,7 @@
     <meta property="og:image:alt" content="Playlistor - Convert playlists between Apple Music and Spotify">
 
     <link rel="canonical" href="https://playlistor.io/">
-    <link href="{% static 'css/style.css' %}?v13" rel='stylesheet' />
+    <link href="{% static 'css/style.css' %}?v14" rel='stylesheet' />
 </head>
 
 <body>
@@ -69,12 +69,6 @@
                 </div>
             </div>
         </nav>
-        <!-- banner -->
-         <div class="banner">
-             <p style="font-style:italic" class="message main-text">
-                 Checkout Ko-Jo Cue's latest album <a style="color:pink;font-weight: bold;" href="https://open.spotify.com/album/6j4bsD6EVG8JqxOXDdSkFE?go=1&nd=1&dlsi=955f56579cef417b">KANI: A Bantama Story</a>
-             </p>
-         </div>
         <div class="wrapper">
             <!-- Big banner text -->
             <div class="">
@@ -90,6 +84,21 @@
             </div>
         </div>
     </section>
+
+    {% if not DEBUG %}
+    <!-- Mid-page Banner Ad -->
+    <div class="mid-banner-ad wrapper">
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-3322094653674275"
+             data-ad-slot="8393515741"
+             data-ad-format="horizontal"
+             data-full-width-responsive="true"></ins>
+        <script>
+             (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+    </div>
+    {% endif %}
 
     {% if not DEBUG %}
     <div id="bottom-ad-container" class="bottom-ad-container">
@@ -149,6 +158,21 @@
                         &nbsp;</button></a>
                     </div>
                 </div>
+                {% if not DEBUG and forloop.counter == 6 %}
+                <!-- In-feed Ad Card -->
+                <div class="card ad-card">
+                    <span class="ad-card-label">Sponsored</span>
+                    <ins class="adsbygoogle"
+                         style="display:block"
+                         data-ad-client="ca-pub-3322094653674275"
+                         data-ad-slot="6370326946"
+                         data-ad-format="fluid"
+                         data-ad-layout-key="+3u+p2-55-7k+1h5"></ins>
+                    <script>
+                         (adsbygoogle = window.adsbygoogle || []).push({});
+                    </script>
+                </div>
+                {% endif %}
                 {% endfor %}
             </div>
         </div>

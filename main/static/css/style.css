@@ -719,3 +719,55 @@ footer .wrapper .flex .headings, .twitter{
     padding: 12px;
   }
 }
+
+/* Mid-page Banner Ad (between hero and content) */
+.mid-banner-ad {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px 0;
+  min-height: 100px;
+  background-color: transparent;
+}
+
+@media (min-width: 768px) {
+  .mid-banner-ad {
+    min-height: 90px;
+    padding: 25px 0;
+  }
+}
+
+.mid-banner-ad ins.adsbygoogle {
+  display: block !important;
+}
+
+/* In-feed Ad Card (blends with playlist grid) */
+.ad-card {
+  max-width: 490px;
+  background-color: #ffffff;
+  padding: 25px;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 280px;
+}
+
+.ad-card-label {
+  font-family: var(--font-family-titles);
+  font-size: 0.7rem;
+  color: #999;
+  text-transform: uppercase;
+  letter-spacing: 0.1rem;
+  margin-bottom: 10px;
+}
+
+.ad-card ins.adsbygoogle {
+  display: block !important;
+}
+
+.ad-card:hover {
+  box-shadow: none;
+}
