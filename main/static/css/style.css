@@ -592,6 +592,10 @@ footer .wrapper .flex .headings, .twitter{
 @media(min-width: 500px) { .playlistor_bottom_sticky { width: 468px; height: 60px; } }
 @media(min-width: 800px) { .playlistor_bottom_sticky { width: 728px; height: 90px; } }
 
+.playlistor_mid_banner { width: 320px; height: 100px; }
+@media(min-width: 500px) { .playlistor_mid_banner { width: 468px; height: 60px; } }
+@media(min-width: 800px) { .playlistor_mid_banner { width: 728px; height: 90px; } }
+
 /* Bottom Ad Container */
 .bottom-ad-container {
   position: fixed;
@@ -722,25 +726,11 @@ footer .wrapper .flex .headings, .twitter{
 
 /* Mid-page Banner Ad (between hero and content) */
 .mid-banner-ad {
-  display: block;
-  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   padding: 20px 0;
-  min-height: 100px;
   background-color: transparent;
-  text-align: center;
-}
-
-@media (min-width: 768px) {
-  .mid-banner-ad {
-    min-height: 90px;
-    padding: 25px 0;
-  }
-}
-
-.mid-banner-ad ins.adsbygoogle {
-  display: block !important;
-  width: 100%;
-  min-width: 300px;
 }
 
 /* In-feed Ad Card (blends with playlist grid) */
