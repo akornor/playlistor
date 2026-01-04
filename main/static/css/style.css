@@ -732,37 +732,3 @@ footer .wrapper .flex .headings, .twitter{
   padding: 20px 0;
   background-color: transparent;
 }
-
-/* In-feed Ad Card (blends with playlist grid) */
-.ad-card {
-  width: 100%;
-  max-width: 490px;
-  background-color: #ffffff;
-  padding: 25px;
-  margin-left: auto;
-  margin-right: auto;
-  display: block;
-  min-height: 280px;
-  text-align: center;
-}
-
-.ad-card-label {
-  font-family: var(--font-family-titles);
-  font-size: 0.7rem;
-  color: #999;
-  text-transform: uppercase;
-  letter-spacing: 0.1rem;
-  margin-bottom: 10px;
-  display: block;
-}
-
-.ad-card ins.adsbygoogle {
-  display: block !important;
-  width: 100%;
-  min-width: 250px;
-  min-height: 250px;
-}
-
-.ad-card:hover {
-  box-shadow: none;
-}
