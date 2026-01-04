@@ -698,29 +698,29 @@ footer .wrapper .flex .headings, .twitter{
 
 @media (max-width: 499px) {
   .bottom-ad-container {
-    flex-direction: column;
-    padding: 15px;
+    flex-direction: row;
+    padding: 10px;
+    padding-right: 8px;
   }
 
   .bottom-ad-container > div:first-child {
-    width: 100%;
+    flex: 1;
     display: flex;
     justify-content: center;
   }
 
   .bottom-ad-container > div:last-child {
     border-left: none;
-    border-top: 1px solid #e0e0e0;
-    padding-left: 0;
-    padding-top: 15px;
-    width: 100%;
-    justify-content: center;
+    padding-left: 8px;
+    display: flex;
+    align-items: center;
   }
 
   .close-ad-btn {
-    width: 48px;
-    height: 48px;
-    padding: 12px;
+    width: 28px;
+    height: 28px;
+    padding: 6px;
+    border-width: 1px;
   }
 }
 
