@@ -722,12 +722,12 @@ footer .wrapper .flex .headings, .twitter{
 
 /* Mid-page Banner Ad (between hero and content) */
 .mid-banner-ad {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  display: block;
+  width: 100%;
   padding: 20px 0;
   min-height: 100px;
   background-color: transparent;
+  text-align: center;
 }
 
 @media (min-width: 768px) {
@@ -739,20 +739,21 @@ footer .wrapper .flex .headings, .twitter{
 
 .mid-banner-ad ins.adsbygoogle {
   display: block !important;
+  width: 100%;
+  min-width: 300px;
 }
 
 /* In-feed Ad Card (blends with playlist grid) */
 .ad-card {
+  width: 100%;
   max-width: 490px;
   background-color: #ffffff;
   padding: 25px;
   margin-left: auto;
   margin-right: auto;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  display: block;
   min-height: 280px;
+  text-align: center;
 }
 
 .ad-card-label {
@@ -762,10 +763,14 @@ footer .wrapper .flex .headings, .twitter{
   text-transform: uppercase;
   letter-spacing: 0.1rem;
   margin-bottom: 10px;
+  display: block;
 }
 
 .ad-card ins.adsbygoogle {
   display: block !important;
+  width: 100%;
+  min-width: 250px;
+  min-height: 250px;
 }
 
 .ad-card:hover {
