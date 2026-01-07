@@ -31,7 +31,7 @@ def search_isrc_cache_key(service, track):
         return f"{service}:search:isrc:{track.isrc}"
 
 
-@cache_with_key(search_isrc_cache_key, timeout=3600 * 24 * 8)
+@cache_with_key(search_isrc_cache_key, timeout=3600 * 24 * 15)
 def search_with_isrc(service, track):
     if track.isrc:
         return service.search_track_by_isrc(track.isrc, limit=10)
