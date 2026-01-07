@@ -48,7 +48,7 @@
     <meta property="og:image:alt" content="Playlistor - Convert playlists between Apple Music and Spotify">
 
     <link rel="canonical" href="https://playlistor.io/">
-    <link href="{% static 'css/style.css' %}?v18" rel='stylesheet' />
+    <link href="{% static 'css/style.css' %}?v19" rel='stylesheet' />
 </head>
 
 <body>
@@ -87,15 +87,16 @@
 
     {% if not DEBUG %}
     <!-- Mid-page Banner Ad -->
-    <div class="mid-banner-ad wrapper">
-        <ins class="adsbygoogle playlistor_mid_banner"
-             style="display:block"
-             data-full-width-responsive="true"
-             data-ad-client="ca-pub-3322094653674275"
-             data-ad-slot="8393515741"></ins>
-        <script>
-             (adsbygoogle = window.adsbygoogle || []).push({});
-        </script>
+    <div class="mid-banner-ad">
+        <div>
+            <ins class="adsbygoogle playlistor_mid_banner"
+                 style="display:block"
+                 data-ad-client="ca-pub-3322094653674275"
+                 data-ad-slot="8393515741"></ins>
+            <script>
+                 (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+        </div>
     </div>
     {% endif %}
 

@@ -731,4 +731,13 @@ footer .wrapper .flex .headings, .twitter{
   align-items: center;
   padding: 20px 0;
   background-color: transparent;
+  width: 100%;
+}
+
+@media (max-width: 499px) {
+  .mid-banner-ad > div {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+  }
 }
