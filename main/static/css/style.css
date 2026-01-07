@@ -588,11 +588,11 @@ footer .wrapper .flex .headings, .twitter{
 }
 
 /* Responsive Ad Sizes */
-.playlistor_bottom_sticky { width: 320px; height: 100px; }
+.playlistor_bottom_sticky { width: 100%; height: 100px; }
 @media(min-width: 500px) { .playlistor_bottom_sticky { width: 468px; height: 60px; } }
 @media(min-width: 800px) { .playlistor_bottom_sticky { width: 728px; height: 90px; } }
 
-.playlistor_mid_banner { width: 320px; height: 100px; }
+.playlistor_mid_banner { width: 100%; height: 100px; }
 @media(min-width: 500px) { .playlistor_mid_banner { width: 468px; height: 60px; } }
 @media(min-width: 800px) { .playlistor_mid_banner { width: 728px; height: 90px; } }
 
