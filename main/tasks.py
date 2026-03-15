@@ -1,3 +1,5 @@
+import random
+
 import requests
 from celery import shared_task
 from celery.utils.log import get_task_logger
@@ -195,7 +197,9 @@ def generate_applemusic_playlist(self, url, access_token):
     except requests.exceptions.HTTPError as e:
         response = e.response
         if response.status_code >= 500:
-            raise self.retry(exc=e, countdown=30)
+            raise self.retry(
+                exc=e, countdown=int(random.uniform(20, 40) * (2**self.request.retries))
+            )
         else:
             raise e
     incr_playlist_counter()
